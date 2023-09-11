@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<div layout:fragment="content">
+
+	<th:block layout:fragment="css">
+
+		<link rel="stylesheet" href="/css/category.css">
+
+	</th:block>
+	
+	<div class="site-section mt-5 mb-5">
+	<div class="container">
+		<th:block th:object="${recipeSearchDto}">
+			<input type="hidden" th:value="${currentPage}" id="page">
+			<input type="hidden" th:value="${recipeSearchDto.mainCategory}" id="mainCategory">
+			
+			
+			<div class="search_form pb-3">
+					<select th:field="*{searchBy}" class="form_select form-control">
+						<option value="title">레시피명</option>
+						<option value="nickname">쉐프명</option>
+					</select> <input type="text" class="form-control form_search"
+						th:field="*{searchQuery}" placeholder="검색어를 입력해주세요">
+					<button onclick="javascript:dynamicSearch()" class="form_search_bt">검색</button>
+		
+				</div>
+				
+				<ul class="mt20 key2">
+					<li id="link1"><a href="/category" class="menu-link">전체</a></li>
+					<li id="link2"><a href="/category?mainCategory=메인요리" class="menu-link">#메인요리</a></li>
+					<li id="link3"><a href="/category?mainCategory=밑반찬" class="menu-link">#밑반찬</a></li>
+					<li id="link4"><a href="/category?mainCategory=간식" class="menu-link">#간식</a></li>
+					<li id="link5"><a href="/category?mainCategory=간단요리" class="menu-link">#간단요리</a></li>
+					<li id="link6"><a href="/category?mainCategory=초대요리" class="menu-link">#초대요리</a></li>
+				</ul>
+	
+		<div class="thmb_list02 pt60">
+		<div class="items-header items-meta d-lg-flex justify-content-between align-items-center">
+						<div class="item-count">
+							<p class="prdCount">
+								<p>검색결과 <strong>[[${category.getTotalElements()}]]</strong>건 조회</p>
+							</p>
+						</div>
+						<div class="form-inline item-display-options">
+							<div class="form-group">
+								<label class="sr-only" th:for="type">정렬 항목 선택</label> 
+								<select class="form-control form-control-sm select-sortkey ml-3" th:field="*{type}">
+									<option value="order">최신순</option>
+									<option value="reviewAvg">평점순</option>
+									<option value="reviewCount">리뷰많은순</option>
+								</select> <label class="sr-only" th:for="dataNum">페이지당 출력 갯수 선택</label>
+								<select class="form-control form-control-sm select-display" th:field="*{dataNum}">
+									<option value="12">12</option>
+									<option value="24">24</option>
+									<option value="36">36</option>
+								</select> <label class="sr-only" for="item-submit-header">선택옵션 전송</label>
+								<div class="input-group" style="margin-left: 7px;">
+									<input class="btn btn-lightgrey btn-sm submit-sort-display" title="조회" value="조회" onclick="javascript:dynamicSearch()">
+								</div>
+							</div>
+
+						</div>
+					</div>	
+		</th:block>
+			<div class="list_box">
+		<div class="list_area">
+			
+			
+			<th:block th:each="recipe , status:${category}">
+			<div class="item">
+				<div class="thmb">
+					<a href="#"><div class="img">
+					<div class="scale">
+					<img src="/img/장어덮밥.jpg" th:alt="${recipe.title}">
+					<!--<img th:src="${recipe.imageUrl}" th:alt="${recipe.title}">-->
+					<span class="item-ranking">[[${status.index+1}]]</span>
+					<!--<div class="back">
+						<p>조회수 : [[${recipe.count}]] </p> <p> 북마크수 : [[${recipe.bookmarkCount}]] </p>
+					</div> -->
+					</div>
+					</div>
+						
+					</a>
+				</div>
+				<div class="info">
+						<div class="common_sp_caption_rv_name d-flex justify-content-center">
+                <a href="/"  style="display: inline-block; vertical-align: bottom;">
+					<th:block th:if="${recipe.imgUrl} == null">
+					<img src="/img/free-icon-member-5867267.png">
+					</th:block>	
+					<th:block th:unless="${recipe.imgUrl} == null">
+					<img src="/img/free-icon-member-5867267.png">
+					</th:block> 
+					[[${recipe.nickname}]]</a>
+            </div>
+					<p class="RecipeItemstyle__SubTitle-sc-1gt7vz8-2 LxJcT">[[${recipe.subTitle}]]</p>
+					<p class="RecipeItemstyle__Title-sc-1gt7vz8-3 hpYiJK">[[${recipe.title}]]</p>
+					<div class="RecipeItemstyle__Summary-sc-1gt7vz8-4 XtlHh">
+						<div class="RecipeItemstyle__Time-sc-1gt7vz8-6 RecipeItemstyle__Level-sc-1gt7vz8-7 gvzBms" title="난이도">
+							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 12 12">
+								<path stroke="#757575" d="M10.1.996v10m-4-7.992v8m-4-6v6"></path>
+							</svg>
+						    <span class="RecipeItemstyle__SummaryText-sc-1gt7vz8-5 MiXMV">[[${recipe.level}]]</span>
+						</div>
+						<div class="RecipeItemstyle__Time-sc-1gt7vz8-6 kKXboO" title="소요시간">
+							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 12 12">
+								<circle cx="6" cy="6" r="5.5" stroke="#757575"></circle>
+								<path stroke="#757575" d="M5.5 2.5v4h4"></path>
+							</svg>
+						<span class="RecipeItemstyle__SummaryText-sc-1gt7vz8-5 MiXMV">[[${recipe.durTime}]]분</span>
+					</div>
+					
+					
+					<!--리뷰 2.0 이하면 표시안함-->
+					<th:block th:if="${recipe.retingAvg > 2}">
+						
+						<div class="RecipeItemstyle__Time-sc-1gt7vz8-6 kKXboO" title="평점">
+						<i class="fa-solid fa-star fa-xs"></i>
+						<span class="RecipeItemstyle__SummaryText-sc-1gt7vz8-5 MiXMV">
+							[[${recipe.retingAvg}]]<th:block th:if="${recipe.reviewCount !=0 }">([[${recipe.reviewCount}]])</th:block></span>
+					</div>
+						
+					</th:block>
+					
+					<!--북마크 10 이하 표시안함-->
+					<th:block th:if="${recipe.bookmarkCount > 10}">
+						
+						<div class="RecipeItemstyle__Time-sc-1gt7vz8-6 kKXboO" title="북마크">
+						<i class="fa-solid fa-heart fa-xs hc"></i>
+						<span class="RecipeItemstyle__SummaryText-sc-1gt7vz8-5 MiXMV">
+							[[${recipe.bookmarkCount}]]</span>
+					</div>
+						
+					</th:block>
+					
+					
+					</div>
+				
+				</div>
+			</div>
+			</th:block>
+			
+			
+		</div>
+			
+			<div class="style__PagingWrapper-b83qno-6 bYnXQa mt-5"
+							th:with="start=${(category.number/maxPage)*maxPage + 1}
+			    ,end=(${(category.totalPages == 0) ? 1 : (start + (maxPage - 1) < category.totalPages ? start + (maxPage - 1) : category.totalPages)})">
+
+							<button class="style__PagePrevButton-b83qno-8 loxVUo"
+								th:classappend="${category.first}?'bt_hd'"
+								th:onclick="'javascript:page(' + ${category.number - 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+									<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+								</svg>
+							</button>
+							<ul>
+								<a offset="0" class="style__PageNumber-b83qno-7"
+									th:each="page: ${#numbers.sequence(start, end)}"
+									th:classappend="${category.number eq page-1}?'hIVTuk':'iBHoeR'"
+									th:onclick="'javascript:page(' + ${page - 1} +')'"> <span>[[${page}]]</span>
+								</a>
+							</ul>
+							<button class="style__PageNextButton-b83qno-9 gCfLmH"
+								th:classappend="${category.last}?'bt_hd'"
+								th:onclick="'javascript:page(' + ${category.number + 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+							        <path stroke="#000"
+										d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+					            </svg>
+							</button>
+						</div>
+			
+			
+			
+			
+			
+		</div>
+		</div>
+    	
+	</div>
+</div>
+	
+	
+</div>
+
+
+
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+	
+	$(document).ready(function() {
+		const currentURL = window.location.pathname;
+		const mainCategory = $("#mainCategory").val();
+
+		// 조건 확인 및 클래스 추가
+		  if (mainCategory === '메인요리') {
+		    const link2Element = document.getElementById('link2');
+		    if (link2Element) {
+		        link2Element.classList.add('active');
+		    }
+		} else if (mainCategory === '밑반찬') {
+		    const link3Element = document.getElementById('link3');
+		    if (link3Element) {
+		        link3Element.classList.add('active');
+		    }
+		} else if (mainCategory === '간식') {
+		    const link4Element = document.getElementById('link4');
+		    if (link4Element) {
+		        link4Element.classList.add('active');
+		    }
+		} else if (mainCategory === '간단요리') {
+		    const link5Element = document.getElementById('link5');
+		    if (link5Element) {
+		        link5Element.classList.add('active');
+		    }
+		}else if (mainCategory === '초대요리') {
+		    const link6Element = document.getElementById('link6');
+		    if (link6Element) {
+		        link6Element.classList.add('active');
+		    }
+		}
+		 else {
+		    const link1Element = document.getElementById('link1');
+		    if (link1Element) {
+		        link1Element.classList.add('active');
+		    }
+		}
+	 });
+	
+	
+	function dynamicSearch1(){
+		
+		var type = $("#type").val();
+		var searchBy = $("#searchBy").val();
+		var searchQuery = $("#searchQuery").val();
+
+		//주소 이동
+		location.href = "/category/" + 0 + "?type=" + type 
+				+ "&mainCategory=" + mainCategory 
+				+ "&searchBy=" + searchBy
+				+ "&searchQuery=" + searchQuery + "";
+		
+	}
+	
+	function dynamicSearch(){
+		var mainCategory = $("#mainCategory").val();
+		var type = $("#type").val();
+		var dataNum = $("#dataNum").val();
+		var searchBy = $("#searchBy").val();
+		var searchQuery = $("#searchQuery").val();
+		var page = $("#page").val();
+
+		//주소 이동
+	location.href = "/category/" + page + "?dataNum=" + dataNum
+				+ "&mainCategory=" + mainCategory 
+				+ "&type=" + type 
+				+ "&searchBy=" + searchBy
+				+ "&searchQuery=" + searchQuery + "";
+		
+	}
+	
+	
+	function page(page) {
+		//입력한 값을 전부 가지고 온다.
+		
+		var mainCategory = $("#mainCategory").val();
+		var type = $("#type").val();
+		var dataNum = $("#dataNum").val();
+		var searchBy = $("#searchBy").val();
+		var searchQuery = $("#searchQuery").val();
+
+		//주소 이동
+		location.href = "/category/" + page + "?dataNum=" + dataNum
+				+ "&mainCategory=" + mainCategory 
+				+ "&type=" + type 
+				+ "&searchBy=" + searchBy
+				+ "&searchQuery=" + searchQuery + "";
+	}
+		
+	</script>
+	</th:block>
+
+
+</html>

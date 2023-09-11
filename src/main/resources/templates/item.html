@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+<div layout:fragment="content">
+
+	<th:block layout:fragment="css">
+
+		<link rel="stylesheet" href="/css/itemCategory.css">
+
+	</th:block>
+
+	<div class="site-section mt-5 mb-5">
+		<div class="container">
+				<th:block th:object="${itemSearchDto}">
+				<input type="hidden" th:value="${currentPage}" id="page">
+				<input type="hidden" th:value="${itemSearchDto.itemCategoryEnum}" id="itemCategoryEnum">
+				
+				<div class="search_form pb-3">
+					<input type="text" class="form-control form_search"
+						th:field="*{searchQuery}" placeholder="상품명를 입력해주세요">
+					<button class="form_search_bt" onclick="javascript:dynamicSearch()">검색</button>
+				</div>
+				<ul class="mt20 key2">
+					<li id="link1"><a href="/item/total" class="menu-link">전체</a></li>
+					<li id="link2" ><a href="/item/total?itemCategoryEnum=푸드"  class="menu-link">#푸드</a></li>
+					<li id="link3" ><a href="/item/total?itemCategoryEnum=키친" class="menu-link">#키친</a></li>
+					<li id="link4" ><a href="/item/total?itemCategoryEnum=리빙" class="menu-link">#리빙</a></li>
+					<li id="link5" ><a href="/item/total?itemCategoryEnum=가전" class="menu-link">#가전</a></li>
+				</ul>
+				<div class="thmb_list02 pt60">
+					<div
+						class="items-header items-meta d-lg-flex justify-content-between align-items-center">
+						<div class="item-count">
+							<p class="prdCount">
+								검색결과 <strong>[[${category.getTotalElements()}]]</strong>건 조회
+							</p>
+						</div>
+						<div class="form-inline item-display-options">
+							<div class="form-group">
+								<label class="sr-only" th:for="type">정렬 항목 선택</label> <select
+									class="form-control form-control-sm select-sortkey ml-3"
+									th:field="*{type}">
+									<option value="order" selected="">최신순</option>
+									<option value="reviewAvg">평점순</option>
+									<option value="reviewCount">리뷰많은순</option>
+									<option value="lowPrice">낮은가격순</option>
+									<option value="highPrice">높은가격순</option>
+								</select> <label class="sr-only" th:for="dataNum">페이지당 출력 갯수 선택</label>
+								<select class="form-control form-control-sm select-display"
+									th:field="*{dataNum}">
+									<option value="12" selected="">12</option>
+									<option value="24">24</option>
+									<option value="36">36</option>
+								</select> <label class="sr-only" for="item-submit-header">선택옵션 전송</label>
+								<div class="input-group" style="margin-left: 7px;">
+									<input class="btn btn-lightgrey btn-sm submit-sort-display"
+										title="조회" value="조회" onclick="javascript:dynamicSearch()"></input>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					</th:block>
+
+					<div class="list_box">
+						<div class="list_area">
+
+
+							<th:block th:each="item , status:${category}">
+								<div class="item">
+									<div class="thmb">
+										<a th:href="'/item/' + ${item.id}"><div class="img">
+												<div class="scale">
+													<img src="/img/장어덮밥.jpg"> <span class="item-ranking">[[${status.index+1}]]</span>
+												</div>
+											</div> </a>
+									</div>
+									<div class="info">
+										<p class="name">[[${item.itemNm}]]</p>
+										<th:block th:if="${item.sale != 0}">
+											<p class="ori_price">
+												[[${#numbers.formatInteger(item.price, 0, 'COMMA')}]]원</p>
+											<div class="price_info">
+												<span class="discount">[[${item.sale}]]<small>%</small></span>
+											</div>
+										</th:block>
+										<div class="sales_price">
+											<p>[[${#numbers.formatInteger(item.price - (item.price *
+												item.sale / 100), 0, 'COMMA')}]]</p>
+											<span>원</span>
+										</div>
+										<div class="review-list__rating-wrap d-flex" th:if="${item.retingAvg > 1.5}">
+											<span class="review-list__rating"> <span
+												class="review-list__rating__unit"> <span
+													class="review-list__rating__active"
+													th:style="'width:' + (${item.retingAvg} * 20) + '%'"></span>
+											</span>
+											</span>
+											<p class="review_count_1">
+												[[${item.retingAvg}]]<span class="reting_line">([[${item.reviewCount}]])</span>
+											</p>
+										</div>
+
+										<!-- 40,000원 이상 무료배송 -->
+										<th:block
+											th:if="${(item.price - (item.price * item.sale / 100)) > 40000}">
+
+											<div
+												class="ProductBenefitLabelGroupstyle__OptionLabelGroup-n65omn-0 kNbJfO">
+												<div class="ProductBenefitLabel-sc-10qyuuq-0 dmYHTU">무료배송
+												</div>
+											</div>
+
+										</th:block>
+									</div>
+								</div>
+							</th:block>
+
+
+						</div>
+						<div class="style__PagingWrapper-b83qno-6 bYnXQa mt-3"
+							th:with="start=${(category.number/maxPage)*maxPage + 1}
+			    ,end=(${(category.totalPages == 0) ? 1 : (start + (maxPage - 1) < category.totalPages ? start + (maxPage - 1) : category.totalPages)})">
+
+							<button class="style__PagePrevButton-b83qno-8 loxVUo"
+								th:classappend="${category.first}?'bt_hd'"
+								th:onclick="'javascript:page(' + ${category.number - 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+									<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+								</svg>
+							</button>
+							<ul>
+								<a offset="0" class="style__PageNumber-b83qno-7"
+									th:each="page: ${#numbers.sequence(start, end)}"
+									th:classappend="${category.number eq page-1}?'hIVTuk':'iBHoeR'"
+									th:onclick="'javascript:page(' + ${page - 1} +')'"> <span>[[${page}]]</span>
+								</a>
+							</ul>
+							<button class="style__PageNextButton-b83qno-9 gCfLmH"
+								th:classappend="${category.last}?'bt_hd'"
+								th:onclick="'javascript:page(' + ${category.number + 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+							        <path stroke="#000"
+										d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+					            </svg>
+							</button>
+						</div>
+					</div>
+				</div>
+		</div>
+	</div>
+	</form>
+
+</div>
+
+
+
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+	$(document).ready(function() {
+		
+		const currentURL = window.location.pathname;
+		const itemCategoryEnum = $("#itemCategoryEnum").val();
+
+		// 조건 확인 및 클래스 추가
+		  if (itemCategoryEnum === '푸드') {
+		    const link2Element = document.getElementById('link2');
+		    if (link2Element) {
+		        link2Element.classList.add('active');
+		    }
+		} else if (itemCategoryEnum === '키친') {
+		    const link3Element = document.getElementById('link3');
+		    if (link3Element) {
+		        link3Element.classList.add('active');
+		    }
+		} else if (itemCategoryEnum === '리빙') {
+		    const link4Element = document.getElementById('link4');
+		    if (link4Element) {
+		        link4Element.classList.add('active');
+		    }
+		} else if (itemCategoryEnum === '가전') {
+		    const link5Element = document.getElementById('link5');
+		    if (link5Element) {
+		        link5Element.classList.add('active');
+		    }
+		} else {
+		    const link1Element = document.getElementById('link1');
+		    if (link1Element) {
+		        link1Element.classList.add('active');
+		    }
+		}
+		
+		
+	
+		
+ });
+	
+
+function dynamicSearch(){
+	var itemCategoryEnum = $("#itemCategoryEnum").val();
+	var type = $("#type").val();
+	var dataNum = $("#dataNum").val();
+	var searchQuery = $("#searchQuery").val();
+	var page = $("#page").val();
+
+	//주소 이동
+	location.href = "/item/total/" + page + "?type=" + type 
+			+ "&itemCategoryEnum=" + itemCategoryEnum 
+			+ "&dataNum=" + dataNum 
+			+ "&searchQuery=" + searchQuery + "";
+}
+
+function page(page) {
+	//입력한 값을 전부 가지고 온다.
+	var itemCategoryEnum = $("#itemCategoryEnum").val();
+	var type = $("#type").val();
+	var dataNum = $("#dataNum").val();
+	var searchQuery = $("#searchQuery").val();
+
+	//주소 이동
+	location.href = "/item/total/" + page + "?type=" + type 
+			+ "&itemCategoryEnum=" + itemCategoryEnum 
+			+ "&dataNum=" + dataNum 
+			+ "&searchQuery=" + searchQuery + "";
+}
+	</script>
+</th:block>
+
+
+</html>

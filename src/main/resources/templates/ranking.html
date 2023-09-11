@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<div layout:fragment="content">
+
+	<th:block layout:fragment="css">
+
+		<link rel="stylesheet" href="/css/ranking.css">
+		
+	</th:block>
+	
+	
+	
+<div class="site-section mt-5 mb-5 mt-5">
+	<div class="container">
+		
+		
+		<div class="main_box main_hit">
+			<h2 class="def_title">베스트 쉐프!</h2>
+			<ul class="clr">
+				<th:block th:each="member , status:${rankMemberList}">
+							<li class="rec_list" style="display:block">
+					<div class="num">[[${status.index+1}]]</div>
+					<a href="#" class="clr">
+						<div class="img_box">
+							<th:block th:if="${member.imgUrl} == null">
+							<img src="/img/장어덮밥.jpg" alt="등록된 이미지가 없습니다">
+							</th:block>
+							<th:block th:uless="${member.imgUrl} == null">
+							<img th:src="${member.imgUrl}" th:alt="${member.nickname}">
+							</th:block>
+							
+							
+							</div>
+						<div class="text_box">
+							<p class="s_title">자개소개 칸</p>
+							<p class="b_title" title="배추김치">[[${member.nickname}]]</p>
+						</div>
+					</a>
+						<div class="like"> 팔로워 수 : [[${member.followCount}]] / 총조회수 : [[${member.totalCountCount}]] / 레시피수 : [[${member.recipeCount}]] / 모든리뷰수 : [[${member.reviewCount}]] / 총평점 : [[${member.retingAvg}]] / 총댓글수 : [[${member.commentCount}]]</div>
+				</li>
+				
+					
+					
+				</th:block>
+								
+							</ul>
+		</div>
+		
+		
+		
+		
+	</div>
+</div>
+	
+	
+</div>
+
+
+
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+	
+	</script>
+	</th:block>
+
+
+</html>

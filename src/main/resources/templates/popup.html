@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="/css/inqPopup.css" />
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+<body>
+	<section class="n-qa-write-pop">
+			<input type="hidden" th:value="${itemId}" id="itemId">
+		<header>
+			<h2>상품문의</h2>
+		</header>
+		<form name="qa_write_form" id="qa_write_form">
+			<div class="qa-product">
+				<div class="qa-product-img">
+					<img th:src="${imgList.get(0).getImgUrl()}" th:alt="${item.itemNm}">
+				</div>
+				<div class="qa-product-info">
+					<p class="qa-info-brand">이젠 스토어</p>
+					<p class="qa-info-name">[[${item.itemNm}]]</p>
+					<p class="box_price">
+						<span class="txt_origin_price">[[${#numbers.formatInteger(item.price, 0,
+						'COMMA')}]]원</span> [[${#numbers.formatInteger(item.price - (item.price * item.sale /
+						100), 0, 'COMMA')}]]<span
+							class="txt_unit_price">원</span> <span
+							class="payment_off qa_payment_off">[[${item.sale}]]% SALE</span>
+					</p>
+				</div>
+
+			</div>
+			<table class="qa-write-table">
+				<tbody>
+					<tr>
+						<th>문의유형</th>
+						<td class="qa-type-area">
+						 <input type="radio" id="itemInqBoardEnum_1" name="itemInqBoardEnum" class="n-radio" value="1"> 
+						 <label for="itemInqBoardEnum_1">배송</label>
+						 <input type="radio" id="itemInqBoardEnum_2" name="itemInqBoardEnum" class="n-radio" value="2"> 
+						 <label for="itemInqBoardEnum_2">재입고</label> 
+						 <input type="radio" id="itemInqBoardEnum_3" name="itemInqBoardEnum" class="n-radio" value="3"> 
+						 <label for="itemInqBoardEnum_3">상품상세문의</label>
+						 <input type="radio" id="itemInqBoardEnum_4" name="itemInqBoardEnum" class="n-radio" value="4"> 
+						 <label for="itemInqBoardEnum_4">기타</label>
+						 </td>
+					</tr>
+					<tr>
+						<th></th>
+						<td>
+							<ul class="qa-comment" style="margin-top: -20px;">
+								<li>클레임(교환/환불/취소)관련 문의는 <a href="#"
+									style="border-bottom: 1px solid #ddd; font-weight: bold;"
+									target="_blank">마이페이지 &gt; 1:1 문의</a>에서 문의 바랍니다.
+								</li>
+							</ul>
+						</td>
+					</tr>
+
+					<tr>
+						<th>제목</th>
+						<td class="qa-title-area">
+						<input type="text" name="title" id="title" class="tit n-input" maxlength="15" placeholder="15자 이내 입력"> 
+						<input type="checkbox" name="itemInqEnum" id="itemInqEnum" class="n-check" value="2"> 
+						<label for="itemInqEnum">비밀글</label>
+						</td>
+					</tr>
+					<tr>
+						<th>내용</th>
+						<td class="qa-subject-area">
+						<textarea name="content" id="content"
+						rows="10" cols="45" placeholder="내용 입력"></textarea>
+					
+							</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+
+		<dl class="qa-info-area">
+			<dt>상품문의 안내</dt>
+			<dd>
+				<ul class="qa-comment">
+					<li>상품문의는 재입고, 사이즈, 배송 등 상품에 대하여 담당자에게 문의하는 게시판입니다.</li>
+					<li><strong>욕설, 비방, 거래 글, 분쟁 유발, 명예훼손, 허위사실 유포, 타 쇼핑몰
+							언급,광고성 등의 부적절한 게시글은 금지합니다. 더불어 상품 문의 시 비밀글만 작성되도록 제한됩니다.</strong></li>
+					<li><strong>주문번호, 연락처, 계좌번호 등의 개인 정보 관련 내용은 공개되지 않도록
+							비밀글로 문의해 주시기 바랍니다.</strong> 공개된 글은 비밀글로 전환될 수 있으며, 개인 정보 노출로 인한 피해는 이젠
+						스토어가 책임지지 않습니다.</li>
+				</ul>
+			</dd>
+		</dl>
+		<div class="qa-btn-area">
+			<a class="n-btn btn-lighter"
+				onclick="inqCancle()">취소</a> <a
+				class="n-btn btn-accent"
+				onclick="inqOk();">작성하기</a>
+		</div>
+	</section>
+
+	
+	
+</body>
+  <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/jquery.slicknav.js}"></script>
+    <script th:src="@{/js/jquery.nice-select.min.js}"></script>
+    <script th:src="@{/js/mixitup.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
+<script>
+	$(document).ready(function() {
+    // 이벤트 리스너를 등록하여 내용 입력이 변경될 때마다 길이를 체크합니다.
+    $("#content").on("input", function() {
+        var content = $(this).val();
+        if (content.length > 100) {
+            $(this).val(content.substr(0, 100)); // 100글자로 자름
+            alert("100자 이상 입력할 수 없습니다.");
+        }
+    });
+});
+	
+		
+	
+	
+	
+function inqCancle() {
+    var content = $("#content").val();
+    var title = $("#title").val();
+
+    if (content.trim() !== '' || title.trim() !== '') {
+        if (confirm("작성한 내용이 저장되지 않을 수 있습니다. \n 문의글을 취소하시겠습니까?")) {
+            window.close();
+        }
+    } else {
+        window.close(); // 팝업 창을 닫습니다.
+    }
+}
+	
+	function inqOk() {
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+	 	
+		var itemId = $("#itemId").val();
+		var itemInqBoardEnum = $("input[name='itemInqBoardEnum']:checked").val();
+        var title = $("#title").val();
+        var content = $("#content").val();
+        var itemInqEnum = $("input[name='itemInqEnum']:checked").val()  || 1 ;
+			
+			if (!itemInqBoardEnum) {
+       			 alert("문의유형을 선택해주세요.");
+      			  return;
+   				 }
+   			 if (!title) {
+      			  alert("제목을 입력 해주세요.");
+        		 return;
+   				 }
+    		if (!content) {
+       			 alert("문의 내용을 입력 해주세요.");
+      			  return;
+   				 }
+		
+		if (confirm("문의글 등록하시겠습니까?")) {
+	  
+		var url = "/inqReq"
+		
+		var paramData = {
+				id : itemId,
+				itemInqBoardEnum : itemInqBoardEnum,
+				title : title,
+				content : content,
+				itemInqEnum : itemInqEnum
+			}
+			
+			var param = JSON.stringify(paramData);
+
+			$.ajax({
+				url : url, //request URL
+				type : "POST", //전송방식
+				contentType : "application/json",
+				data : param, //서버에 전송할 데이터
+				beforeSend : function(xhr) {
+					//데이터를 전송하기전에 헤더에 csrf 값을 설정
+					xhr.setRequestHeader(header, token);
+				},
+				dataType : "text",
+				cache : false,
+				success: function(result, status) {
+  				  alert("등록되었습니다.");
+       				 window.close();
+				},
+				error : function(jqXHR, status, error) {
+					if (jqXHR.status == '401') {
+						alert('관리자로그인 후 이용해주세요.');
+						//	location.href = '/';
+					} else {
+						//에러메세지 출력(ResponseEntity에서 받아온 값을 출력해준다)
+						alert(jqXHR.responseText);
+					}
+				}
+			})
+		}
+	}
+</script>
+
+
+</html>

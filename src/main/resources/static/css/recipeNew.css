@@ -1,0 +1,413 @@
+@charset "UTF-8";
+
+
+	:root {
+--green-color: #98FB98;
+	}
+
+.newRecipe {
+	margin: auto;
+	width: 700px;
+	border-radius: 5px;
+	padding: 20px;
+	
+}
+
+.in {
+	width: 500px;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 5px;
+	border: none;
+	margin-bottom: 15px;
+	border: 1px solid;
+	/* border-color: var(--green-color); */
+	border-color: #dee2e6;
+	margin-top: 15px;
+	height: 50px;
+	font-size: 14px;
+	margin-left: 50px;
+	
+}
+
+.recipeMain{
+	display: flex;
+}
+
+.recipe{
+	margin-bottom: auto;
+	margin-top: auto;
+	width:100px;
+}
+
+.recipesubMain{
+	display: flex;
+}
+
+.recipeSubs{
+	margin-bottom: auto;
+	margin-top: auto;
+	width:100px;
+}
+
+.recipeSub{
+	width: 500px;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 5px;
+	border: none;
+	margin-bottom: 15px;
+	border: 1px solid;
+	/* border-color: var(--green-color); */
+	border-color: #dee2e6;
+	margin-top: 15px;
+	height: 50px;
+	font-size: 14px;
+	margin-left: 50px;
+}
+
+.pictureMain{
+	display: flex;
+}
+
+.picture{
+	width:100px;
+	margin-bottom: auto;
+	margin-top: auto;
+}
+
+.categoryMain{
+	display: flex;
+	margin-bottom: 15px;
+}
+
+.category{
+	width:100px;
+	margin-bottom: auto;
+	margin-top: auto;
+	margin-right: 50px;
+}
+
+.form-select{
+	width: 150px;
+	margin-right: 50px;
+}
+
+h2{
+	text-align: left;
+	margin: 0 auto;
+}
+
+.in3{
+	width: 200px;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 5px;
+	border: none;
+	border: 1px solid;
+	/* border-color: var(--green-color); */
+	border-color: #dee2e6;
+	margin-top: 5px;
+	height: 40px;
+	font-size: 14px;
+	margin-left: 50px;
+}
+
+.ingredientsMain{
+	display: flex;
+}
+
+.ingredients{
+	margin-bottom: auto;
+	margin-top: auto;
+	width: 100px;
+}
+
+.in4{
+	width: 200px;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 5px;
+	border: none;
+	border: 1px solid;
+	/* border-color: var(--green-color); */
+	border-color: #dee2e6;
+	margin-top: 5px;
+	height: 40px;
+	font-size: 14px;
+	margin-left: 25px;
+}
+
+
+.btn{
+	width: 65px;
+	height: 40px;
+		cursor: pointer;
+		background-color: white;
+		border: 1px solid;
+		border-color: #dee2e6;
+		border-radius: 5px;
+		margin-bottom: 5px;
+		font-size: 13px;
+		
+}
+
+.btn:hover{
+	background-color: var(--green-color);
+	border: 1px solid;
+	border-color: #dee2e6;
+}
+
+.recipeTurnMain{
+display: flex;
+height: 70px;
+}
+
+.recipeTurns{
+	margin-bottom: auto;
+	margin-top: auto;
+	width: 100px;
+}
+
+.recipeTurn{
+	width: 430px;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 5px;
+	border: none;
+	border: 1px solid;
+	/* border-color: var(--green-color); */
+	border-color: #dee2e6;
+	margin-top: 5px;
+	height: 100px;
+	font-size: 14px;
+	margin-left: 55px;
+	resize: none;
+	margin-bottom: 5px;
+}
+
+.btn2{
+width: 65px;
+	height: 55px;
+		cursor: pointer;
+		background-color: white;
+		border: 1px solid;
+		border-color: #dee2e6;
+		border-radius: 5px;
+		font-size: 13px;
+		margin-left: 7px;
+		margin-top: auto;
+		margin-bottom: auto;
+}
+
+.btn2:hover{
+	background-color: var(--green-color);
+	border: 1px solid;
+	border-color: #dee2e6;
+}
+
+.btn3{
+	width: 65px;
+	height: 55px;
+		cursor: pointer;
+		background-color: white;
+		border: 1px solid;
+		border-color: #dee2e6;
+		border-radius: 5px;
+		font-size: 13px;
+		position: relative; /* 위치를 상대적으로 설정 */
+    	bottom: 50px; /* Y축으로 20px 아래로 이동 */
+    	margin-left: 7px;
+}
+
+.btn3:hover{
+	background-color: var(--green-color);
+	border: 1px solid;
+	border-color: #dee2e6;
+}
+
+.recipePictureMain {
+	display: flex;
+}
+
+.recipePictures{
+	margin-bottom: auto;
+	margin-top: auto;
+	width: 100px;
+}
+
+.in5{
+	width: 150px;
+	height: 150px;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 5px;
+	border: none;
+	margin-bottom: 15px;
+	border: 1px solid;
+	/* border-color: var(--green-color); */
+	border-color: #dee2e6;
+	margin-top: 15px;
+	font-size: 14px;
+	margin-left: 50px;
+	display: none;
+	
+}
+
+.input-file-button{
+	width:130px;
+	height:130px;
+  border-radius: 4px;
+  background-color:#dee2e6;
+  color: black;
+  cursor: pointer;
+  margin-left: 50px;
+  	margin-top: 10px;
+
+}
+
+.input-file-button:hover{
+	border: 1px solid;
+	border-color: black;
+}
+
+.in10{
+	display: flex;
+}
+
+.recipeTurns{
+	width: 100px;
+}
+
+#btnAtt{
+	margin-left: 50px;
+}
+
+.box3{
+	display: flex;
+}
+
+.newbtns{
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 5px;
+	border: none;
+	margin-bottom: 25px;
+	border: 1px solid;
+	/* border-color: var(--green-color); */
+	border-color: #dee2e6;
+	margin-top: 10px;
+	height: 50px;
+	font-size: 14px;
+}
+
+#newbtn{
+	background-color: #1BBC9B;
+	margin-bottom: 30px;
+	color: white;
+	cursor: pointer;
+	transition: background-color 0.5s;
+	border: none;
+}
+
+#newbtn:hover{
+	background-color: gold;
+}
+
+.recipeTime{
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.recipeTimes{
+	margin-bottom: auto;
+	margin-top: auto;
+	width: 100px;
+	margin-right: 50px;
+}
+
+.time{
+	margin-right: 30px;
+}
+
+.recipeContent{
+	display: flex;
+}
+
+.recipeContents{
+	margin-bottom: auto;
+	margin-top: auto;
+	width: 100px;
+}
+
+.in6{
+	width: 500px;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 5px;
+	border: none;
+	margin-bottom: 15px;
+	border: 1px solid;
+	/* border-color: var(--green-color); */
+	border-color: #dee2e6;
+	margin-top: 15px;
+	height: 80px;
+	font-size: 14px;
+	margin-left: 50px;
+	resize: none;
+}
+
+.form-select{
+	width: 150px;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 5px;
+	border: none;
+	border: 1px solid;
+	/* border-color: var(--green-color); */
+	border-color: #dee2e6;
+	height: 40px;
+	font-size: 14px;
+}
+/* 이미지 추가버튼 css  */
+
+#att_zone {
+  width: 510px;
+  min-height: 150px;
+  padding-left:30px;
+  border: 1px solid #dee2e6;
+  margin-left: 50px;
+  border-radius: 5px;
+  margin-top: 5px;
+  
+}
+
+#att_zone:empty:before {
+  content: attr(data-placeholder);
+  color: #999;
+  font-size: .9em;
+}
+
+.pictureRecipe{
+	display: flex;
+	margin-top: 10px;
+}
+
+.recipeImg{
+	margin-left: 55px;
+}
+
+.recipeMain2{
+}
+
+.ingredientTextMain{
+	display: flex;
+	margin-right: 8px;
+}
+	
+.ingredientText{
+	margin-bottom: auto;
+	margin-top: auto;
+	width: 155px;
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<header th:fragment="header">
+
+	<nav
+		class="navbar navbar-expand-lg navbar-light header_nav_top p_box">
+		<div class="container d-flex align-items-end">
+
+			<div class="col-6">
+
+				<div class="ezen_logo_box d-flex">
+					<a class="d_simbol" href="/"> <img alt="로고심볼" src="/img/이젠 해먹자.svg"
+						class="ezen_logo">
+					</a>
+					<a href="/" class="d_logo"> <img alt="로고심볼" src="/img/이젠 해먹자 (1).svg"
+						class="ezen_logo">
+					</a>
+				</div>
+
+			</div>
+			<div class="col-6 d-flex justify-content-end">
+
+				<ul class="nav navbar-nav d-flex b_ll ">
+					<li class="nav-item ul_li"><a class="nav-a" href="/category">레시피</a>
+					</li>
+					<li class="nav-item ul_li"><a class="nav-a"
+						style="color: RGB(244, 74, 93);" href="/item/total">이젠스토어</a></li>
+				</ul>
+				
+					<div class="d-flex justify-content-end">
+				<a href="/members/login" class="mr-2 nav_member_category" sec:authorize="isAnonymous()">로그인</a> 
+				<a href="/members/newMember" class="mr-2 nav_member_category" sec:authorize="isAnonymous()">회원가입</a> 
+				<a href="/members/logout" class="mr-2 nav_member_category" sec:authorize="isAuthenticated()">로그아웃</a> 
+				<a href="#" class="nav_member_category" sec:authorize="isAuthenticated()">마이페이지</a>
+			</div>
+				
+			</div>
+
+			
+
+		</div>
+	</nav>
+
+	<nav
+		class="navbar-expand-lg navbar-light d-none d-lg-block header_nav_bottom ">
+		<div class="container text-light">
+
+		</div>
+	</nav>
+
+	<!-- Modal -->
+	<div class="modal fade bg-white" id="templatemo_search" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="w-100 pt-1 mb-5 text-right">
+				<button type="button" class="btn-close" data-bs-dismiss="modal"
+					aria-label="Close"></button>
+			</div>
+			<form action="" method="get"
+				class="modal-content modal-body border-0 p-0">
+				<div class="input-group mb-2">
+					<input type="text" class="form-control" id="inputModalSearch"
+						name="q" placeholder="Search ...">
+					<button type="submit"
+						class="input-group-text bg-success text-light">
+						<i class="fa fa-fw fa-search text-white"></i>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+
+</header>
+</html>
