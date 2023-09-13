@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+<title>DataTables | Gentelella</title>
+
+<!-- Bootstrap -->
+<link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<!-- Font Awesome -->
+<link href="/css/font-awesome.min.css" rel="stylesheet">
+<!-- NProgress -->
+<link href="/css/nprogress.css" rel="stylesheet">
+<!-- iCheck -->
+<link href="/css/green.css" rel="stylesheet">
+
+
+<!-- Custom Theme Style -->
+<link href="/css/custom.min.css" rel="stylesheet">
+</head>
+
+<th:block layout:fragment="css">
+	<style>
+.clickable-row {
+	cursor: pointer;
+}
+
+.hd {
+	display: none;
+}
+</style>
+</th:block>
+
+<div layout:fragment="content" class="content">
+	<div class="nav-md">
+		<div class="container body">
+			<div class="main_container">
+				<div class="col-md-3 left_col">
+					<div class="left_col scroll-view">
+						<div class="navbar nav_title" style="border: 0;">
+							<a href="/" class="site_title"><i class="fa fa-paw"></i> <span>관리자
+									페이지</span></a>
+						</div>
+
+						<div class="clearfix"></div>
+
+						<!-- menu profile quick info -->
+						<div class="profile clearfix">
+							<div class="profile_info">
+								<span>Welcome</span>
+								<h2>관리자</h2>
+							</div>
+						</div>
+						<!-- /menu profile quick info -->
+
+						<!-- sidebar menu -->
+						<div id="sidebar-menu"
+							class="main_menu_side hidden-print main_menu">
+							<div class="menu_section">
+								<h3>General</h3>
+								<ul class="nav side-menu">
+									<li><a><i class="fa fa-home"></i> Home <span
+											class="fa fa-chevron-down"></span></a>
+										<ul class="nav child_menu">
+											<li><a href="/">Home</a></li>
+
+										</ul></li>
+
+
+									<li><a><i class="fa fa-table"></i> 회원관리 <span
+											class="fa fa-chevron-down"></span></a>
+										<ul class="nav child_menu">
+											<li><a href="memberMng">회원관리</a></li>
+										</ul></li>
+									<li><a><i class="fa fa-table"></i> 레시피 관리 <span
+											class="fa fa-chevron-down"></span></a>
+										<ul class="nav child_menu">
+											<li><a href="recipeMng">레시피 관리</a></li>
+										</ul></li>
+									<li><a><i class="fa fa-table"></i> 댓글 관리 <span
+											class="fa fa-chevron-down"></span></a>
+										<ul class="nav child_menu">
+											<li><a href="commentMng">댓글 관리</a></li>
+										</ul></li>
+									<li><a><i class="fa fa-table"></i> 문의사항 관리 <span
+											class="fa fa-chevron-down"></span></a>
+										<ul class="nav child_menu">
+											<li><a href="qaMng">문의사항 관리</a></li>
+										</ul></li>
+
+								</ul>
+							</div>
+
+						</div>
+						<!-- /sidebar menu -->
+
+
+					</div>
+				</div>
+
+				<!-- page content -->
+				<div class="right_col" role="main">
+					<div class="">
+						<div class="page-title">
+							<div class="title_left">
+								<h3>문의내역 관리</h3>
+							</div>
+
+							<div class="title_right">
+								<div
+									class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+									<div class="input-group">
+										<input type="text" class="form-control"
+											placeholder="Search for..."> <span
+											class="input-group-btn">
+											<button class="btn btn-secondary" type="button"
+												id="searchBtn">Go!</button>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="clearfix"></div>
+
+						<div class="row">
+							<div class="col-md-12 col-sm-12 ">
+								<div class="x_panel">
+									<div class="x_title">
+
+										<ul class="nav navbar-right panel_toolbox">
+											<li><a class="collapse-link"><i
+													class="fa fa-chevron-up"></i></a></li>
+
+
+										</ul>
+										<div class="clearfix"></div>
+									</div>
+
+
+									<div class="x_content">
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="card-box table-responsive">
+
+													<table id="datatable-checkbox"
+														class="table table-striped table-bordered bulk_action"
+														style="width: 100%">
+														<thead>
+															<tr>
+																<th><input type="checkbox" id="check-all"></th>
+																<th>이름</th>
+																<th>이메일</th>
+																<th>문의제목</th>
+																<th>문의내용</th>
+																<th>등록날짜</th>
+																<th>수정</th>
+																<th>삭제</th>
+															</tr>
+														</thead>
+
+														<th:block th:each="adminPost : ${adminPosts}">
+															<input type="hidden" th:value="${adminPost.id}" id="id">
+															<input type="hidden" th:value="${adminPost.regTime}"
+																id="regTime">
+															<tbody>
+																<tr class="clickable-row">
+																	<td><input type="checkbox" id="check-all"></td>
+																	<td>[[${adminPost.nickname}]]</td>
+																	<td>[[${adminPost.email}]]</td>
+																	<td>[[${adminPost.title}]]</td>
+																	<td>[[${adminPost.content}]]</td>
+																	<td>[[${adminPost.regTime}]]</td>
+
+																	<td><button type="button" class="update_bt"
+																			onclick="">답글달기</button></td>
+																	<td>
+																		<form id="delete_form" action="" th:method="delete">
+																			<button type="button" class="update_bt" onclick="">삭제하기
+																			</button>
+																			<input type="hidden" th:name="${_csrf.parameterName}"
+																				th:value="${_csrf.token}">
+																		</form>
+																	</td>
+																</tr>
+
+																<tr class="hidden-content">
+																	<td></td>
+																	<td></td>
+																	<td></td>
+																	<td>답글내용
+																		<p th:text="${adminPost.content}"></p>
+																	</td>
+																	<td><label for="content" class="form-label">답글</label>
+																		<div class="mb-3">
+
+																			<textarea class="form-control" rows="3" id="content"></textarea>
+
+																		</div>
+																		<button type="submit" class="btn btn-primary"
+																			onclick="inqOk('reg')">확인</button>
+																		<button type="button" class="btn btn-primary">수정</button>
+																		<button type="button" class="btn btn-primary">삭제</button>
+
+																	</td>
+																</tr>
+														</th:block>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-5">
+											<div class="dataTables_info" id="datatable_info"
+												role="status" aria-live="polite">Showing 1 to 10 of 57
+												entries</div>
+										</div>
+										<div class="col-sm-7">
+											<input class="dd" th:value="${adminPosts.totalPages}"
+												style="display: none">
+
+											<div
+												th:with="start=${(adminPosts.number/maxPage)*maxPage + 1}
+			                 ,end=(${(adminPosts.totalPages == 0) ? 1 : (start + (maxPage - 1) < adminPosts.totalPages ? start + (maxPage - 1) : adminPosts.totalPages)})"
+												class="dataTables_paginate paging_simple_numbers"
+												id="datatable_paginate">
+												<ul class="pagination" style="cursor: pointer;">
+													<li class="paginate_button previous"
+														th:classappend="${adminPosts.first}?'hd'"
+														id="datatable_previous"><a
+														th:onclick="'javascript:page(' + ${adminPosts.number - 1} +')'"
+														aria-controls="datatable" data-dt-idx="0" tabindex="0">이전</a></li>
+
+													<li class="paginate_button active"
+														th:each="page: ${#numbers.sequence(start, end)}"
+														th:classappend="${adminPosts.number eq page-1}?'active':''"><a
+														aria-controls="datatable" data-dt-idx="1" tabindex="0"
+														th:inline="text"
+														th:onclick="'javascript:page(' + ${page - 1} +')'">[[${page}]]</a></li>
+
+													<li class="paginate_button next" id="datatable_next"
+														th:classappend="${adminPosts.last}?'hd'"><a
+														th:onclick="'javascript:page(' + ${adminPosts.number + 1} +')'"
+														aria-controls="datatable" data-dt-idx="7" tabindex="0">다음</a></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+
+
+
+
+								</div>
+							</div>
+
+							<!-- /page content -->
+
+							<!-- footer content -->
+							<footer>
+								<div class="pull-right">
+									Gentelella - Bootstrap Admin Template by <a
+										href="https://colorlib.com">Colorlib</a>
+								</div>
+								<div class="clearfix"></div>
+							</footer>
+							<!-- /footer content -->
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</div>
+<th:block layout:fragment="script">
+	<!-- jQuery -->
+	<script src="/js/jquery.min.js"></script>
+	<!-- Bootstrap -->
+	<script src="/js/bootstrap.bundle.min.js"></script>
+	<!-- FastClick -->
+	<script src="/js/fastclick.js"></script>
+	<!-- NProgress -->
+	<script src="/js/nprogress.js"></script>
+	<!-- iCheck -->
+	<script src="/js/icheck.min.js"></script>
+
+
+	<!-- Custom Theme Scripts -->
+	<script src="/js/custom.min.js"></script>
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$("#searchBtn").on("click", function(e) {
+				e.preventDefault(); //submit되는걸 방지
+				page(0);
+			});
+		});
+
+		//페이징버튼 눌렀을때 검색어와 selectbox를 get방식으로 주소이동시켜준다
+		function page(page) {
+			var searchBy = $("#searchBy").val();
+			var searchQuery = $("#searchQuery").val();
+
+			//주소 이동
+			location.href = "/admin/commentMng/" + page + "?searchBy="
+					+ searchBy + "&searchQuery=" + searchQuery;
+		}
+
+		function inqOk(choice) {
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+
+			var Id;
+			var content;
+			var url;
+			var paramData;
+			var text;
+			var regTime
+
+			var id = $("#id").val();
+			var regTime = $("#regTime").val();
+			var content = $("#content").val();
+
+			// 등록
+			if (choice == 'reg') {
+				Id = $("#id").val();
+				console.log(Id);
+				content = $("#content").val();
+				url = "/post/reg"; // 여기서 따옴표를 닫음
+				paramDid: Id, ata = {
+
+					content : content
+				};
+				text = '답변 등록 하시겠습니까?';
+				if (content.trim() === '') {
+					alert("답변 내용을 입력해주세요");
+					return; // 함수 종료
+				}
+			}
+
+			if (confirm(text)) {
+				var param = JSON.stringify(paramData);
+				$.ajax({
+					url : url, // request URL
+					type : "POST", // 전송방식
+					contentType : "application/json",
+					data : param, // 서버에 전송할 데이터
+					beforeSend : function(xhr) {
+						// 데이터를 전송하기전에 헤더에 csrf 값을 설정
+						xhr.setRequestHeader(header, token);
+					},
+					dataType : "text",
+					cache : false,
+					success : function(result, status, jqXHR) {
+						alert(jqXHR.responseText);
+						window.location.reload(true);
+					},
+					error : function(jqXHR, status, error) {
+						if (jqXHR.status == '401') {
+							alert('관리자로그인 후 이용해주세요.');
+							// location.href = '/';
+						} else {
+							// 에러메세지 출력(ResponseEntity에서 받아온 값을 출력해준다)
+							alert(jqXHR.responseText);
+						}
+					}
+				});
+			}
+		}
+
+		$(function() {
+			$('.hidden-content').hide();
+			$('.clickable-row').show();
+
+			$('.clickable-row').click(function() {
+				var tr = $(this).closest('tr');
+				var hiddenContent = tr.next('.hidden-content');
+
+				if (hiddenContent.is(':hidden')) {
+
+					$('.hidden-content').hide();
+					$('.clickable-row').show();
+					hiddenContent.show();
+
+				} else {
+					hiddenContent.hide();
+				}
+			})
+		})
+	</script>
+</th:block>
+</html>

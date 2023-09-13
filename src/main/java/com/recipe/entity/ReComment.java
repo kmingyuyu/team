@@ -1,5 +1,8 @@
 package com.recipe.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,16 +21,14 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ReComment {
+public class ReComment extends BaseEntity {
 	
 	@Id
 	@Column(name="re_comment_id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-
 	private String content;
-	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "recipe_id")
@@ -35,5 +36,6 @@ public class ReComment {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Member member;
 }

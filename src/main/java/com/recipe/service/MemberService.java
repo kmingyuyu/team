@@ -3,6 +3,8 @@ package com.recipe.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,13 +12,20 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.recipe.constant.ImgMainOk;
 import com.recipe.dto.MemberBestDto;
 import com.recipe.dto.MemberMainDto;
+import com.recipe.dto.MngMemberDto;
+import com.recipe.dto.MngRecipeSearchDto;
 import com.recipe.entity.Follow;
 import com.recipe.entity.Member;
+import com.recipe.entity.MemberImg;
+import com.recipe.repository.CartRepository;
 import com.recipe.repository.FollowRepository;
+import com.recipe.repository.MemberImgRepository;
 import com.recipe.repository.MemberRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,7 +35,41 @@ public class MemberService implements UserDetailsService {
 	
 	private final MemberRepository memberRepository;
 	
+	private final MemberImgRepository memberImgRepository;
+	
+	private final CartRepository cartRepository  ;
+	
 	private final FollowRepository followRepository;
+	
+	
+	public Member findMember(Long id) {
+		
+		Member member = memberRepository.findById(id).orElseThrow();
+		
+		if (member == null) {
+		    return null;
+		}
+		 
+		 return member;
+	}
+	
+	public String findMemberImg(Long id) {
+		
+		MemberImg memberImg = memberImgRepository.findByMemberIdAndImgMainOk(id, ImgMainOk.Y);
+		
+		if (memberImg == null) {
+			return null;
+		}
+		
+		return memberImg.getImgUrl();
+	}
+	
+	public Long cartCount(Long id) {
+		
+		Long cartCount = cartRepository.countByMemberId(id);
+		
+		return cartCount;
+	}
 	
 	
 	public Long findId(String email) {
@@ -123,6 +166,23 @@ public class MemberService implements UserDetailsService {
 		
 	}
 	
+	@Transactional(readOnly = true)
+	public Page<MngMemberDto> getAdminMemberPage(MngRecipeSearchDto MngrecipeSearchDto, Pageable pageable) {
+		Page<MngMemberDto> memberPage = memberRepository.getAdminMemberPage(MngrecipeSearchDto, pageable);
+		return memberPage;
+
+	}
+
+	// 회원 삭제
+	public void deleteMember(Long memberId) {
+
+		// ★delete하기 전에 select를 한번 해준다
+		// ->영속성 컨텍스트에 엔티티를 저장한 후 변경 감지를 하도록 하기 위해
+		Member member = memberRepository.findById(memberId).orElseThrow(EntityNotFoundException::new);
+
+		// delete
+		memberRepository.delete(member);
+	}
 	
 	
 }

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<th:block layout:fragment="css">
+	<style>
+.clickable-row {
+	cursor: pointer;
+}
+
+.dataTables_paginate a {
+	padding: 6px 9px !important;
+	background: #ddd !important;
+	border-color: #ddd !important;
+	color: #5A738E;
+}
+
+.dataTables_paginate a:hover {
+	color: #0056b3;
+}
+</style>
+</th:block>
+
+<div layout:fragment="content" class="content">
+	<div class="site-section">
+		<div class="container">
+			<div class="row">
+				<section class="container">
+					<div class="item-location item-additional-info">
+						<div
+							class="item-location-header justify-content-start align-items-center mb-3">
+							<div class="item-location-content tab-content">
+
+								<div class="tab-pane fade show active" id="locs-1"
+									role="tabpanel" aria-labelledby="locs-1-tab">
+									<div class="table-container table-locations">
+										<table class="table table-sm table-hover text-center">
+											<thead>
+												<tr>
+													<th scope="col">No.</th>
+													<th scope="col">닉네임</th>
+													<th scope="col">이메일</th>
+													<th scope="col">문의제목</th>
+													<th scope="col">등록날짜</th>
+													<th scope="col">답변여부</th>
+												</tr>
+											</thead>
+											<th:block th:each="post : ${posts}">
+												<input type="hidden" th:value="${post.id}" id="id">
+												<tbody>
+													<tr class="clickable-row">
+														<td th:text="${post.id}"></td>
+														<td th:text="${post.nickname}"></td>
+														<td th:text="${post.email}"></td>
+														<td class="str_yes" th:text="${post.title}"><a> </a></td>
+														<td class="str_no" th:text="${post.regTime}"></td>
+
+														<th:block th:if="${post.hasAnswer}">
+															<td class="str_no">답변완료</td>
+														</th:block>
+														<th:block th:unless="${post.hasAnswer}">
+															<td class="str_no">답변대기</td>
+														</th:block>
+
+
+														<td></td>
+													</tr>
+
+													<tr class="hidden-content">
+														<td></td>
+														<td></td>
+														<td></td>
+														<td>답글내용
+															<p th:text="${post.content}"></p>
+														</td>
+														<td><label for="content" class="form-label">답글</label>
+															<div class="mb-3">
+
+																<textarea class="form-control" rows="3" id="content"></textarea>
+
+															</div>
+															<button type="submit" class="btn btn-primary"
+																onclick="inqOk('reg')">확인</button>
+															<button type="button" class="btn btn-primary">수정</button>
+															<button type="button" class="btn btn-primary">삭제</button>
+
+														</td>
+													</tr>
+
+
+
+												</tbody>
+
+											</th:block>
+										</table>
+										<form action="#" class="filter-search"
+											th:object="${recipeSearchDto}">
+											<div class="title_right">
+												<div
+													class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+													<div class="input-group">
+														<select th:field="*{searchBy}" class="form-control">
+															<option value="nickname">이름</option>
+															<option value="email">이메일</option>
+														</select> <input type="text" class="form-control"
+															th:field="*{searchQuery}" placeholder="Search member">
+														<span class="input-group-btn">
+															<button id="searchBtn" class="btn btn-secondary"
+																type="submit">Go!</button>
+														</span>
+													</div>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+
+				</section>
+
+
+			</div>
+
+
+			<div class="row" style="justify-content: center;">
+
+				<div>
+					<input class="dd" th:value="${posts.totalPages}"
+						style="display: none">
+
+					<div
+						th:with="start=${(posts.number/maxPage)*maxPage + 1}
+			                 ,end=(${(posts.totalPages == 0) ? 1 : (start + (maxPage - 1) < posts.totalPages ? start + (maxPage - 1) : posts.totalPages)})"
+						class="dataTables_paginate paging_simple_numbers"
+						id="datatable_paginate" style="margin-bottom: 30px">
+						<ul class="pagination" style="cursor: pointer;">
+							<li class="paginate_button previous"
+								th:classappend="${posts.first}?'hd'" id="datatable_previous"><a
+								th:onclick="'javascript:page(' + ${posts.number - 1} +')'"
+								aria-controls="datatable" data-dt-idx="0" tabindex="0">이전</a></li>
+
+							<li class="paginate_button active"
+								th:each="page: ${#numbers.sequence(start, end)}"
+								th:classappend="${posts.number eq page-1}?'active':''"><a
+								aria-controls="datatable" data-dt-idx="1" tabindex="0"
+								th:inline="text"
+								th:onclick="'javascript:page(' + ${page - 1} +')'">[[${page}]]</a></li>
+
+							<li class="paginate_button next" id="datatable_next"
+								th:classappend="${posts.last}?'hd'"><a
+								th:onclick="'javascript:page(' + ${posts.number + 1} +')'"
+								aria-controls="datatable" data-dt-idx="7" tabindex="0">다음</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+
+
+
+
+		</div>
+	</div>
+
+
+
+
+
+
+
+</div>
+
+
+
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$("#searchBtn").on("click", function(e) {
+				e.preventDefault(); //submit되는걸 방지
+				page(0);
+			});
+		});
+
+		//페이징버튼 눌렀을때 검색어와 selectbox를 get방식으로 주소이동시켜준다
+		function page(page) {
+
+			var searchBy = $("#searchBy").val();
+			var searchQuery = $("#searchQuery").val();
+
+			//주소 이동
+			location.href = "/post/qaList/" + page + "?searchBy=" + searchBy
+					+ "&searchQuery=" + searchQuery;
+
+		}
+
+		function inqOk(choice) {
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+
+			var Id;
+			var content;
+			var url;
+			var paramData;
+			var text;
+
+			var id = $("#id").val();
+			var content = $("#content").val();
+
+			// 등록
+			if (choice == 'reg') {
+				Id = $("#id").val();
+				content = $("#content").val();
+				url = "/post/reg"; // 여기서 따옴표를 닫음
+				paramData = {
+					id : Id,
+					content : content
+				};
+				text = '답변 등록 하시겠습니까?';
+				if (content.trim() === '') {
+					alert("답변 내용을 입력해주세요");
+					return; // 함수 종료
+				}
+			}
+
+			if (confirm(text)) {
+				var param = JSON.stringify(paramData);
+				$.ajax({
+					url : url, // request URL
+					type : "POST", // 전송방식
+					contentType : "application/json",
+					data : param, // 서버에 전송할 데이터
+					beforeSend : function(xhr) {
+						// 데이터를 전송하기전에 헤더에 csrf 값을 설정
+						xhr.setRequestHeader(header, token);
+					},
+					dataType : "text",
+					cache : false,
+					success : function(result, status, jqXHR) {
+						alert(jqXHR.responseText);
+						window.location.reload(true);
+					},
+					error : function(jqXHR, status, error) {
+						if (jqXHR.status == '401') {
+							alert('관리자로그인 후 이용해주세요.');
+							// location.href = '/';
+						} else {
+							// 에러메세지 출력(ResponseEntity에서 받아온 값을 출력해준다)
+							alert(jqXHR.responseText);
+						}
+					}
+				});
+			}
+		}
+
+		function beforeSubmit() {
+			var id = $("#this").val();
+			alert(id);
+			const f = document.post;
+
+			f.submit();
+		}
+
+		$(function() {
+			$('.hidden-content').hide();
+			$('.clickable-row').show();
+
+			$('.clickable-row').click(function() {
+				var tr = $(this).closest('tr');
+				var hiddenContent = tr.next('.hidden-content');
+
+				if (hiddenContent.is(':hidden')) {
+
+					$('.hidden-content').hide();
+					$('.clickable-row').show();
+					hiddenContent.show();
+
+				} else {
+					hiddenContent.hide();
+				}
+			})
+		})
+	</script>
+</th:block>
+
+</html>

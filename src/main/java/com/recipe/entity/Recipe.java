@@ -1,5 +1,8 @@
 package com.recipe.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.recipe.constant.CategoryEnum;
 import com.recipe.constant.WritingStatus;
 import com.recipe.dto.RecipeNewDto;
@@ -61,6 +64,7 @@ public class Recipe extends BaseEntity {
     
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Member member;
 	
 	

@@ -12,7 +12,7 @@ import com.recipe.entity.Member;
 import com.recipe.entity.Recipe;
 
 
-public interface MemberRepository extends JpaRepository<Member, Long>  {
+public interface MemberRepository extends JpaRepository<Member, Long> , MemberRepositoryCustom  {
 	
 	
 		//select * from member where email = ?

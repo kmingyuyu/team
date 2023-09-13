@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+</head>
+
+<th:block layout:fragment="css">
+	<!-- Bootstrap -->
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Font Awesome -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet">
+	<!-- NProgress -->
+	<link href="/css/nprogress.css" rel="stylesheet">
+
+	<!-- Datatables -->
+
+	<link href="/css/dataTables.bootstrap.min.css" rel="stylesheet">
+	<link href="/css/buttons.bootstrap.min.css" rel="stylesheet">
+	<link href="/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+	<link href="/css/responsive.bootstrap.min.css" rel="stylesheet">
+	<link href="/css/scroller.bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom Theme Style -->
+	<link href="/css/custom.min.css" rel="stylesheet">
+
+	<style>
+.ellipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 8;
+	-webkit-box-orient: vertical;
+}
+
+.hd {
+	display: none;
+}
+</style>
+</th:block>
+
+<div layout:fragment="content" class="content">
+	<div class="nav-md">
+		<div class="container body">
+			<div class="main_container">
+				<div class="col-md-3 left_col">
+					<div class="left_col scroll-view">
+						<div class="navbar nav_title" style="border: 0;">
+							<a href="/" class="site_title"><i class="fa fa-paw"></i> <span>관리자
+									페이지</span></a>
+						</div>
+
+						<div class="clearfix"></div>
+
+						<!-- menu profile quick info -->
+						<div class="profile clearfix">
+
+							<div class="profile_info">
+								<span>Welcome</span>
+								<h2>관리자</h2>
+							</div>
+						</div>
+						<!-- /menu profile quick info -->
+
+						<br />
+
+						<!-- sidebar menu -->
+						<div id="sidebar-menu"
+							class="main_menu_side hidden-print main_menu">
+							<div class="menu_section">
+								<h3>General</h3>
+								<ul class="nav side-menu">
+									<li><a><i class="fa fa-home"></i> Home <span
+											class="fa fa-chevron-down"></span></a>
+										<ul class="nav child_menu">
+											<li><a href="/">Home</a></li>
+										</ul></li>
+
+
+									<li><a><i class="fa fa-table"></i> 회원관리 <span
+											class="fa fa-chevron-down"></span></a>
+										<ul class="nav child_menu">
+											<li><a href="/admin/memberMng">회원관리</a></li>
+										</ul></li>
+									<li><a><i class="fa fa-table"></i> 레시피 관리 <span
+											class="fa fa-chevron-down"></span></a>
+										<ul class="nav child_menu">
+											<li><a href="/admin/recipeMng">레시피 관리</a></li>
+										</ul></li>
+									<li><a><i class="fa fa-table"></i> 댓글 관리 <span
+											class="fa fa-chevron-down"></span></a>
+										<ul class="nav child_menu">
+											<li><a href="/admin/commentMng">댓글 관리</a></li>
+										</ul></li>
+									<li><a><i class="fa fa-table"></i> 문의사항 관리 <span
+											class="fa fa-chevron-down"></span></a>
+										<ul class="nav child_menu">
+											<li><a href="/admin/qaMng">문의사항 관리</a></li>
+										</ul></li>
+
+								</ul>
+							</div>
+
+
+						</div>
+						<!-- /sidebar menu -->
+
+
+					</div>
+				</div>
+
+
+
+				<!-- page content -->
+				<div class="right_col" role="main">
+					<div class="">
+						<div class="page-title">
+							<div class="title_left">
+								<h3>레시피 관리</h3>
+							</div>
+
+							<form action="#" class="filter-search"
+								th:object="${recipeSearchDto}">
+								<div class="title_right">
+									<div
+										class="col-md-5 col-sm-5  form-group pull-right top_search">
+										<div class="input-group">
+											<select th:field="*{searchBy}" class="form-control">
+												<option value="nickname">닉네임</option>
+												<option value="description">내용</option>
+											</select> <input type="text" class="form-control"
+												th:field="*{searchQuery}" placeholder="Search recipe">
+											<span class="input-group-btn">
+												<button id="searchBtn" class="btn btn-default" type="submit">Go!</button>
+											</span>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+
+						<input type="hidden" th:value="${searchBy}" id="searchBy">
+						<input type="hidden" th:value="${searchQuery}" id="searchQuery">
+						<div class="clearfix"></div>
+
+						<div class="row">
+							<div class="x_panel">
+								<div class="x_content"
+									style="display: flex; flex-direction: row; flex-wrap: wrap;">
+
+
+
+
+									<th:block th:each="recipe : ${recipes}">
+										<div class="profile_details"
+											style="width: 370px; margin-right: 10px">
+											<div class="well profile_view">
+												<div class="col-sm-12">
+
+													<div class="left col-md-7 col-sm-7" style="width: 350px;">
+														<h2>[[${recipe.nickname}]]</h2>
+														<p>
+															<strong>제목: </strong> [[${recipe.title}]]
+														</p>
+														<ul class="list-unstyled">
+															<li>
+																<p style="height: 250px;">
+																	<strong class="ellipsis"
+																		id="recipeDescription_${recipe.id}">내용:
+																		[[${recipe.description}]]</strong>
+																</p>
+															</li>
+
+														</ul>
+													</div>
+													<div class="right col-md-5 col-sm-5 text-center">
+														<img th:src="${recipe.imageUrl}" alt=""
+															class="img-circle img-fluid">
+													</div>
+												</div>
+												<div class="text-center">
+													<div class=" col-sm-6 emphasis">
+														<p class="ratings">
+															<a>[[${recipe.rating}]]</a> <a href="#"> </a>
+														</p>
+													</div>
+													<div class=" col-sm-6 emphasis">
+														<button type="button" th:value="${recipe.id}"
+															onclick="deleteRecipe(this.value)"
+															class="btn btn-primary btn-sm">
+															<i class="fa fa-user"> </i> 삭제
+														</button>
+
+													</div>
+												</div>
+											</div>
+										</div>
+									</th:block>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-5">
+								<div class="dataTables_info" id="datatable_info" role="status"
+									aria-live="polite">Showing 1 to 10 of 57 entries</div>
+							</div>
+							<div class="col-sm-7">
+								<input class="dd" th:value="${recipes.totalPages}"
+									style="display: none">
+								<div
+									th:with="start=${(recipes.number/maxPage)*maxPage + 1}
+			                 ,end=(${(recipes.totalPages == 0) ? 1 : (start + (maxPage - 1) < recipes.totalPages ? start + (maxPage - 1) : recipes.totalPages)})"
+									class="dataTables_paginate paging_simple_numbers"
+									id="datatable_paginate">
+									<ul class="pagination" style="cursor: pointer;">
+										<li class="paginate_button previous"
+											th:classappend="${recipes.first}?'hd'"
+											id="datatable_previous"><a
+											th:onclick="'javascript:page(' + ${recipes.number - 1} +')'"
+											aria-controls="datatable" data-dt-idx="0" tabindex="0">이전</a></li>
+
+										<li class="paginate_button active"
+											th:each="page: ${#numbers.sequence(start, end)}"
+											th:classappend="${recipes.number eq page-1}?'active':''"><a
+											aria-controls="datatable" data-dt-idx="1" tabindex="0"
+											th:inline="text"
+											th:onclick="'javascript:page(' + ${page - 1} +')'">[[${page}]]</a></li>
+
+										<li class="paginate_button next" id="datatable_next"
+											th:classappend="${recipes.last}?'hd'"><a
+											th:onclick="'javascript:page(' + ${recipes.number + 1} +')'"
+											aria-controls="datatable" data-dt-idx="7" tabindex="0">다음</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /page content -->
+
+				<!-- footer content -->
+				<footer>
+					<div class="pull-right">
+						Gentelella - Bootstrap Admin Template by <a
+							href="https://colorlib.com">Colorlib</a>
+					</div>
+					<div class="clearfix"></div>
+				</footer>
+				<!-- /footer content -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<th:block layout:fragment="script">
+	<!-- jQuery -->
+	<script src="/js/jquery.min.js"></script>
+
+	<!-- Bootstrap -->
+	<script src="/js/bootstrap.bundle.min.js"></script>
+
+	<!-- FastClick -->
+	<script src="/js/fastclick.js"></script>
+
+	<!-- NProgress -->
+	<script src="/js/nprogress.js"></script>
+
+	<!-- Datatables -->
+	<script src="/js/jquery.dataTables.min.js"></script>
+	<script src="/js/dataTables.bootstrap.min.js"></script>
+	<script src="/js/dataTables.buttons.min.js"></script>
+	<script src="/js/buttons.bootstrap.min.js"></script>
+	<script src="/js/buttons.flash.min.js"></script>
+	<script src="/js/buttons.html5.min.js"></script>
+	<script src="/js/buttons.print.min.js"></script>
+	<script src="/js/dataTables.fixedHeader.min.js"></script>
+	<script src="/js/dataTables.keyTable.min.js"></script>
+	<script src="/js/dataTables.responsive.min.js"></script>
+	<script src="/js/responsive.bootstrap.js"></script>
+	<script src="/js/dataTables.scroller.min.js"></script>
+	<script src="/js/jszip.min.js"></script>
+	<script src="/js/pdfmake.min.js"></script>
+	<script src="/js/vfs_fonts.js"></script>
+
+	<!-- Custom Theme Scripts -->
+	<script src="/js/custom.min.js"></script>
+
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$("#searchBtn").on("click", function(e) {
+				e.preventDefault(); //submit되는걸 방지
+				page(0);
+			});
+		});
+
+		//페이징버튼 눌렀을때 검색어와 selectbox를 get방식으로 주소이동시켜준다
+		function page(page) {
+			var input = $(".dd").val();
+			input = input - 1
+			var searchBy = $("#searchBy").val();
+			var searchQuery = $("#searchQuery").val();
+
+			//주소 이동
+			location.href = "/admin/recipeMng/" + page + "?searchBy="
+					+ searchBy + "&searchQuery=" + searchQuery;
+
+		}
+
+		//삭제하기
+		function deleteRecipe(recipeId) {
+			const deleteConf = confirm("삭제하시겠습니까?");
+
+			if (!deleteConf)
+				return; //취소버튼 누르면
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+
+			//request URL
+			var url = "/recipe/" + recipeId + "/delete";
+
+			$.ajax({
+				url : url, //request URL
+				type : "DELETE", //전송방식
+				contentType : "application/json",
+				beforeSend : function(xhr) {
+					//데이터를 전송하기 전에 헤더에 csrf 값을 설정
+					xhr.setRequestHeader(header, token);
+				},
+				dataType : "json",
+				cache : false,
+				success : function(result, status) {
+					//삭제 후에 해당 페이지로 이동시켜준다.
+					location.href = '/admin/recipeMng';
+				},
+				error : function(jqXHR, status, error) {
+					if (jqXHR.status == '401') {
+						alert('로그인 후 이용해주세요.');
+						location.href = '/members/login';
+					} else {
+						alert(jqXHR.responseText);
+					}
+				}
+			});
+		}
+	</script>
+</th:block>
+</html>

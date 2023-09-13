@@ -7,9 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.recipe.entity.Comment;
 
-public interface CommentRepository extends JpaRepository<Comment, Long>{
+public interface CommentRepository extends JpaRepository<Comment, Long> , CommentRepositoryCustom{
+	
+	void deleteByRecipeId(Long recipeId);
+	
 	
 	@Query(value ="select * from comment where member_id = ?1" , nativeQuery = true)
 	List<Comment> getMyComment(Long id);
+	
+	
 	
 }

@@ -3,7 +3,22 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <header th:fragment="header" class="header">
-
+	
+	<nav
+		class="navbar navbar-expand-lg bg-dark navbar-light d-none d-lg-block admin_bar"
+		 sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+		<div class="container text-light">
+				<div class="align-self-center collapse navbar-collapse flex-fill  
+				d-lg-flex justify-content-lg-between admin_box"
+				     >
+					<span class="me-3">[ 관리자 아이디로 로그인중입니다 ]</span>
+					
+					<a href="/admin/memberMng" >관리자페이지로 <span  class="admin_link"> >>  </span> </a>
+					
+				</div>
+		</div>
+	</nav>
+	
 	<nav
 		class="navbar navbar-expand-lg navbar-light header_nav_top p_box">
 		<div class="container_custom d-flex align-items-center" style="justify-content: space-between;">
@@ -40,7 +55,7 @@
 									  <path d="M10 19a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM19 19a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" stroke="#616161"></path>
 									  <path d="M2 4h3l3 12h12" stroke="#616161" stroke-width="2"></path>
 									  </svg>
-									  <span class="styles__CartAccent-s29m5c-10 faiWcr">2</span>
+									  <span class="styles__CartAccent-s29m5c-10 faiWcr" id="cartCount" sec:authorize="isAuthenticated()" th:if="${cartCount} != 0 ">[[${cartCount}]]</span>
 									  </div>
 									  </div>
 									  </a>

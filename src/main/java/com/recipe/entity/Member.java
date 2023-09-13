@@ -126,7 +126,7 @@ public class Member extends BaseEntity {
 		member.setPromotionOk(PromotionOk.Y);
 		
 		//역할
-		member.setRole(Role.USER);
+		member.setRole(Role.ADMIN); // 현재 일반회원은 ADMIN으로 바꿈
 		
 		return member;
 	}

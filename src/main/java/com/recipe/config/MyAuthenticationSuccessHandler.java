@@ -39,7 +39,6 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
 	            Member member = memberRepository.findByEmail(username);
 	            
 	            if (member != null) {
-	            	
 	                Long memberId = member.getId();
 	                String email = member.getEmail();
 	                String role = member.getRole().toString();

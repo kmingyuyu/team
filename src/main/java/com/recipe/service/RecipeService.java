@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import com.querydsl.core.Tuple;
+import com.recipe.dto.MngRecipeDto;
+import com.recipe.dto.MngRecipeSearchDto;
 import com.recipe.dto.RecipeCategoryDto;
 import com.recipe.dto.RecipeIngreDto;
 import com.recipe.dto.RecipeMainDto;
@@ -23,8 +25,10 @@ import com.recipe.entity.Member;
 import com.recipe.entity.Recipe;
 import com.recipe.entity.RecipeIngre;
 import com.recipe.entity.RecipeOrder;
+import com.recipe.repository.CommentRepository;
 import com.recipe.repository.MemberRepository;
 import com.recipe.repository.RecipeIngreRepository;
+import com.recipe.repository.RecipeListRepository;
 import com.recipe.repository.RecipeOrderRepository;
 import com.recipe.repository.RecipeRepository;
 
@@ -35,6 +39,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional
 public class RecipeService {
+	
+	private final RecipeListRepository recipeListRepository;
+	
+	private final CommentRepository commentRepository;
 	
 	private final RecipeRepository recipeRepository;
 	
@@ -266,5 +274,25 @@ private String recipeImgLocation = "C:/recipe/memberRecipe";
 		Page<RecipeCategoryDto> getRecipeCategoryReviewBestList = recipeRepository.getRecipeCategoryReviewBestList(pageable, recipeSearchDto);
 	    return getRecipeCategoryReviewBestList;
 	}
+	
+
+	@Transactional(readOnly = true)
+	public Page<MngRecipeDto> getAdminRecipePage(MngRecipeSearchDto mngRecipeSearchDto, Pageable pageable) {
+		Page<MngRecipeDto> getAdminRecipePage = recipeListRepository.getAdminRecipePage(mngRecipeSearchDto, pageable);
+		return getAdminRecipePage;
+
+	}
+	
+	// 레시피 삭제
+		public void deleteRecipe(Long recipeId) {
+
+			commentRepository.deleteByRecipeId(recipeId);
+			// ★delete하기 전에 select를 한번 해준다
+			// ->영속성 컨텍스트에 엔티티를 저장한 후 변경 감지를 하도록 하기 위해
+			Recipe recipe = recipeListRepository.findById(recipeId).orElseThrow(EntityNotFoundException::new);
+
+			// delete
+			recipeListRepository.delete(recipe);
+		}
 	
 }

@@ -9,15 +9,29 @@ select{
 	
 }
 
+.admin_bar {
+	padding: 5px 0px !important;
+}
+
+.admin_link {
+	    font-size:12px !important;
+	    color: #A0BF6B !important;
+}
+
+.me-3 {
+	font-size:12px;
+	color: white;
+}
+
+.admin_box a {
+	font-size:12px !important;
+	color: white !important;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-
-/* Firefox */
-input[type="number"] {
-  -moz-appearance: textfield;
 }
 
 
@@ -394,8 +408,8 @@ table {
     justify-content: center;
     -webkit-box-align: center;
     align-items: center;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     background: #A0BF6B;
     color: rgb(255, 255, 255);

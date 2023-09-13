@@ -1,5 +1,8 @@
 package com.recipe.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.recipe.constant.ImgMainOk;
 
 import jakarta.persistence.Column;
@@ -39,6 +42,7 @@ public class MemberImg {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Member member;
 	
 }
