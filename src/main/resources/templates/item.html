@@ -10,8 +10,7 @@
 
 	</th:block>
 
-	<div class="site-section mt-5 mb-5">
-		<div class="container">
+		<div class="container_custom mt-5 mb-5">
 				<th:block th:object="${itemSearchDto}">
 				<input type="hidden" th:value="${currentPage}" id="page">
 				<input type="hidden" th:value="${itemSearchDto.itemCategoryEnum}" id="itemCategoryEnum">
@@ -150,7 +149,6 @@
 						</div>
 					</div>
 				</div>
-		</div>
 	</div>
 	</form>
 

@@ -18,10 +18,8 @@
 
 	</th:block>
 
-
-
-	<div class="site-section mt-5 mb-5 mt-5">
-		<div class="container">
+		<div class="container  mt-5 mb-5">
+			<div class="d-flex justify-content-center">
 			<div class="banner_slider slider-wrap ">
 				<th:block th:each="img , status:${imgList}">
 					<div class="">
@@ -180,16 +178,23 @@
                                 </div>
                                 <!-- //item_price_cont -->
                             </div>
-
+					
+	
+					
 					<div class="price_total" style="padding-top: 0;">
+										<div class="n-add-cart-layer" id="add_cart_toast" style="display: none;">
+        <div>장바구니에 상품이 담겼습니다.</div>
+        <a href="javascript:void(0)" id="option_add_cart_toast_move" onclick="moveCart('option_add_cart_toast_move')" class="n-link" data-amp-event-name="click_toast_goto_cart_button" data-amp-section-name="toast_to_cart">장바구니로 가기</a>
+    </div>
 						<div class="btn_go_box">
-							<button type="button" id="cartBtn" class="btn_go_cart"
+							<button type="button" id="cartBtn" class="btn_go_cart" onclick="cartReg()"
 								style="width: 39%;">장바구니</button>
 							<button type="button" class="btn_go_order" style="width: 60%;">바로구매</button>
 						</div>
 
 					</div>
 				</div>
+			</div>
 			</div>
 			
 				<ul id="goods_tab" class="goods_tab">
@@ -328,8 +333,7 @@
 										<div class="admin_box">
 										</div>
 										<div class="admin_box">
-											<textarea class="answer_box" placeholder="답변을 입력해주세요"
-												id="content" name="content">[[${review.answerContent}]]</textarea>
+											<textarea class="answer_box" placeholder="답변을 입력해주세요">[[${review.answerContent}]]</textarea>
 
 										</div>
 											<div class="plain-btn btn comment_area_btn"
@@ -356,11 +360,11 @@
 								<input type="hidden" th:value="${review.id}" id="reviewId" name="reviewId">
 								</li>
 						</ul>
-						<div class="style__PagingWrapper-b83qno-6 bYnXQa mt-3" 
+						<div class="style__PagingWrapper-b83qno-1 bYnXQa mt-3" 
 				th:with="start=${(itemReviewList.number/maxPage)*maxPage + 1}
 			    ,end=(${(itemReviewList.totalPages == 0) ? 1 : (start + (maxPage - 1) < itemReviewList.totalPages ? start + (maxPage - 1) : itemReviewList.totalPages)})">
 				
-							<button class="style__PagePrevButton-b83qno-8 loxVUo" 
+							<button class="style__PagePrevButton-b83qno-2 loxVUo" 
 							 th:onclick="'javascript:reviewPage(' + ${itemReviewList.number - 1} +')'"
 							th:classappend="${itemReviewList.first}?'bt_hd'">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 18">
@@ -368,14 +372,14 @@
 								</svg>
 							</button>
 							<ul>
-								<li offset="0" class="style__PageNumber-b83qno-7"
+								<li offset="0" class="style__PageNumber-b83qno-3"
 								 th:each="page: ${#numbers.sequence(start, end)}"
 								 th:classappend="${itemReviewList.number eq page-1}?'hIVTuk':'iBHoeR'"
 								 th:onclick="'javascript:reviewPage(' + ${page - 1} +')'">
 								 <span>[[${page}]]</span>
 								 </li>
 							</ul>
-						      <button class="style__PageNextButton-b83qno-9 gCfLmH" 
+						      <button class="style__PageNextButton-b83qno-4 gCfLmH" 
 						       th:onclick="'javascript:reviewPage(' + ${itemReviewList.number + 1} +')'"
 						      th:classappend="${itemReviewList.last}?'bt_hd'">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 18">
@@ -397,7 +401,7 @@
 				<h3 class="title-box font-mss">Q &amp; A<span class="korSub">상품 문의 <strong>( 총 [[${itemInqList.getTotalElements()}]]건 )</strong></span></h3>
 				
 				<!--qna 테이블-->
-				
+				<div id="inq_list">
 				<table class="table table-sm table-hover text-center">
 					<colgroup>
 						<col width="7%">
@@ -433,15 +437,29 @@
 							<td>1</td>
 							<td>[[${inq.answerOk}]]</td>
 							<td>[[${inq.itemInqEnum}]]</td>
-							<th:block th:if="${inq.itemInqBoardEnum.toString()} == '비밀글' ">
+							
+							<th:block th:if="${(inq.itemInqBoardEnum.toString() == '비밀글') and isAdmin == false and inq.email != email}">
 							<td>비밀글입니다</td>
 							</th:block>
+							
+							<th:block th:if="${(inq.itemInqBoardEnum.toString() == '비밀글') and isAdmin == false and inq.email == email}">
+							<td th:attr="data-inq-id=${inq.id}" onclick="info(this)" id="info">[[${inq.title}]] <span class="secret_board"> ( 현재 비밀글 상태입니다 ) </span></td>
+							</th:block>
+							
+							<th:block th:if="${(inq.itemInqBoardEnum.toString() == '비밀글') and isAdmin == true }">
+							<td th:attr="data-inq-id=${inq.id}" onclick="info(this)" id="info">[[${inq.title}]]</td>
+							</th:block>
+							
 							<th:block th:if="${inq.itemInqBoardEnum.toString()} == '공개글' ">
 							<td th:attr="data-inq-id=${inq.id}" onclick="info(this)" id="info">[[${inq.title}]]</td>
 							</th:block>
-							<td class="member-id-box">[[${inq.email}]]</td>
+							
+							<td class="member-id-box_my" th:if="${inq.email == email}">나의 게시글</td>
+							
+							<td class="member-id-box" th:if="${inq.email != email}">[[${inq.email}]]</td>
 							<td th:text="${#temporals.format(inq.regTime, 'yyyy.MM.dd')}"></td>
 						</tr>
+						
 						<tr class="conect_detail_comment" id="info_box" style="display: none;">
 							<td colspan="6">
 								<p>[[${inq.content}]] 
@@ -453,6 +471,7 @@
 								</p> 
 							</td>
 						</tr>
+						
 						<th:block th:if="${inq.AnswerOk.toString()} == '답변완료' ">
 							
 						<tr class="a5 conect_feedback_comment fb_1" id="inq_answer_box"
@@ -473,7 +492,7 @@
 						</tr>
 						<tr> <!---->
 							<td class="inq_answer_layout" colspan="6" style="display: none;">
-							<textarea class="inq_answer_reg_box" placeholder="답변을 입력해주세요" id="inq_answer_content"> [[${inq.answerContent}]]</textarea>
+							<textarea class="inq_answer_reg_box inq_answer_update_content" placeholder="답변을 입력해주세요" > [[${inq.answerContent}]]</textarea>
 							<div class="comment_area_btn plain-btn btn active" onclick="inqOk(this , 'update')" th:attr="data-inq-answerId=${inq.answerId}">답변수정</div>
 							<div class="update_x" onclick="inqAnswerUpdateCancle(this)" th:attr="data-inq-id=${inq.id}">x</div>
 							 </td>
@@ -483,7 +502,7 @@
 						<th:block th:if="${inq.AnswerOk.toString()} == '답변대기' ">
 						<tr>
 							<td class="inq_answer_layout" colspan="6" style="display: none;">
-							<textarea class="inq_answer_reg_box" placeholder="답변을 입력해주세요" id="inq_answer_content"></textarea>
+							<textarea class="inq_answer_reg_box inq_answer_reg_content" placeholder="답변을 입력해주세요"></textarea>
 							<div class="comment_area_btn plain-btn btn active" onclick="inqOk(this , 'reg')" th:attr="data-inq-id=${inq.id}">답변등록</div>
 							 </td>
 						</tr>
@@ -494,6 +513,7 @@
 					</th:block>
 
 				</table>
+				</div>
 				<!-- qna 등록 -->
 				<div class="box_btn_right">
 					<p>타 쇼핑몰 언급, 거래 글, 분쟁 유발, 허위 사실 유포는 금지됩니다.</p>
@@ -501,48 +521,46 @@
 				</div>
 				
 				<!-- qna 페이징 -->
-				<div class="style__PagingWrapper-b83qno-6 bYnXQa" 
+			
+								<div class="style__PagingWrapper-b83qno-1 bYnXQa mt-3" 
 				th:with="start=${(itemInqList.number/maxPage)*maxPage + 1}
 			    ,end=(${(itemInqList.totalPages == 0) ? 1 : (start + (maxPage - 1) < itemInqList.totalPages ? start + (maxPage - 1) : itemInqList.totalPages)})">
 				
-							<button class="style__PagePrevButton-b83qno-8 loxVUo" 
-							th:classappend="${itemInqList.first}?'bt_hd'"
-							th:onclick="'javascript:inqPage(' + ${itemInqList.number + 1} +')'">
+							<button class="style__PagePrevButton-b83qno-2 loxVUo" 
+							 th:onclick="'javascript:inqPage(' + ${itemInqList.number - 1} +')'"
+							th:classappend="${itemInqList.first}?'bt_hd'">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 18">
 									<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
 								</svg>
 							</button>
 							<ul>
-								<li offset="0" class="style__PageNumber-b83qno-7"
+								<li offset="0" class="style__PageNumber-b83qno-3"
 								 th:each="page: ${#numbers.sequence(start, end)}"
 								 th:classappend="${itemInqList.number eq page-1}?'hIVTuk':'iBHoeR'"
 								 th:onclick="'javascript:inqPage(' + ${page - 1} +')'">
 								 <span>[[${page}]]</span>
 								 </li>
 							</ul>
-						      <button class="style__PageNextButton-b83qno-9 gCfLmH"
-						       th:classappend="${itemInqList.last}?'bt_hd'"
-						       th:onclick="'javascript:inqPage(' + ${itemInqList.number + 1} +')'">
+						      <button class="style__PageNextButton-b83qno-4 gCfLmH" 
+						       th:onclick="'javascript:inqPage(' + ${itemInqList.number + 1} +')'"
+						      th:classappend="${itemInqList.last}?'bt_hd'">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 18">
 							        <path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
 					            </svg>
 							   </button>
 				</div>
-				
+			
 
 			</div>
 
 
 
-			<input type="hidden" th:value="${itemId}" id="itemId">
-			<input type="hidden" th:value="${loginOk}" id="loginOk">
-			<input type="hidden" th:value="${member}" id="member">
+			<input type="hidden" th:value="${item.id}" id="itemId">
 
 
 
 		</div>
 
-	</div>
 </div>
 
 
@@ -633,7 +651,6 @@
 	$(document).ready(function() {
 		
 		
-		
     $(".review-content-photo__item").click(function() {
         const reviewId = $(this).data("review-id");
         const target = $(".review_list").find(`.review-content-photo[data-review-id='${reviewId}']`);
@@ -685,9 +702,9 @@
 			 */
 			});
 		});
+	
+	
 
-
-  
 
 	
 		
@@ -821,9 +838,9 @@ function ezhld_detail_more() {
 							
 						},
 						error : function(jqXHR, status, error) {
-							if (jqXHR.status == '401') {
-								alert('관리자로그인 후 이용해주세요.');
-								//	location.href = '/';
+							if (jqXHR.status == '403') {
+								alert(jqXHR.responseText);
+									location.href = '/';
 							} else {
 								//에러메세지 출력(ResponseEntity에서 받아온 값을 출력해준다)
 								alert(jqXHR.responseText);
@@ -847,7 +864,7 @@ function ezhld_detail_more() {
 			//등록
 			if (choice == 'reg') { 
 			Id = $(button).attr("data-inq-id");
-			content = $(button).closest(".inq-row").find("#inq_answer_content").val();
+			content = $(button).closest(".inq-row").find(".inq_answer_reg_content").val();
 			url = "/InqAnswerReg";	
 			paramData = {id : Id, content : content};
 			text = '답변 등록 하시겠습니까?';
@@ -859,7 +876,7 @@ function ezhld_detail_more() {
 			//수정
 				if (choice == 'update') { 
 			Id = $(button).attr("data-inq-answerId");
-			content = $(button).closest(".inq-row").find("#inq_answer_content").val();
+			content = $(button).closest(".inq-row").find(".inq_answer_update_content").val();
 			url = "/InqAnswerUpdate";	
 			paramData = {id : Id, content : content};
 			text = '답변 수정 하시겠습니까?';
@@ -949,27 +966,6 @@ function ezhld_detail_more() {
 		}
 		
 		
-//   상품문의 팝업창 열기
-		function showPopup() {
-			
-			var loginOk = $("#loginOk").val();
-			
-			if(loginOk === '비로그인'){
-    			if(confirm("로그인이 필요한 기능입니다. \n로그인 페이지로 이동하시겠습니까?")){
-     				   location.href = "/members/login";
- 			   }
- 			   else{
-					return;
-				}
-			}
-			
-			var itemId = $("#itemId").val();
-			
-			url =  "/popup/" + itemId;
-			
-		    window.open( url , "popupWindow", "width=620, height=860, left=100, top=50"); 
-		}
-		
 function bindScriptsToRows() {
     var rows = document.querySelectorAll(".inq-row");
     rows.forEach(function(row) {
@@ -1053,10 +1049,15 @@ function inqAnwerBoxOpen(button){
  			 target.css("display", "table-row");
 		}
 		
+
+	
+		
 	</script>
 
 
 	<script th:inline="javascript">
+		
+		
 		$(document).ready(function() {
 
 			$("#searchBtn").on("click", function(e) {
@@ -1074,7 +1075,6 @@ function inqAnwerBoxOpen(button){
 			location.href = "/item/" + itemId + "?reviewPage=" + page;
 		}
 		
-		
 		function inqPage(page) {
 			//입력한 값을 전부 가지고 온다.
 			var itemId = $("#itemId").val();
@@ -1082,7 +1082,104 @@ function inqAnwerBoxOpen(button){
 			//주소 이동
 			location.href = "/item/" + itemId + "?inqPage=" + page;
 		}
+	
+
+		//   상품문의 팝업창 열기
+		function showPopup() {
+			
+			var loginOk = [[${loginOk}]];
+			
+			if(!loginOk){
+    			if(confirm("로그인이 필요한 기능입니다. \n로그인 페이지로 이동하시겠습니까?")){
+     				   location.href = "/members/login";
+ 			   }
+ 			   else{
+					return;
+				}
+			}
+			
+			var itemId = $("#itemId").val();
+			
+			url =  "/popup/" + itemId;
+			
+		    window.open( url , "popupWindow", "width=620, height=860, left=100, top=50"); 
+		}
+		
+			function cartReg(){
+				
+				var loginOk = [[${loginOk}]];
+				
+				if(!loginOk){
+    			if(confirm("로그인이 필요한 기능입니다. \n로그인 페이지로 이동하시겠습니까?")){
+     				   location.href = "/members/login";
+ 			   }
+ 			   else{
+					return;
+				}
+			}
+		var id = $("#itemId").val();
+		var count = $("#goodsCnt").val();
+			url = "/cartReq";	
+			paramData = {id : id , count : count};
+			
+			
+					
+					var param = JSON.stringify(paramData);
+					
+					$.ajax({
+						url : url, //request URL
+						type : "POST", //전송방식
+						contentType : "application/json",
+						data : param, //서버에 전송할 데이터
+						beforeSend : function(xhr) {
+							//데이터를 전송하기전에 헤더에 csrf 값을 설정
+							xhr.setRequestHeader(header, token);
+						},
+						dataType : "text",
+						cache : false,
+						success : function(result, status, jqXHR) {
+							 if (jqXHR.responseText === 'success') {
+								  
+								  $('#add_cart_toast div').text('장바구니에 상품이 담겼습니다.');
+								  
+  								  $('#add_cart_toast').stop().fadeIn(200, function() {
+    						      setTimeout(function() {
+      							  $('#add_cart_toast').stop().fadeOut(200);
+    							  }, 2500);
+   								 });
+ 								 }
+ 								 
+							else if(jqXHR.responseText === 'duplication'){
+								
+								 $('#add_cart_toast div').text('장바구니에 있는 상품입니다.');
+																
+								  $('#add_cart_toast').stop().fadeIn(200, function() {
+    						      setTimeout(function() {
+      							  $('#add_cart_toast').stop().fadeOut(200);
+    							  }, 2500);
+   								 });
+							
+								}
+							else 	{
+								alert(jqXHR.responseText);
+								}
+							
+							},
+						error : function(jqXHR, status, error) {
+							if (jqXHR.status == '401') {
+								alert('관리자로그인 후 이용해주세요.');
+							} else {
+								location.href = "/members/login";
+							}
+						}
+					})
+
+		
+		
+	}
+		
 	</script>
+	
 </th:block>
 
 

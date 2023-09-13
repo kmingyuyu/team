@@ -59,7 +59,10 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
                  .name(username).password(password).email(email).role(role)
                  .provider(provider).providerId(providerId)
                  .build();
-     }
+     }else {
+    	    // 기존 사용자의 경우, DB에서 가져온 Role을 사용
+    	    role = byUsername.getRole();
+    	}
      
      
      return new PrincipalDetails(byUsername, oAuth2UserInfo);

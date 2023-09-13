@@ -18,11 +18,15 @@ import com.recipe.repository.MemberRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class LoginSuccessHandler implements AuthenticationSuccessHandler{
-		@Autowired
-	  private MemberRepository memberRepository;
+	
+	
+	  private final MemberRepository memberRepository;
 
 		
 	    //간편 로그인 성공시 정보를 sns전용 회원가입 페이지로 전달
@@ -30,8 +34,30 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler{
 		public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws IOException, ServletException {
 			
-	    	   System.out.println("핸들러성공");
-
+	    	   HttpSession session = request.getSession();
+	    	    
+	    	    if (authentication instanceof OAuth2AuthenticationToken) {
+	    	        OAuth2User oauthUser = ((OAuth2AuthenticationToken) authentication).getPrincipal();
+	    	        
+	    	        if (oauthUser instanceof PrincipalDetails) {
+	    	            PrincipalDetails userDetails = (PrincipalDetails) oauthUser;
+	    	            String name = userDetails.getEmail();
+	    	            
+	    	            Member member = memberRepository.findByEmail(name);
+	    	            
+	    	            if (member != null) {
+	    	                Long memberId = member.getId();
+	    	                String email = member.getEmail();
+	    	                String role = member.getRole().toString();
+	    	                
+	    	                session.setAttribute("memberId", memberId);
+	    	                session.setAttribute("email", email);
+	    	                session.setAttribute("role", role);
+	    	            }
+	    	        }
+	    	    }
+	    	   
+	    	   
 	    	    if (authentication instanceof OAuth2AuthenticationToken) {
 	    	        OAuth2User oauthUser = ((OAuth2AuthenticationToken) authentication).getPrincipal();
 	    	        if (oauthUser instanceof PrincipalDetails) {

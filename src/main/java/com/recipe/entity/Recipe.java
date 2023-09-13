@@ -57,9 +57,13 @@ public class Recipe extends BaseEntity {
     @Enumerated(EnumType.STRING) //레시피 등록,임시저장
     private WritingStatus writingStatus;
     
+    
+    
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
+	
+	
 	
 	public void updateRecipe(RecipeNewDto recipeNewDto) {
 		this.title = recipeNewDto.getTitle();

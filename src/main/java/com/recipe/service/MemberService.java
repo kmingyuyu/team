@@ -1,6 +1,7 @@
 package com.recipe.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +27,17 @@ public class MemberService implements UserDetailsService {
 	private final MemberRepository memberRepository;
 	
 	private final FollowRepository followRepository;
+	
+	
+	public Long findId(String email) {
+		Member member = memberRepository.findByEmail(email);
+		
+		 if (member == null) {
+		        return null;
+		    }
+		
+		return member.getId();
+	}
 	
 	
 	//회원가입 데이터를 DB에 저장한다
@@ -71,10 +83,6 @@ public class MemberService implements UserDetailsService {
 		}
 	
 	
-	
-	
-	
-	
 	@Transactional(readOnly = true)
 	public List<MemberMainDto> getMemberBestList() {
 		List<MemberMainDto> getMemberBestList = memberRepository.getMemberBestList();
@@ -89,24 +97,29 @@ public class MemberService implements UserDetailsService {
 	}
 	
 	
-	public void followReg(Long id) {
+	public String followReg(Map<String, Object> requestBody , String email) {
+		  Long id = Long.parseLong(requestBody.get("id").toString());
 		
-		/*
-		 * String id5 = "5" ;
-		 * 
-		 * Long memberId = Long.parseLong(id5);
-		 * 
-		 * Member member = memberRepository.findById(memberId).orElseThrow();
-		 * 
-		 * Follow followTest =
-		 * followRepository.findByMemberIdAndToMember(member.getId(),memberId);
-		 * 
-		 * if(followTest == null) { Follow follow = new Follow();
-		 * follow.setMember(member); follow.setToMember(id);
-		 * followRepository.save(follow); System.out.println("저장되었습니다"); }
-		 * 
-		 * System.out.println("이미 팔로우 되있습니다");
-		 */
+		  Member member = memberRepository.findByEmail(email);
+		  
+		  Follow followOk =
+		  followRepository.findByMemberIdAndToMember(member.getId(),id);
+		  
+		  
+		  if(member.getId().equals(id)) {
+			  return "본인은 팔로우 할수 없습니다";
+		  }
+		  else if(followOk == null) {
+			  Follow follow = new Follow();
+			  follow.setMember(member);
+			  follow.setToMember(id);
+			  followRepository.save(follow);
+			  return "팔로우 완료 되었습니다";
+		  }
+		 else {
+			 return "이미 팔로우 되어있는 회원 입니다";
+		 }
+		  
 		
 	}
 	

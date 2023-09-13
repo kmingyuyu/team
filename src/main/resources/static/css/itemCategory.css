@@ -70,7 +70,6 @@
 }
 
 .thmb_list02 .img img {
-	border: 1px solid #dedede;
     width: 270px;
     height: 270px;
 }
@@ -132,6 +131,7 @@
 }
 
 .list_box {
+	margin: 0px 5px;
 	padding-top: 40px;
     border-bottom: 1px solid #dedede;
 }
@@ -304,12 +304,11 @@ font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif";
     color: rgb(0, 0, 0)
 }
 ul.key2 {
-	margin-bottom:25px;
-	display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+    display: flex;
     flex-wrap: wrap;
-    width: 100%;
     text-align: center;
-    display: block;
 }
 
 ul.key2 li {
@@ -688,4 +687,12 @@ svg:not(:root) {
 .item-count p strong{
 	font-size: 21px;
 	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto' !important;
+}
+
+.scale img {
+  transition: transform 0.3s ease;
+}
+
+.scale:hover img {
+  transform: scale(1.1);  /* 원하는 확대 비율을 설정하세요. */
 }

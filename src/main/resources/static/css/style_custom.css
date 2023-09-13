@@ -152,9 +152,6 @@ table {
 	padding-bottom: 15px ;
 }
 
-.header_nav_bottom {
-	border-bottom:1px solid #dedede ; 
-}
 
 .main_a_txt {
 	text-align : center;
@@ -213,12 +210,7 @@ table {
     overflow: hidden;
     margin: 0 auto;
 }
-.ezen_logo_box {
-	position: absolute;
-    float: left;
-    height: 79px;
-    width: 338px;
-}
+
 
 .logo_box {
 	width: 30%;
@@ -240,7 +232,6 @@ table {
 .d_logo {
 	height: 94px;
     left: -3px;
-    top: -57px;
     position: relative;
 }
 
@@ -269,20 +260,22 @@ table {
 }
 
 .b_ll {
+	align-items: center;
 	border-right: 1px solid #ebebeb;
     margin-right: 30px;
 }
 
 .d_simbol {
     height: 93px;
-    top: -58px;
+    top: 3px;
     position: relative;
 }
 
 .p_box {
-	padding-top : 2.0rem;
-	padding-bottom : 2.0rem;
+	border-bottom: 1px solid #dedede;
 }
+
+
 
 .footer_address {
 	font-size: 13px !important;
@@ -364,4 +357,67 @@ table {
 .container_custom {
 	margin:0 auto;
 	width: 1140px;
+}
+
+.gAgCZS {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    align-self: baseline;
+}
+
+.gXfCDw {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.fCBSwg {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+}
+
+.faiWcr {
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #A0BF6B;
+    color: rgb(255, 255, 255);
+    font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif";
+    font-size: 10px;
+    line-height: 14px;
+    letter-spacing: -0.4px;
+    font-weight: 500;
+}
+
+
+.eJzlAX {
+    margin-left: 4px;
+    margin-right: 8px;
+    font-weight: normal;
+    font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif";
+    font-size: 13px;
+    line-height: 19px;
+    letter-spacing: -0.5px;
+    color: rgb(97, 97, 97);
+}
+
+.header {
+    width: 100% !important;
 }

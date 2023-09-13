@@ -9,6 +9,7 @@ import com.recipe.constant.PromotionOk;
 import com.recipe.constant.Role;
 import com.recipe.constant.ServiceOk;
 import com.recipe.dto.MemberDto;
+import com.recipe.dto.MyPageDto;
 import com.recipe.dto.SocialMemberDto;
 
 import jakarta.persistence.Column;
@@ -81,6 +82,21 @@ public class Member extends BaseEntity {
 	private String oriImgName; //원본이미지 이름
 	
 	private String imgName; //바뀐 사진이름(보안을위해)
+	
+
+	//member 엔티티 수정
+	public void editMember(MyPageDto myPageDto) {
+		this.nickname = myPageDto.getNickname();
+		this.phoneNumber = myPageDto.getPhoneNumber();
+		this.name = myPageDto.getName();
+		this.password = myPageDto.getPassword();
+		this.introduce = myPageDto.getIntroduce();
+		this.detailAddress = myPageDto.getDetailAddress();
+		this.postCode = myPageDto.getPostCode();
+		this.address = myPageDto.getAddress();
+
+	}
+	
 	
 	//일반로그인 회원가입 메소드
 	public static Member createMember(MemberDto memberDto, PasswordEncoder passwordEncoder) {

@@ -14,7 +14,6 @@ import com.recipe.entity.Recipe;
 
 public interface MemberRepository extends JpaRepository<Member, Long>  {
 	
-	Member findBynickname(String nickname);
 	
 		//select * from member where email = ?
 		Member findByEmail(String email);
@@ -24,7 +23,10 @@ public interface MemberRepository extends JpaRepository<Member, Long>  {
 		String findEmailByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 		
 		Member findByname(String name);
-	
+		
+		@Query(value = "select * from member where member_id = ?1", nativeQuery = true)
+		Member getfindmemberbyid(Long id);
+		
 	
 //	모든 회원의 팔로워수 / 팔로잉수 / 레시피수 /닉네임 / 자기소개 / id (팔로워 많은순으로 정렬)  
 //	메인화면

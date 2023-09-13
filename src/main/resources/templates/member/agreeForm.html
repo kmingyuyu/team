@@ -74,7 +74,7 @@ label.required::after {
   height: 40px;
   outline: none;
   cursor: pointer;
-  background-color: #A0BF6B;
+  background-color: #1BBC9B;
   color: #ffffff;
   border: none;
   border-radius: 5px;
@@ -202,82 +202,69 @@ h3{
 	<script th:inline="javascript">
 		
 	
-	const form = document.querySelector(".form__wrap"); // 데이터 전송 form
-	const checkAll = document.querySelector(".terms__check__all input"); // 모두 동의 체크박스
-	const checkBoxes = document.querySelectorAll(".input__check input"); // 모두 동의 제외 체크박스
-	const submitButton = document.querySelector("button");  // 확인 버튼
-		
-	
-	const agreements = {
-			  termsOfService: false,
-			  privacyPolicy: false,
-			  allowPromotions: false,
-			};
-	
-	//새로고침시 서브밋막음
-	form.addEventListener("submit", (e) => e.preventDefault());
+	$(document).ready(function () {
+		  const form = $(".form__wrap"); // 데이터 전송 form
+		  const checkAll = $(".terms__check__all input"); // 모두 동의 체크박스
+		  const checkBoxes = $(".input__check input"); // 모두 동의 제외 체크박스
+		  const submitButton = $("button"); // 확인 버튼
 
-	checkBoxes.forEach((item) => item.addEventListener('input', toggleCheckbox));
+		  const agreements = {
+		    termsOfService: false,
+		    privacyPolicy: false,
+		    allowPromotions: false,
+		  };
 
-	function toggleCheckbox(e) {
-		  const { checked, id } = e.target;  
-		  agreements[id] = checked;
-		  this.parentNode.classList.toggle('active');
-		  checkAllStatus();
-		  toggleSubmitButton();
-	}
-	//모든동의 체크박스 누르면 전부 동의
-	function checkAllStatus() {
-		  const { termsOfService, privacyPolicy, allowPromotions } = agreements;
-		  if (termsOfService && privacyPolicy && allowPromotions) {
-		    checkAll.checked = true;
-		  } else {
-		    checkAll.checked = false;
+		  //새로고침시 서브밋막음
+		  form.submit(function (e) {
+		    e.preventDefault();
+		  });
+
+		  checkBoxes.on("input", function () {
+		    toggleCheckbox($(this));
+		  });
+
+		  function toggleCheckbox(checkbox) {
+		    const id = checkbox.attr("id");
+		    const checked = checkbox.is(":checked");
+		    agreements[id] = checked;
+		    checkbox.parent().toggleClass("active");
+		    checkAllStatus();
+		    toggleSubmitButton();
 		  }
-		}
-	
-	//모든동의 체크박스 누르면 버튼활성화
-	function toggleSubmitButton() {
-	  const { termsOfService, privacyPolicy , allowPromotions } = agreements;
-	  const checkedCount = $(checkBoxes).filter(':checked').length;
-	  if (termsOfService && privacyPolicy && allowPromotions) {
-	    submitButton.disabled = false;
-	  } else {
-	    submitButton.disabled = true;
-	  }
-	}
-	
-	// '모두 동의' 체크박스가 체크가 되면 모든 체크박스의  체크를 하고, '모두 동의'
-	// 체크박스가 해제되면 모든 체크 박스의 체크상태를 해제
-	checkAll.addEventListener('click', (e) => {
-		  const { checked } = e.target;
-		  if (checked) {
-		    checkBoxes.forEach((item) => {
-		      item.checked = true;
-		      agreements[item.id] = true;
-		      item.parentNode.classList.add('active');
-		    });
-		  } else {
-		    checkBoxes.forEach((item) => {
-		      item.checked = false;
-		      agreements[item.id] = false;
-		      item.parentNode.classList.remove('active');
-		    });
+
+		  //모든동의 체크박스 누르면 전부 동의
+		  function checkAllStatus() {
+		    const { termsOfService, privacyPolicy, allowPromotions } = agreements;
+		    if (termsOfService && privacyPolicy && allowPromotions) {
+		      checkAll.prop("checked", true);
+		    } else {
+		      checkAll.prop("checked", false);
+		    }
 		  }
-		  toggleSubmitButton();
+
+		  //모든동의 체크박스 누르면 버튼활성화
+		  function toggleSubmitButton() {
+		    const { termsOfService, privacyPolicy, allowPromotions } = agreements;
+		    const checkedCount = $(checkBoxes).filter(":checked").length;
+		    if (termsOfService && privacyPolicy && allowPromotions) {
+		      submitButton.prop("disabled", false);
+		    } else {
+		      submitButton.prop("disabled", true);
+		    }
+		  }
+
+		  //'모두 동의' 체크박스가 체크가 되면 모든 체크박스의  체크를 하고, '모두 동의'
+		  // 체크박스가 해제되면 모든 체크 박스의 체크상태를 해제
+		  checkAll.on("click", function () {
+		    const checked = $(this).is(":checked");
+		    checkBoxes.prop("checked", checked);
+		    agreements.termsOfService = checked;
+		    agreements.privacyPolicy = checked;
+		    agreements.allowPromotions = checked;
+		    checkBoxes.parent().toggleClass("active", checked);
+		    toggleSubmitButton();
+		  });
 		});
-	
-	
-	
-	// 필수동의 체크 여부를 확인한 뒤 버튼을 활성화 , 비활성화 동작 함수
-	/* function toggleSubmitButton() {
-	  const { termsOfService, privacyPolicy , allowPromotions } = agreements;
-	  if (termsOfService && privacyPolicy && allowPromotions) {
-	    submitButton.disabled = false;
-	  } else {
-	    submitButton.disabled = true;
-	  }
-	} */
 		
 	</script>
 </th:block>

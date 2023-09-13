@@ -44,9 +44,7 @@
 }
 
 .thmb_list02 .item {
-    float: left;
     min-height: 270px;
-    vertical-align: top;
 }
 
 .thmb_list02 .thmb {
@@ -326,13 +324,12 @@
 }
 
 ul.key2 {
+    justify-content: center;
     margin-bottom: 25px;
     display: flex;
     flex-wrap: wrap;
-    width: 100%;
     text-align: center;
-    display: block;
-}
+    }
 
 ul.key2 li {
     display: inline-block;

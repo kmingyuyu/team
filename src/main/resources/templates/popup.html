@@ -36,14 +36,14 @@
 					<tr>
 						<th>문의유형</th>
 						<td class="qa-type-area">
-						 <input type="radio" id="itemInqBoardEnum_1" name="itemInqBoardEnum" class="n-radio" value="1"> 
-						 <label for="itemInqBoardEnum_1">배송</label>
-						 <input type="radio" id="itemInqBoardEnum_2" name="itemInqBoardEnum" class="n-radio" value="2"> 
-						 <label for="itemInqBoardEnum_2">재입고</label> 
-						 <input type="radio" id="itemInqBoardEnum_3" name="itemInqBoardEnum" class="n-radio" value="3"> 
-						 <label for="itemInqBoardEnum_3">상품상세문의</label>
-						 <input type="radio" id="itemInqBoardEnum_4" name="itemInqBoardEnum" class="n-radio" value="4"> 
-						 <label for="itemInqBoardEnum_4">기타</label>
+						 <input type="radio" id="itemInqEnum_1" name="itemInqEnum" class="n-radio" value="1"> 
+						 <label for="itemInqEnum_1">배송</label>
+						 <input type="radio" id="itemInqEnum_2" name="itemInqEnum" class="n-radio" value="2"> 
+						 <label for="itemInqEnum_2">재입고</label> 
+						 <input type="radio" id="itemInqEnum_3" name="itemInqEnum" class="n-radio" value="3"> 
+						 <label for="itemInqEnum_3">상품상세문의</label>
+						 <input type="radio" id="itemInqEnum_4" name="itemInqEnum" class="n-radio" value="4"> 
+						 <label for="itemInqEnum_4">기타</label>
 						 </td>
 					</tr>
 					<tr>
@@ -62,8 +62,8 @@
 						<th>제목</th>
 						<td class="qa-title-area">
 						<input type="text" name="title" id="title" class="tit n-input" maxlength="15" placeholder="15자 이내 입력"> 
-						<input type="checkbox" name="itemInqEnum" id="itemInqEnum" class="n-check" value="2"> 
-						<label for="itemInqEnum">비밀글</label>
+						<input type="checkbox" name="itemInqBoardEnum" id="itemInqBoardEnum" class="n-check" value="2"> 
+						<label for="itemInqBoardEnum">비밀글</label>
 						</td>
 					</tr>
 					<tr>
@@ -142,12 +142,12 @@ function inqCancle() {
 		var header = $("meta[name='_csrf_header']").attr("content");
 	 	
 		var itemId = $("#itemId").val();
-		var itemInqBoardEnum = $("input[name='itemInqBoardEnum']:checked").val();
+		var itemInqBoardEnum = $("input[name='itemInqBoardEnum']:checked").val() || 1;
         var title = $("#title").val();
         var content = $("#content").val();
-        var itemInqEnum = $("input[name='itemInqEnum']:checked").val()  || 1 ;
+        var itemInqEnum = $("input[name='itemInqEnum']:checked").val() ;
 			
-			if (!itemInqBoardEnum) {
+			if (!itemInqEnum) {
        			 alert("문의유형을 선택해주세요.");
       			  return;
    				 }

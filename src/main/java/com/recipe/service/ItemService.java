@@ -25,12 +25,14 @@ import com.recipe.entity.ItemInq;
 import com.recipe.entity.ItemInqAnwser;
 import com.recipe.entity.ItemReview;
 import com.recipe.entity.ItemReviewAnswer;
+import com.recipe.entity.Member;
 import com.recipe.repository.ItemInqAnswerRepository;
 import com.recipe.repository.ItemInqRepository;
 import com.recipe.repository.ItemRepository;
 import com.recipe.repository.ItemReviewAnswerRepository;
 import com.recipe.repository.ItemReviewImgRepositroy;
 import com.recipe.repository.ItemReviewRepository;
+import com.recipe.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,7 +40,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional
 public class ItemService {
-
+	
+	private final MemberRepository memberRepository;
+	
 	private final ItemRepository itemRepository;
 
 	private final ItemReviewRepository itemReviewRepository;
@@ -89,14 +93,14 @@ public class ItemService {
 	}
 
 //	리뷰 답변 등록
-	public void itemReviewAnswerReg(@RequestBody Map<String, Object> requestBody) {
+	public void itemReviewAnswerReg(@RequestBody Map<String, Object> requestBody , String email) {
 		Long id = Long.parseLong(requestBody.get("id").toString());
 		String content = requestBody.get("content").toString();
-		
 		ItemReview itemReview = itemReviewRepository.findById(id).orElseThrow();
-
+		
+		Member member = memberRepository.findByEmail(email);
 		ItemReviewAnswer itemReviewAnswer = new ItemReviewAnswer();
-
+		itemReviewAnswer.setMember(member);
 		itemReviewAnswer.setItemReview(itemReview);
 		itemReviewAnswer.setContent(content);
 		itemReviewAnswerRepository.save(itemReviewAnswer);
@@ -125,22 +129,30 @@ public class ItemService {
 	}
 
 //	문의글 등록
-	public void itemInqReg(Map<String, Object> requestBody) {
-
+	public void itemInqReg(Map<String, Object> requestBody , String email) {
+		
 		Long id = Long.parseLong(requestBody.get("id").toString());
 		String title = requestBody.get("title").toString();
 		String content = requestBody.get("content").toString();
 		int itemInqBoardEnum = Integer.parseInt(requestBody.get("itemInqBoardEnum").toString());
 		int itemInqEnum = Integer.parseInt(requestBody.get("itemInqEnum").toString());
+		Member member = memberRepository.findByEmail(email);
 		
 		Item item = itemRepository.findById(id).orElseThrow();
 		
 		ItemInq itemInq = new ItemInq();
+		itemInq.setMember(member);
 		itemInq.setItem(item);
 		itemInq.setTitle(title);
 		itemInq.setContent(content);
 		
+		System.out.println("itemInqBoardEnum num ::" + itemInqBoardEnum);
+		System.out.println("itemInqEnum num ::" + itemInqEnum);
+		
 		switch (itemInqBoardEnum) {
+		case 1:
+			itemInq.setItemInqBoardEnum(ItemInqBoardEnum.공개글);
+			break;
 		case 2:
 			itemInq.setItemInqBoardEnum(ItemInqBoardEnum.비밀글);
 			break;
@@ -167,16 +179,19 @@ public class ItemService {
 	
 	
 //	문의 답변 등록
-	public void itemInqAnswerReg(Map<String, Object> requestBody) {
+	public void itemInqAnswerReg(Map<String, Object> requestBody,String email) {
 		
 		Long id = Long.parseLong(requestBody.get("id").toString());
 		String content = requestBody.get("content").toString();
+		
+		Member member = memberRepository.findByEmail(email);
 		
 		ItemInq itemInq = itemInqRepository.findById(id).orElseThrow();
 		itemInq.setAnswerOk(AnswerOk.답변완료);
 		itemInqRepository.save(itemInq);
 		
 		ItemInqAnwser itemInqAnwser = new ItemInqAnwser();
+		itemInqAnwser.setMember(member);
 		itemInqAnwser.setItemInq(itemInq);
 		itemInqAnwser.setContent(content);
 		

@@ -2,9 +2,11 @@ package com.recipe.oauth;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -19,6 +21,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User{
 	
 	 private Member member;
 	 private Map<String, Object> attributes;
+	 private Collection<? extends GrantedAuthority> authorities;
 	
 	 public PrincipalDetails(Member member) {
 	        this.member = member;
@@ -28,6 +31,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User{
 	        //PrincipalOauth2UserService 참고
 	        this.member = member;
 	        this.attributes = oAuth2UserInfo.getAttributes();
+	        this.authorities = Collections.singletonList(new SimpleGrantedAuthority(member.getRole().name()));
 	    }
 
 	@Override
@@ -41,17 +45,10 @@ public class PrincipalDetails implements UserDetails, OAuth2User{
       return sub;
 	}
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		 Collection<GrantedAuthority> collect = new ArrayList<>();
-	        collect.add(new GrantedAuthority() {
-	            @Override
-	            public String getAuthority() {
-	                return member.getRole().toString();
-	            }
-	        });
-	        return collect;
-	}
+	 @Override
+	    public Collection<? extends GrantedAuthority> getAuthorities() {
+		 	return authorities;
+	    }
 
 	@Override
 	public String getPassword() {

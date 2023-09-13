@@ -36,7 +36,7 @@ public class ItemInq extends BaseEntity {
 	private String content; // 내용
 	
 	@Enumerated(value = EnumType.STRING)
-	private ItemInqBoardEnum itemInqBoardEnum = ItemInqBoardEnum.공개글 ; // 비밀글 여부 // 기본값:공개글
+	private ItemInqBoardEnum itemInqBoardEnum  ; // 비밀글 여부 
 	
 	@Enumerated(value = EnumType.STRING)
 	private ItemInqEnum itemInqEnum; // 배송 재입고 상세문의 기타 선택 여부

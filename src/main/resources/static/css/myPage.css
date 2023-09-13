@@ -1,0 +1,91 @@
+@charset "UTF-8";
+
+.upload-icon {
+	cursor: pointer;
+	position: relative;
+	width: 100px;
+	height: 100px;
+	border: 1px solid #d9d9d9;
+	border-radius: 50%;
+	background-image: url(img/images.jpg);
+	background-size: cover;
+	background-position: center;
+}
+
+.circle {
+	position: absolute;
+	width: 98px;
+	height: 99px !important;
+	background-color: #34343478;
+	border-radius: 50%;
+	z-index: 0;
+	clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+	transform: scale(-1);
+}
+
+.upload-icon svg {
+	display: block;
+	margin: 0 auto;
+	transform: scale(-1);
+	margin-top: 9px;
+	height: 20px;
+}
+
+* {
+	font-family: "SUIT", sans-serif !important;
+}
+
+.mypage-list {
+	margin-bottom: 7px !important;
+	border: none !important;
+	border-radius: 0 !important;
+	display: flex !important;
+	justify-content: center !important;
+	font-size: 15px;
+}
+
+.mypage-top {
+	border: 1px solid #adb5bd !important;
+	width: 120px !important;
+	margin-right: 10px;
+	margin-bottom: 0px !important;
+	border-bottom: 0 !important;
+	top: 1px;
+	border-radius: 0 !important;
+	display: flex !important;
+	justify-content: center;
+}
+
+.mypage-content {
+	display: flex;
+	margin-top: 100px;
+	margin-bottom: 50px;
+	flex-direction: column;
+}
+
+.mypage-content-logo {
+	width: 160px;
+	margin-bottom: 40px;
+}
+
+.mypage-list.active, .mypage-top.active {
+	background-color: #808000 !important;
+}
+
+.recipeList {
+	display: flex !important;
+	margin-top: 20px;
+	margin-bottom: 50px;
+	flex-direction: column !important;
+	align-items: nomal !important;
+	margin-bottom: 50px;
+}
+
+.recipeList-th {
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.cursor {
+	cursor: pointer;
+	}

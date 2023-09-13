@@ -7,8 +7,6 @@
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>	
 	<div layout:fragment="content">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-	
 	<th:block layout:fragment="css">
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
@@ -88,7 +86,7 @@
 			</h4>
 		</div>
 		<div class="common_sp_caption_rv_name d-flex ">
-                <a href="#" style="display: inline-block; vertical-align: bottom;">
+                <a th:href="'/profile/' + ${n_r.memberId}" style="display: inline-block; vertical-align: bottom;">
 					<img src="/img/free-icon-member-5867267.png">
 					민규민규</a>
 				<span class="count_s" th:text="'조회수 : ' + ${#numbers.formatInteger(n_r.count, 0, 'COMMA')}">
@@ -136,7 +134,7 @@
 			</h4>
 		</div>
 		<div class="common_sp_caption_rv_name d-flex ">
-                <a href="#" style="display: inline-block; vertical-align: bottom;">
+                <a th:href="'/profile/' + ${n_b.memberId}" style="display: inline-block; vertical-align: bottom;">
 					<img src="/img/free-icon-member-5867267.png">
 					민규민규</a>
             </div>
@@ -166,7 +164,7 @@
 				<th:block th:each="bestMember , status:${rankMemberList}">
 							<li class="rec_list" style="display:flex">
 					<div class="num">[[${status.index+1}]]</div>
-					<a href="#" class="clr">
+					<a th:href="'/profile/' + ${bestMember.id}" class="clr">
 						<div class="img_box">
 							<img src="img/장어덮밥.jpg" alt="등록된 이미지가 없습니다">
 							</div>
@@ -180,18 +178,6 @@
 						<a class="like" onclick="followOk(this)" th:attr="data-member-id=${bestMember.id}"  title="팔로우"> <i class="fa-solid fa-heart follow"></i>  </a>
 				</li>
 				</th:block>
-										<li class="rec_list" style="display:flex">
-					<div class="num">2</div>
-					<a href="recipe.php?id=view&amp;idx=1041" class="clr">
-						<div class="img_box"><img src="../../data/recipe/20170521104711-K8QOB.jpg" alt=""></div>
-						<div class="text_box">
-							<p class="s_title">꼭 맛보아야할 별미</p>
-							<p class="b_title" title="콩나물고추전">콩나물고추전</p>
-						</div>
-					</a>
-									<a href="javascript:recipe_ggim(1041);" class="like"><img id="ggim_1041" src="/skin/nodskin_argio/images/main_like_off.jpg" alt="">
-									</a>
-				</li>
 								
 							</ul>
 			<a href="javascript:more_recipe();" class="more more_rec">더보기</a>
@@ -362,9 +348,10 @@ function more_recipe() {
 
 		}	
  
- 
+ 	
           
     </script>
+	
 	
 	</th:block>
 	

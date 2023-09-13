@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta name="description" content="Yoga Studio Template" />
+<meta name="keywords" content="Yoga, unica, creative, html" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<title>Yummy | Template</title>
+
+<link rel="stylesheet"
+	th:href="@{https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/minty/bootstrap.min.css}"
+	integrity="sha384-H4X+4tKc7b8s4GoMrylmy2ssQYpDHoqzPa9aKXbDwPoPUA3Ra8PA5dGzijN+ePnH"
+	crossorigin="anonymous" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.css}" type="text/css" />
+
+<link
+	th:href="@{https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css}"
+	rel="stylesheet" />
+
+<style>
+.upload-icon {
+	cursor: pointer;
+	position: relative;
+	width: 100px;
+	height: 100px;
+	border: 1px solid #d9d9d9;
+	border-radius: 50%;
+	background-image: url(img/images.jpg);
+	background-size: cover;
+	background-position: center;
+}
+
+.circle {
+	position: absolute;
+	width: 98px;
+	height: 99px !important;
+	background-color: #34343478;
+	border-radius: 50%;
+	z-index: 0;
+	clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+	transform: scale(-1);
+}
+
+.upload-icon svg {
+	display: block;
+	margin: 0 auto;
+	transform: scale(-1);
+	margin-top: 9px;
+	height: 20px;
+}
+
+* {
+	font-family: "SUIT", sans-serif !important;
+}
+
+.mypage-list {
+	margin-bottom: 7px !important;
+	border: none !important;
+	border-radius: 0 !important;
+	display: flex !important;
+	justify-content: center !important;
+	font-size: 15px;
+}
+
+.mypage-top {
+	border: 1px solid #adb5bd !important;
+	width: 120px !important;
+	margin-right: 10px;
+	margin-bottom: 0px !important;
+	border-bottom: 0 !important;
+	top: 1px;
+	border-radius: 0 !important;
+	display: flex !important;
+	justify-content: center;
+}
+
+.mypage-content {
+	display: flex;
+	margin-top: 100px;
+	margin-bottom: 50px;
+	flex-direction: column;
+	align-items: center;
+}
+
+.mypage-content-logo {
+	width: 160px;
+	margin-bottom: 40px;
+}
+
+.mypage-list.active {
+	background-color: #808000 !important;
+}
+
+
+</style>
+
+<!-- Google Font -->
+<link
+	th:href="@{https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap}"
+	rel="stylesheet" />
+
+<!-- Css Styles -->
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"
+	type="text/css" />
+<link rel="stylesheet" th:href="@{/css/font-awesome.min.css}"
+	type="text/css" />
+<link rel="stylesheet" th:href="@{/css/nice-select.css}" type="text/css" />
+<link rel="stylesheet" th:href="@{/css/slicknav.min.css}"
+	type="text/css" />
+<link rel="stylesheet" th:href="@{/css/style.css}" type="text/css" />
+</head>
+
+<body>
+	<!-- Page Preloder -->
+	<div id="preloder">
+		<div class="loader"></div>
+	</div>
+
+	<!-- Header Section Begin -->
+	<header class="header-section-other">
+		<div class="container-fluid">
+			<div class="logo">
+				<a href="./index.html"><img src="img/little-logo.png" alt="" /></a>
+			</div>
+			<div class="nav-menu">
+				<nav class="main-menu mobile-menu">
+					<ul>
+						<li class="active"><a href="#">Home</a></li>
+						<li><a href="#">Pages</a>
+							<ul class="sub-menu">
+								<li><a href="about-me.html">About Me</a></li>
+								<li><a href="categories.html">Categories</a></li>
+								<li><a href="recipe.html">Recipe</a></li>
+								<li><a href="blog.html">Blog</a></li>
+								<li><a href="contact.html">Contact</a></li>
+							</ul></li>
+						<li><a href="recipe.html">Recipes</a></li>
+						<li><a href="categories.html">Best Of</a></li>
+						<li><a href="contact.html">Contact</a></li>
+					</ul>
+				</nav>
+				<div class="nav-right search-switch">
+					<i class="fa fa-search"></i>
+				</div>
+			</div>
+			<div id="mobile-menu-wrap"></div>
+		</div>
+	</header>
+	<!-- Header End -->
+
+	<!-- Hero Search Section Begin -->
+	<div class=""
+		style="border-radius: 20px; overflow: hidden; border: 7px solid #ffffff; position: relative;">
+		<div
+			style="background-image: url(/img/search-bg.jpg); height: 250px; background-repeat: no-repeat; background-size: cover; background-position: top center; border-radius: 30px 30px 0 0;"
+			class="container">
+			<div class=""
+				style="display: flex; justify-content: flex-end; align-items: center; flex-direction: row; padding-top: 24px; margin-right: 30px;">
+				<div
+					style="margin-left: 10px; display: flex; align-items: center; flex-direction: column;">
+					<div
+						style="background-image: url(/img/아이콘.png); background-size: cover; background-position: center; height: 45px; width: 80px;">
+						<p
+							style="font-size: 17px; color: #000000; display: flex; justify-content: center; align-items: center; margin-left: 23px; font-weight: 700;">
+							1</p>
+					</div>
+					<p style="color: #ffff">팔로워</p>
+				</div>
+				<div
+					style="margin-left: 10px; display: flex; align-items: center; flex-direction: column;">
+					<div
+						style="background-image: url(/img/아이콘.png); background-size: cover; background-position: center; height: 45px; width: 80px;">
+						<p
+							style="font-size: 17px; color: #000000; display: flex; justify-content: center; align-items: center; margin-left: 23px; font-weight: 700;">
+							1</p>
+					</div>
+					<p style="color: #ffff">팔로잉</p>
+				</div>
+			</div>
+		</div>
+		<div
+			th:style="'position: absolute; left: 50%; bottom: 17%; transform: translateX(-50%); width: 180px; height: 180px; background-color: #ffffff; border-radius: 50%; border: 7px solid #e9ecef; background-image: url(' + ${myPageDto.imgUrl}  + '); background-size: cover; background-position: center;'"></div>
+		<div
+			style="height: 113px; background-color: #ffff; display: flex; justify-content: center; align-items: flex-end; border-radius: 0 0 30px 30px; border: 1px solid #adb5bd;"
+			class="container">
+			<div class="col-10"
+				style="display: flex; justify-content: center; align-items: center; flex-direction: column; top: 10px;">
+				<div style="">
+					<h4 th:text="${myPageDto.nickname}" style="font-weight: 700">짱구님</h4>
+				</div>
+				<div style="">
+					<p style="border-bottom: 1px solid #bdbdbd"
+						th:text="${myPageDto.introduce}">소개</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Hero Search Section End -->
+
+	<!-- Contact Section Begin -->
+
+	<section class="contact-section spad">
+		<div class="container" style="display: flex">
+				<div class="container"
+					style="border-bottom: 1px solid #dee2e6; display: flex; flex-direction: column; align-items: center;">
+					<p style="font-size: 28px; font-weight: 500;">| Submit Recipe |</p>
+					<p style="font-size: 15px; font-weight: 500;">레시피 등록</p>
+				</div>
+				<div></div>
+			<div class="" id="content">
+				<div></div>
+			</div>
+		</div>
+	</section>
+	<!-- Contact Section End -->
+
+
+
+	<!-- Similar Recipe Section Begin -->
+	<section class="similar-recipe spad">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-3 col-md-6">
+					<div class="similar-item">
+						<a href="#"><img src="/img/cat-feature/small-7.jpg" alt="" /></a>
+						<div class="similar-text">
+							<div class="cat-name">Vegan</div>
+							<h6>Italian Tiramisu with Coffe</h6>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="similar-item">
+						<a href="#"><img src="/img/cat-feature/small-6.jpg" alt="" /></a>
+						<div class="similar-text">
+							<div class="cat-name">Vegan</div>
+							<h6>Dry Cookies with Corn</h6>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="similar-item">
+						<a href="#"><img src="/img/cat-feature/small-5.jpg" alt="" /></a>
+						<div class="similar-text">
+							<div class="cat-name">Vegan</div>
+							<h6>Asparagus with Pork Loin and Vegetables</h6>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="similar-item">
+						<a href="#"><img src="img/cat-feature/small-4.jpg" alt="" /></a>
+						<div class="similar-text">
+							<div class="cat-name">Vegan</div>
+							<h6>Smoked Salmon mini Sandwiches with Onion</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Similar Recipe Section End -->
+
+	<!-- Footer Section Begin -->
+
+	<!-- Footer Section End -->
+
+	<!-- Search model -->
+	<div class="search-model">
+		<div class="h-100 d-flex align-items-center justify-content-center">
+			<div class="search-close-switch">+</div>
+			<form class="search-model-form">
+				<input type="text" id="search-input" placeholder="Search here....." />
+			</form>
+		</div>
+	</div>
+	<!-- Search model end -->
+
+	<!-- Js Plugins -->
+	<script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
+	<script th:src="@{/js/jquery.slicknav.js}"></script>
+	<script th:src="@{/js/jquery.nice-select.min.js}"></script>
+	<script th:src="@{/js/mixitup.min.js}"></script>
+	<script th:src="@{/js/main.js}"></script>
+	<script
+		th:src="@{//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js}"></script>
+
+	<script th:inline="javascript">
+		
+	</script>
+</body>
+</html>

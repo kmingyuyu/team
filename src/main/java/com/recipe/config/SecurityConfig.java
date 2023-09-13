@@ -1,5 +1,6 @@
 package com.recipe.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -24,15 +25,23 @@ public class SecurityConfig {
 	
 	private PrincipalOauth2UserService principalOauth2UserService;
 	
+	@Autowired
+	private MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
+	
+	@Autowired
+	private LoginSuccessHandler LoginSuccessHandler;
+	
+	
 	@Lazy
 	public SecurityConfig(PrincipalOauth2UserService principalOauth2UserService) {
 	    this.principalOauth2UserService = principalOauth2UserService;
 	}
 	
-	@Bean
-    public AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler() {
-        return new LoginSuccessHandler();
-    }
+	
+	
+
+	
+	
 	@Bean
 	MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
 		return new MvcRequestMatcher.Builder(introspector);
@@ -46,6 +55,7 @@ public class SecurityConfig {
 		http
 		.authorizeHttpRequests(authorize -> authorize //1. 페이지 접근에 관한 설정
 				//모든 사용자가 로그인(인증) 없이 접근할 수 있도록 설정
+				.requestMatchers(mvc.pattern("/myPage")).authenticated()
 				.requestMatchers(mvc.pattern("/css/**"), mvc.pattern("/js/**"), mvc.pattern("/img/**"), mvc.pattern("/image/**"), mvc.pattern("/fonts/**")).permitAll()
 				.requestMatchers(mvc.pattern("/**"),mvc.pattern("/members/**"),mvc.pattern("/oauth/**"),mvc.pattern("/findPw/**"),mvc.pattern("/recipe/**")).permitAll()
 				.requestMatchers(mvc.pattern("/favicon.ico"), mvc.pattern("/error") , mvc.pattern("/test"), mvc.pattern("/test"),mvc.pattern("/email/**")).permitAll()
@@ -58,12 +68,12 @@ public class SecurityConfig {
 				.loginPage("/members/login")
 				.userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
 				.userService(principalOauth2UserService))
-				.successHandler(oauth2AuthenticationSuccessHandler())
+				.successHandler(LoginSuccessHandler)
 				.failureUrl("/members/login/error")
 				)
 		.formLogin(formLogin -> formLogin //2. 로그인에 관련된 설정
 				.loginPage("/members/login") //로그인 페이지 URL 설정
-				.defaultSuccessUrl("/") //로그인 성공시 이동할 페이지
+				.successHandler(myAuthenticationSuccessHandler)
 				.usernameParameter("email") //로그인시 id로 사용할 파라메터 이름
 				.failureUrl("/members/login/error") //로그인 실패시 이동할 URL
 				) 

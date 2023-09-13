@@ -1,5 +1,6 @@
 package com.recipe.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -7,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,18 +58,25 @@ public class MainController {
 	
 //	팔로우 하기
 	@PostMapping(value="/followReq")
-	public @ResponseBody ResponseEntity inqReq(@RequestBody Map<String, Object> requestBody) {
-		
-		Long id = Long.parseLong(requestBody.get("id").toString());
+	public @ResponseBody ResponseEntity inqReq(@RequestBody Map<String, Object> requestBody
+			, @AuthenticationPrincipal Object principal) {
 		
 //		현재 로그인 여부
 		if(!isAuthenticated()) {
 			return new ResponseEntity<String>("로그인이 필요한 기능입니다 \n 로그인 페이지로 이동하시겠습니까?" , HttpStatus.BAD_REQUEST);
 		}
 		
-		memberService.followReg(id);
+	    String email = "";
+
+	    if (principal instanceof OAuth2User) {
+	        email = ((OAuth2User) principal).getAttribute("email");
+	    } else if (principal instanceof UserDetails) {
+	        email = ((UserDetails) principal).getUsername();
+	    }
 		
-		return new ResponseEntity<>("팔로우 되셨습니다." , HttpStatus.OK);
+		String followOk = memberService.followReg(requestBody ,email);
+		
+		return new ResponseEntity<>(followOk , HttpStatus.OK);
 	}
 	
 	

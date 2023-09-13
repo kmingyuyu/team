@@ -348,6 +348,11 @@
     margin: -1px 6px 0 0;
 }
 
+.price_total {
+	position: relative;
+	margin-top: 65px;
+}
+
 .price_total2 {
 	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
 	color: #232323;
@@ -385,12 +390,12 @@
 }
 
 .btn_go_box {
-    padding: 24px 0 8px;
     display: table;
     width: 100%;
 }
 
 .btn_go_box .btn_go_cart {
+	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
     background: #fff;
     color: #a38084;
     border: 1px solid #a38084;
@@ -411,6 +416,7 @@
 }
 
 .btn_go_box .btn_go_order {
+	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
     background: #a38084;
      border: 1px solid #a38084;
     color: #fff;
@@ -632,7 +638,7 @@
    vertical-align: middle;
     width: 100%;
     text-align: left;
-    padding: 8px 365px 8px 35px;
+    padding: 10px 365px 0px 43px;
     line-height: 16.8px;
 }
 
@@ -737,6 +743,7 @@
 
 
 .comment_recomment {
+	margin-top: 15px;
 	background: #f3f3f3;
     position: relative;
     padding: 15px 15px 30px 43px;
@@ -970,7 +977,7 @@
 }
 
 .fb_1 > td:first-of-type {
-    padding: 15px 0 15px 43px;
+    padding: 10px 0 10px 43px;
 }
 
 .table_detail_qa td {
@@ -1315,7 +1322,7 @@ svg:not(:root) {
 }
 
 .review-content-photo {
-    padding-left: 35px;
+    padding-left: 43px;
 }
 
 
@@ -1471,4 +1478,55 @@ svg:not(:root) {
 
 .nh td {
 	margin: 0;
+}
+
+.secret_board {
+	font-size: 12px;
+	font-weight: normal;
+	color: gray;
+}
+
+.n-add-cart-layer {
+	z-index: 1000;  /* 다른 엘리먼트 위에 나타나게 하는 설정 */
+     position: absolute;
+     top: -63px;
+    width: 437px;
+    height: 60px;
+    padding: 20px 20px;
+    background: #383838;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.n-add-cart-layer > div {
+	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
+    position: absolute;
+    line-height: normal;
+    font-size: 16px;
+}
+
+.n-add-cart-layer .n-link {
+	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
+	color: #F44A5D;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-decoration: none;
+    font-size: 16px;
+    line-height: normal;
+}
+
+.n-add-cart-layer .n-link:hover {
+	color: #F44A5D;
+}
+
+.n-link {
+    display: inline-block;
+    line-height: 1.5;
+    font-size: 14px;
+    color: #0078ff;
+    text-decoration: underline;
+    border: 0;
+    padding: 0;
+    background: none;
 }
