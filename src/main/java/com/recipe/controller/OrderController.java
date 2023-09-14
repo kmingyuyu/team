@@ -1,6 +1,10 @@
 package com.recipe.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import javax.sound.midi.SysexMessage;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.recipe.dto.CartDto;
+import com.recipe.entity.Cart;
+import com.recipe.entity.Item;
+import com.recipe.entity.ItemImg;
 import com.recipe.service.OrderService;
 
 import jakarta.servlet.http.HttpSession;
@@ -23,45 +31,100 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class OrderController {
-	
+
 	private final OrderService orderService;
+
+//	장바구니 페이지
+	@GetMapping(value = "/cart")
+	public String Cart(Model model, HttpSession session) {
+		
 	
-	@GetMapping(value="/cart/{id}")
-	public String Cart(@PathVariable("id") Long id , Model model) {
+	List<CartDto> cartList = orderService.getCartList(session);
+	
+	int totalCount = 0; // 오리지널 총 금액
+	int saleCount = 0; //할인받는 총 금액
+	int deleveryCount = 4000;
+	
+	for(CartDto countPlus : cartList) {
 		
-		
-		
-		
-		return "cart";
-		
+		totalCount += countPlus.getPrice() * countPlus.getCount() ;
+		saleCount  +=  (countPlus.getPrice() * countPlus.getSale() / 100) * countPlus.getCount();
 	}
 	
+//	주문 총금액(할인포함) 40000원 이상이면 배송비 4000원 추가 아니면 0 
+	if((totalCount - saleCount) >= 40000) {
+		deleveryCount = 0;
+	}
 	
+//	최종금액 오리지널총금액+배송비+할인받는총금액
+	int finalCount = totalCount+deleveryCount-saleCount;
+	
+	model.addAttribute("cartList",cartList);
+	model.addAttribute("totalCount",totalCount);
+	model.addAttribute("deleveryCount",deleveryCount);
+	model.addAttribute("saleCount",saleCount);
+	model.addAttribute("finalCount",finalCount);
+	
+	
+	return "cart";
+
+	}
+
 //	카트 상품담기
-	@PostMapping(value="/cartReq")
-	public @ResponseBody ResponseEntity inqReq(@RequestBody Map<String, Object> requestBody
-			, HttpSession session) {
-		
-		if(!isAuthenticated()) {
-		   return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	@PostMapping(value = "/cartReq")
+	public @ResponseBody ResponseEntity inqReq(@RequestBody Map<String, Object> requestBody, HttpSession session) {
+
+		if (!isAuthenticated()) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
-	
-		String cartOk = orderService.cartReg(requestBody,session);
+
+		Long cartCount = orderService.cartReg(requestBody, session);
 		
-		return new ResponseEntity<>(cartOk , HttpStatus.OK);
+		if(cartCount==null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<>(cartCount, HttpStatus.OK);
+	}
+	
+//	카트 상품 개별삭제
+	@PostMapping(value = "/cartDeleteButton")
+	public @ResponseBody ResponseEntity cartDeleteButton(@RequestBody Map<String, Object> requestBody, HttpSession session) {
+		
+		boolean check = orderService.cartDeleteButton(requestBody);
+		
+		if(!check) {
+			return new ResponseEntity<>("장바구니에 해당상품이 없습니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		return new ResponseEntity<>("장바구니에서 삭제 되었습니다.", HttpStatus.OK);
+	}
+	
+//	카트 상품 체크박스 선택삭제
+	@PostMapping(value = "/cartDeletCkeckBox")
+	public @ResponseBody ResponseEntity cartDeletCkeckBox(@RequestBody List<Object> requestBody, HttpSession session) {
+		
+		
+		
+		boolean check = orderService.cartDeleteCheckBox(requestBody);
+		
+		if(!check) {
+			return new ResponseEntity<>("삭제중 에러가 발생했습니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		return new ResponseEntity<>("장바구니에서 삭제 되었습니다.", HttpStatus.OK);
 	}
 	
 	
+	
+
 //	로그인/비로그인 여부 로그인상태면 true
 	private boolean isAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            return false;
-        }
-        return authentication.isAuthenticated();
-    }
-	
-	
-	
-	
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+			return false;
+		}
+		return authentication.isAuthenticated();
+	}
+
 }

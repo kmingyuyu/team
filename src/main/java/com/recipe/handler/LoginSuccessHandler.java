@@ -23,78 +23,76 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class LoginSuccessHandler implements AuthenticationSuccessHandler{
-	
-	
-	  private final MemberRepository memberRepository;
+public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-		
-	    //간편 로그인 성공시 정보를 sns전용 회원가입 페이지로 전달
-	    @Override
-		public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-				Authentication authentication) throws IOException, ServletException {
-			
-	    	   HttpSession session = request.getSession();
-	    	    
-	    	    if (authentication instanceof OAuth2AuthenticationToken) {
-	    	        OAuth2User oauthUser = ((OAuth2AuthenticationToken) authentication).getPrincipal();
-	    	        
-	    	        if (oauthUser instanceof PrincipalDetails) {
-	    	            PrincipalDetails userDetails = (PrincipalDetails) oauthUser;
-	    	            String name = userDetails.getEmail();
-	    	            
-	    	            Member member = memberRepository.findByEmail(name);
-	    	            
-	    	            if (member != null) {
-	    	                Long memberId = member.getId();
-	    	                String email = member.getEmail();
-	    	                String role = member.getRole().toString();
-	    	                
-	    	                session.setAttribute("memberId", memberId);
-	    	                session.setAttribute("email", email);
-	    	                session.setAttribute("role", role);
-	    	            }
-	    	        }
-	    	    }
-	    	   
-	    	   
-	    	    if (authentication instanceof OAuth2AuthenticationToken) {
-	    	        OAuth2User oauthUser = ((OAuth2AuthenticationToken) authentication).getPrincipal();
-	    	        if (oauthUser instanceof PrincipalDetails) {
-	    	            PrincipalDetails userDetails = (PrincipalDetails) oauthUser;
-	    	            String email = userDetails.getEmail(); // Use getEmail from PrincipalDetails
-	    	            String password = userDetails.getPassword();
-	    	            String provider = userDetails.getProvider();
-	    	            String providerId = userDetails.getProviderId();
-	    	            String name = userDetails.getUsername();
-	    	            
-	    	            Member member = memberRepository.findByEmail(email);
-	    	            SocialMemberDto socialMemberDto = new SocialMemberDto();
-	    	            //name password 추가
-	    	            //dto에 provide 등 추가
-	    	            socialMemberDto.setEmail(email);
-	    	            //socialMemberDto.setPassword(password);
+	private final MemberRepository memberRepository;
+
+	// 간편 로그인 성공시 정보를 sns전용 회원가입 페이지로 전달
+	@Override
+	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+			Authentication authentication) throws IOException, ServletException {
+
+		HttpSession session = request.getSession();
+
+		if (authentication instanceof OAuth2AuthenticationToken) {
+			OAuth2User oauthUser = ((OAuth2AuthenticationToken) authentication).getPrincipal();
+
+			if (oauthUser instanceof PrincipalDetails) {
+				PrincipalDetails userDetails = (PrincipalDetails) oauthUser;
+				String name = userDetails.getEmail();
+
+				Member member = memberRepository.findByEmail(name);
+
+				if (member != null) {
+					Long memberId = member.getId();
+					String email = member.getEmail();
+					String role = member.getRole().toString();
+
+					session.setAttribute("memberId", memberId);
+					session.setAttribute("email", email);
+					session.setAttribute("role", role);
+				}
+			}
+		}
+
+		if (authentication instanceof OAuth2AuthenticationToken) {
+			OAuth2User oauthUser = ((OAuth2AuthenticationToken) authentication).getPrincipal();
+			if (oauthUser instanceof PrincipalDetails) {
+				PrincipalDetails userDetails = (PrincipalDetails) oauthUser;
+				String email = userDetails.getEmail(); // Use getEmail from PrincipalDetails
+				String password = userDetails.getPassword();
+				String provider = userDetails.getProvider();
+				String providerId = userDetails.getProviderId();
+				String name = userDetails.getUsername();
+
+				Member member = memberRepository.findByEmail(email);
+				SocialMemberDto socialMemberDto = new SocialMemberDto();
+				// name password 추가
+				// dto에 provide 등 추가
+				socialMemberDto.setEmail(email);
+				// socialMemberDto.setPassword(password);
 //	    	            socialMemberDto.setPasswordConfirm(password);
-	    	            socialMemberDto.setProvider(provider);
-	    	            socialMemberDto.setProviderId(providerId);
-	    	            socialMemberDto.setName(name);
-	                    
-	    	            if (member == null) {
-	    	                // 간편 로그인 성공시 추가 정보를 받기위해
-	    	            	
-	    	            	String redirectUrl = "/members/snsMember?email=" + URLEncoder.encode(socialMemberDto.getEmail(), "UTF-8") 
-	    	            	+ "&provider=" + URLEncoder.encode(socialMemberDto.getProvider(), "UTF-8" )
-	    	            	+ "&providerId=" + URLEncoder.encode(socialMemberDto.getProviderId(), "UTF-8")
-	    	            	+ "&name=" + URLEncoder.encode(socialMemberDto.getName(), "UTF-8");
-	    	            	//+ "&password=" + URLEncoder.encode(socialMemberDto.getPassword(), "UTF-8");
-	    	            			
-	    	            	response.sendRedirect(redirectUrl);
-	    	            } else {
-	    	                // 실패시
-	    	                response.sendRedirect("/"); 
-	    	            }
-	    	        }
+				socialMemberDto.setProvider(provider);
+				socialMemberDto.setProviderId(providerId);
+				socialMemberDto.setName(name);
 
-	    	    }
-	    }
+				if (member == null) {
+					// 간편 로그인 성공시 추가 정보를 받기위해
+
+					String redirectUrl = "/members/snsMember?email="
+							+ URLEncoder.encode(socialMemberDto.getEmail(), "UTF-8") + "&provider="
+							+ URLEncoder.encode(socialMemberDto.getProvider(), "UTF-8") + "&providerId="
+							+ URLEncoder.encode(socialMemberDto.getProviderId(), "UTF-8") + "&name="
+							+ URLEncoder.encode(socialMemberDto.getName(), "UTF-8");
+					// + "&password=" + URLEncoder.encode(socialMemberDto.getPassword(), "UTF-8");
+
+					response.sendRedirect(redirectUrl);
+				} else {
+					// 실패시
+					response.sendRedirect("/");
+				}
+			}
+
+		}
+	}
 }
