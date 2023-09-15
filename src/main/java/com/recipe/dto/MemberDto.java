@@ -16,22 +16,22 @@ import lombok.Setter;
 @Setter
 public class MemberDto {
 
-	@NotEmpty(message = "이메일은 필수 입력 값입니다")
-	@Email(message = "이메일 형식으로 입력해주세요")
+	@NotEmpty(message = "* 이메일을 입력 해주세요 *")
+	@Email(message = "* 이메일 형식으로 입력해주세요 *")
 	private String email;
 	
-	@NotEmpty(message = "비밀번호는 필수 입력 값입니다")
-	@Length(min = 9, max = 15, message = "비밀번호는 9 ~ 15자 사이로 입력해주세요")
+	@NotEmpty(message = "* 비밀번호를 입력 해주세요 *")
+	@Length(min = 9, max = 15, message = "* 비밀번호는 9 ~ 15자 사이로 입력해주세요 *")
 	private String password;
 	
 	private String passwordConfirm;
 	
-	@Length(min = 2, max = 8, message = "닉네임은 2~8자 사이로 입력해주세요")
+	@Length(min = 2, max = 8, message = "* 닉네임은 2~8자 사이로 입력해주세요 *")
 	@NotNull
 	private String nickname; //사이트용 닉네임
 	
-	@NotEmpty
-	@Pattern(regexp = "^010-\\d{4}-\\d{4}$", message = "올바른 휴대폰 번호를 입력해주세요. 양식은 010-xxxx-xxxx 입니다.")
+	@NotEmpty(message = "* 휴대폰번호를 입력 해주세요 *")
+	@Pattern(regexp = "^010-\\d{4}-\\d{4}$", message = "* 올바른 휴대폰 번호를 입력해주세요. 양식은 010-xxxx-xxxx 입니다 *")
 	private String phoneNumber;
 	
 	private Long id;

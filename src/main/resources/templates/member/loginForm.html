@@ -1,15 +1,31 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout1}">
-
+<html>
 <head>
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-</head>
-
-<th:block layout:fragment="css">
-	<style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ <meta name="description" content="Yoga Studio Template">  
+ <meta name="keywords" content="Yoga, unica, creative, html"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Yummy</title>
+	
+		<!-- 폰트어썸-->
+    <script src="https://kit.fontawesome.com/27cfb375b2.js" crossorigin="anonymous"></script>
+    
+    <!-- Google Font -->
+    <link th:href="@{https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+	<link th:href="@{https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css}"rel="stylesheet" />
+    <!-- Css Styles -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/nice-select.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/slicknav.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/style_custom.css}" type="text/css">
+    <style>
 		:root {
 	--green-color: #98FB98;
 }
@@ -65,7 +81,7 @@
 	/* border-color: var(--green-color); */
 	margin-top: 10px;
 	height: 50px;
-	font-size: 14px;
+	font-size: 18px;
 }
 
 #loginbtn:hover{
@@ -87,6 +103,7 @@
 
 
 .email_save {
+	font-size: 17px;
 	margin-bottom: 15px;
 	text-align: left;
 }
@@ -116,11 +133,54 @@ p{
 	background-color: white;
 	cursor: pointer;
 }
-	</style>
-</th:block>
 
-<div layout:fragment="content">
-	<h2>로그인</h2>
+.ezen_logo {
+	width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.d_logo {
+    height: 94px;
+    left: -3px;
+    position: relative;
+}
+
+img {
+    max-width: 100%;
+}
+
+.logo_box_log {
+	justify-content: center;
+    align-items: center;
+    display: flex;
+    margin-top: 170px;
+}
+
+* {
+	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
+}
+
+.in:focus {
+    outline: 1px solid #A0BF6B;
+}
+
+.in2:hover {
+    color: #A0BF6B;
+}
+
+#loginbtn:hover {
+	background-color:RGB(160, 191, 107);
+}
+	</style>
+</head>
+<body>
+	
+	<div class="site-wrap">
+	<div class="logo_box_log">
+	<a href="/" class="d_logo"> <img alt="로고심볼" src="/img/이젠 해먹자 (1).svg" class="ezen_logo">
+					</a>
+	</div>
 	<div class="loginForm">
 		<form action="/members/login" method="post">
 			<input type="text" placeholder="이메일" class="in" id="email" name="email"> 
@@ -128,7 +188,7 @@ p{
 			<div class="email_save">
 				<input type="checkbox" name="email_save" id="email_save" /> 이메일 기억
 			</div>
-		<p>간편 로그인</p>
+		<p style="margin-bottom: 10px;color: #7f7f7f;">간편 로그인</p>
 		<div class="sublogin">
 			<a href="/oauth2/authorization/kakao">
 				<button type="button" id="kakaoLogin" class="kakaoLogin">
@@ -149,10 +209,14 @@ p{
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 		</form>
 	</div>
+	
 </div>
 
-<th:block layout:fragment="script">
-	<script type="text/javascript" th:src="@{/js/cookie.js}"></script>
+  <!-- Js Plugins -->
+    <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/jquery.slicknav.js}"></script>
+    <script type="text/javascript" th:src="@{/js/cookie.js}"></script>
 	<script th:inline="javascript">
 		
 		
@@ -189,5 +253,6 @@ p{
 			});
 		});
 	</script>
-</th:block>
+
+</body>
 </html>

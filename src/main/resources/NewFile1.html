@@ -29,12 +29,9 @@
 	<style>
 	
 	.fieldError {
-    line-height: 1.5;
-    letter-spacing: -0.5px;
-    color: RGB(244, 74, 93);
-    font-size: 13px;
-    margin-top: 10px;
-}
+		color: #bd2130;
+		font-size: 13px;
+		}
 			:root {
 	--green-color: #98FB98;
 }
@@ -42,7 +39,7 @@
 	margin: auto;
 	width: 500px;
 	border-radius: 5px;
-	padding: 0px 20px 52px 20px;
+	padding: 20px;
 	
 }
 
@@ -52,16 +49,18 @@
 	box-sizing: border-box;
 	border-radius: 5px;
 	border: none;
+	margin-bottom: 15px;
 	border: 1px solid;
 	/* border-color: var(--green-color); */
 	border-color: #dee2e6;
+	margin-top: 10px;
 	height: 50px;
 	font-size: 14px;
 	
 }
 
 .in2 {
-	width: 370px;
+	width: 390px;
 	padding: 10px;
 	box-sizing: border-box;
 	border-radius: 5px;
@@ -71,24 +70,31 @@
 	border-color: #dee2e6;
 	height: 50px;
 	font-size: 14px;
+	margin : auto;
 }
 
 .in:focus {
-	outline: 1px solid #A0BF6B;
+	outline: 1px solid var(--green-color);
 }
 
 .in2:focus {
-	outline: 1px solid #A0BF6B;
+	outline: 1px solid var(--green-color);
 }
 
 #btn {
+	background-color: #1BBC9B;
 	margin-bottom: 30px;
 	color: white;
-	cursor: pointer !important;
+	cursor: pointer;
 	transition: background-color 0.5s;
 	border: none;
 	cursor: not-allowed;
 }
+
+#btn:hover{
+	background-color: gold;
+}
+
 
 .id_save {
 	margin-bottom: 15px;
@@ -108,15 +114,19 @@ p{
 
 .emailMain{
 	display: flex;
+	margin-bottom: 15px;
+    margin-top: 10px;
 }
 
 .emailConfirmMain{
 	display: flex;
+	margin-bottom: 15px;
+    margin-top: 10px;
 }
 
 .emailbtn{
 	margin : auto;
-	width: 73px;
+	width: 65px;
 	height: 50px;
 		cursor: pointer;
 		background-color: white;
@@ -126,9 +136,12 @@ p{
 		font-size: 12px;
 }
 
+.emailbtn:hover {
+	background-color: var(--green-color);
+}
+
 .col-form-label{
-	font-size: 16px;
-	margin-top: 15px !important;
+	margin-top: 0 !important;
 }
 
 .form-control{
@@ -137,152 +150,76 @@ p{
  
 /* 비밀번호 확인 일치 유효성검사 */
 .pwck_input_re_1{
-	margin:10px 0;
-	font-size: 13px;
         color : green;
         display : none;    
 }
 .pwck_input_re_2{
-	margin:10px 0;
-	font-size: 13px;
         color : red;
         display : none;    
 }    
 
 .profileImgMain{
-	margin-bottom: 0.5rem;
-	margin-top: 15px;
+	margin-bottom: 0;
+	margin-top: 10px;
 }
-
-.ezen_logo {
-	width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.d_logo {
-    height: 94px;
-    left: -3px;
-    position: relative;
-}
-
-img {
-    max-width: 100%;
-}
-
-.logo_box_log {
-	justify-content: center;
-    align-items: center;
-    display: flex;
-    margin-top: 170px;
-}
-
-* {
-	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
-}
-
-label {
-	margin-top:15px;
-	font-size: 16px;
-}
-
-.check_all_box {
-	margin-left: 4px;
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 24px;
-    color: #A0BF6B;
-}
-
-.add_box {
-	padding: 5px 10px;
-	border-radius: 5px;
-	border: 1px solid #dee2e6;;
-	font-size: 15px;
-}
-
-.next-button{
-	font-size: 18px;
-    width: 100%;
-    height: 50px;
-    outline: none;
-    cursor: pointer;
-    background-color: #A0BF6B;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    transition-duration: 0.2s;
-    margin-bottom: 30px;
-    margin-top: 20px;
-}
-
-#btn:disabled {
-    background-color: #dbdbdb;
-    cursor: not-allowed !important;
-}
-
 	</style>
 </head>
 <body>
 	
 	<div class="site-wrap">
-	<div class="logo_box_log">
-	<a href="/" class="d_logo"> <img alt="로고심볼" src="/img/이젠 해먹자 (1).svg" class="ezen_logo">
-					</a>
-	</div>
+	<h2>회원가입</h2>
 	<div class="newForm">
 		<form role="joinform" id="joinform" action="/members/newMember" method="post" th:object="${memberDto}" enctype="multipart/form-data" > <!-- th:object="${memberDto}" dto필드값 이름 = field값 이름 -->
 				<input type="hidden" th:field="*{id}"/>
-				<label for="email" class="email">이메일<span class="check_all_box">(필수)</span></label>
+				<label for="email" class="email">이메일</label>
 				<div class="emailMain">
 					<input type="email" placeholder="이메일을 입력해주세요" class="in2" th:field="*{email}" >
-					<button type="button" class="emailbtn" id="sendBtn" name="sendBtn" onclick="sendNumber()">인증 요청</button> 
-					<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError"></p>
+					<button type="button" class="emailbtn" id="sendBtn" name="sendBtn" onclick="sendNumber()">인증번호요청</button> 
 				</div>
-			    <label for="emailConfirm" class="emailConfirm">인증번호<span class="check_all_box">(필수)</span></label>
+			    <label for="emailConfirm" class="emailConfirm">인증번호</label>
 				<div class="emailConfirmMain">
 					<input type="text" placeholder="인증번호를 입력해주세요" class="in2" th:field="*{emailConfirm}">
 					<input type="hidden" class="in2" th:field="*{emailConfirm2}" >
 					<button type="button" class="emailbtn" onclick="confirmNumber()">확인</button> 
 				</div>
 			<div>
-				<label for="password" class="password">비밀번호<span class="check_all_box">(필수)</span></label>
+				<label for="password" class="password">비밀번호</label>
+				<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError">Incorrect Data</p>
 				<input type="password" placeholder="사용하실 비밀번호를 9~15자 사이로 입력해주세요" class="in" th:field="*{password}" maxlength="15">
-				<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError"></p>
 			</div>
 			<div>
-				<label for="passwordConfirm" class="passwordConfirm">비밀번호 확인<span class="check_all_box">(필수)</span></label>
+				<label for="passwordConfirm" class="passwordConfirm">비밀번호 확인</label>
 				<span class="pwck_input_re_1">비밀번호가 일치합니다</span>
 				<span class="pwck_input_re_2">비밀번호가 일치하지 않습니다</span>
 				<input type="password" placeholder="비밀번호를 한번더 입력해주세요" class="in" th:field="*{passwordConfirm}">
 			</div>
 			<div>
-				<label for="nickname" class="nickname">닉네임<span class="check_all_box">(필수)</span></label>
-				<input type="text" placeholder="사용하실 닉네임을 2~8자 사이로 입력해주세요" class="in" th:field="*{nickname}" maxlength="8">
-				<p th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}" class="fieldError"></p> 
+				<label for="phoneNum" class="phoneNum">휴대폰 번호</label>
+				<p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="fieldError">Incorrect Data</p> 
+				<input type="tel" placeholder="휴대폰 입력 양식은 010-xxxx-xxxx 입니다" class="in" th:field="*{phoneNumber}">
 			</div>
 			<div>
-				<label for="phoneNum" class="phoneNum">휴대폰 번호<span class="check_all_box">(필수)</span></label>
-				<input type="tel" placeholder="휴대폰 입력 양식은 010-xxxx-xxxx 입니다" class="in" th:field="*{phoneNumber}">
-				<p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="fieldError"></p> 
+				<label for="nickname" class="nickname">닉네임</label>
+				<p th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}" class="fieldError">Incorrect Data</p> 
+				<input type="text" placeholder="사용하실 닉네임을 2~8자 사이로 입력해주세요" class="in" th:field="*{nickname}" maxlength="8">
 			</div>
 			
 			<div>
 				<label for="exampleTextarea" class="col-form-label mt-4">주소</label>
 					<br> 
-					<input type="text" id="sample6_postcode" placeholder="우편번호"  th:field="*{postCode}" class="add_box"> 
-					<input type="button" onclick="sample6_execDaumPostcode()"value="우편번호 찾기" class="add_box"><br> 
-					<input style="margin-top: 13px;" class="in" type="text" id="sample6_address" placeholder="주소"  th:field="*{address}"> 
-					<input style="margin-top: 13px;" class="in" type="text" id="sample6_detailAddress" placeholder="상세주소를 입력해주세요" th:field="*{detailAddress}"> 
+					<input type="text" id="sample6_postcode" placeholder="우편번호"  th:field="*{postCode}"> 
+					<input type="button" onclick="sample6_execDaumPostcode()"value="우편번호 찾기"><br> 
+					<input style="width: 315px; margin-top: 13px;" class="form-control" type="text" id="sample6_address" placeholder="주소"  th:field="*{address}"> 
+					<input style="width: 315px; margin-top: 13px;" class="form-control" type="text" id="sample6_detailAddress" placeholder="상세주소" th:field="*{detailAddress}"> 
 					<input class="form-control" type="text" id="sample6_extraAddress" placeholder="참고항목" style="display: none;">
 			</div>
 			<div>
-				<label for="profileImgMain" class="profileImgMain">프로필 이미지 <span style="font-size: 13px;"> (프로필로 사용하실 이미지를 넣어주세요)</span></label>
+				<label for="profileImgMain" class="profileImgMain">프로필 이미지(프로필로 사용하실 이미지를 넣어주세요)</label>
 				<input type="file" class="in" id="profileImgFile" name="profileImgFile" accept="image/*">
 			</div>
 			<input type="hidden" th:field="*{introduce}">
 			<input type="hidden" th:field="*{name}">
-		<button style="margin-top: 40px; " type="submit" id="btn" class="next-button" disabled>양식 작성해주세요</button>
+		<button type="submit" id="btn" class="in" disabled>가입하기</button>
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 		</form>
 	</div>
@@ -299,87 +236,49 @@ label {
  	
 	
 	// 중복이메일로 가입시도했을때 에러메세지를 보냄
-
 	var errorMessage = [[${errorMessage}]];
 
     if (errorMessage != null) {
         alert(errorMessage);
     }
-    
-    
-	var numberSent = false;
-	var numberConfirmed = false;
 	
-	
-	$(document).ready(function () {
- 
-   $("#password, #passwordConfirm ,#nickname , #phoneNumber , #emailConfirm").on("input", function() {
-    finalCk();
-	});
-	
-});
-	 $("#btn").click(function() {
-        alert(" 회원가입 되었습니다 ");
+    //회원가입 확인
+    $("#btn").click(function() {
+    	
+        var pw = $('#password').val();
+        var pwck = $('#passwordConfirm').val();
+        var nickname = $('#nickname').val();
+        var regexp = new RegExp("^010-\\d{4}-\\d{4}$");
+        var phone = $('#phoneNumber').val();
+        var emailConfirm2 = $('#emailConfirm2').val();
+        var emailConfirm = $('#emailConfirm').val();
+        console.log(emailConfirm2)
+        
+        if (pw === pwck && pw != "" && regexp.test(phone) == true && emailConfirm2 != "" && emailConfirm == emailConfirm2
+        		&& nickname != null && nickname != "") {
+        	alert("회원가입 완료")
+        } else {
+            alert("가입실패 인증을 다시 해주시거나.입력란을 확인해주세요");
+        }
     });
 
-	function finalCk() {
-    if (numberSent && numberConfirmed) {
-        checkLogin();
-    }
-	}
-		function checkLogin() {
-    
-    var pw = $('#password').val();
-    var pwck = $('#passwordConfirm').val();
-    var nickname = $('#nickname').val();
-    var phone = $('#phoneNumber').val();
-    var email = $('#email').val();
-    var emailConfirm = $('#emailConfirm').val();
-    var regexp = new RegExp("^010-\\d{4}-\\d{4}$");
-    // 이 부분에 모든 조건을 넣습니다.
-    if (pw === pwck && pw != "" && pwck != "" && regexp.test(phone) === true && email != "" && emailConfirm != "" && nickname != "") {
-        $("#btn").prop('disabled', false); // 버튼 활성화
-        $("#btn").text('회원가입'); // 버튼 활성화
-        
-    } else {
-        $("#btn").prop('disabled', true); // 버튼 비활성화
-        $("#btn").text('양식 작성해주세요'); // 버튼 활성화
-    }
-}
 	
-	
-	
-	
-//비밀번호 확인 일치 검사
+	//비밀번호 확인 일치 검사
 	$('#passwordConfirm').on("propertychange change keyup paste input", function(){
 		var pw = $('#password').val();
 	    var pwck = $('#passwordConfirm').val();
-	    var min_length = 9;
-    	var max_length = 15;
 	    $('.passwordConfirm').css('display', 'none');
-	 if (pw === "" || pwck === "") {
-		    $('.pwck_input_re_1').css('display','none');
-            $('.pwck_input_re_2').css('display','none');
-            $('.passwordConfirm').html('비밀번호 확인<span class="check_all_box">(필수)</span>');
-         $('.passwordConfirm').css('display', 'block');
-    }   
-	  else if (pw.length >= min_length && pw.length <= max_length && pwck.length >= min_length && pwck.length <= max_length) {
-        if (pw === pwck) {
-            $('.pwck_input_re_1').css('display','block');
-            $('.pwck_input_re_2').css('display','none');
-        } else {
-            $('.pwck_input_re_1').css('display','none');
-            $('.pwck_input_re_2').css('display','block');
-        }
-    } else {
-       $('.pwck_input_re_2').text('비밀번호는 9자 ~ 15자 사이로 입력해주세요');
-       $('.pwck_input_re_2').css('display','block');
-    } 
+	    
+	    if(pw == pwck){
+	        $('.pwck_input_re_1').css('display','block');
+	        $('.pwck_input_re_2').css('display','none');
+	        pwckcorCheck = true;
+	    }else{
+	        $('.pwck_input_re_1').css('display','none');
+	        $('.pwck_input_re_2').css('display','block');
+	        pwckcorCheck = false;
+	    }   
 	});
-	
-	
-	
-	
 	
 	//인증번호를 위한 이메일 전송 함수
 	  function sendNumber(){
@@ -392,10 +291,10 @@ label {
 		
 		if(email == null || email == ""){
 			alert("이메일을 입력해주세요")
-			numberSent = false;
+			return false;
 		} else if(regexp.test(email) != true){
 			alert("올바른 이메일을 입력해주세요")
-			numberSent = false;
+			return false;
 		}
 		
 		var paramData = {
@@ -403,7 +302,11 @@ label {
 				email : $("#email").val(),
 				
 		}
+		console.log(paramData);
+		
 		var param = JSON.stringify(paramData);
+		console.log(param);
+		
 	        $.ajax({
 	            url:"/email",
 	            type:"post",
@@ -414,23 +317,17 @@ label {
 	            beforeSend : function(xhr) { //데이터를 전송하기 전 헤더에 csrf값을 설정
 					xhr.setRequestHeader(header, token);
 				},
-	            success: function(result, status, jqXHR){
-	            	$("#emailConfirm2").val(result);
+	            success: function(param){
+	            	$("#emailConfirm2").val(param);
+	            	console.log($("#emailConfirm2").val());
 	                alert("인증번호 발송");
-	            	numberSent = true;
-	            	finalCk();
 	            },
 	            error : function(jqXHR, status, error) {
 					alert(jqXHR.responseText); //에러메세지(responseEntity에서 받아온 값) 출력
-					numberSent = false;
-					finalCk();
 				}
 		        
 	        });
 	    }
-		
-		
-		
 		
 	    //메일로 보낸 인증번호와 사용자가 입력한 인증번호가 같은지 확인
 	    function confirmNumber(){
@@ -438,18 +335,41 @@ label {
 	        var number2 = $("#emailConfirm2").val();
 
 	        if(number1 == number2 && number1 != ""){
+	        	$("#btn").attr("disabled", false).css("cursor", "pointer");
 	            alert("인증되었습니다.");
-	            numberConfirmed = true;
-	            finalCk();
 	        }else{
 	            alert("인증 실패. 인증번호가 다르거나 없습니다");
-	            numberConfirmed = false;
-	            finalCk();
 	        }
-	        
 	    }
 	    
-	  
+	    //이메일저장
+		$(document).ready(function() {
+			var userInputId = getCookie("userInputId"); //쿠키값을가져온다
+			var setCookieYN = getCookie("setCookieYN"); //쿠기값(이메일)을 가져온다
+
+			if (setCookieYN == 'Y') { //이메일 저장여부가 y면
+				$("#id_save").prop("checked", true);  //이메일 저장 체크박스를 체크한다
+				$("#userId").val(userInputId);  //이메일 input창에는 쿠키에서 가져온 이메일 주소를 넣는다
+			} else {
+				$("#id_save").prop("checked", false);
+			}
+
+			//로그인 버튼 클릭시 쿠키에 이메일, 이메일 저장여부 저장
+			$('#loginbtn').click(function() { 
+				if ($("#id_save").is(":checked")) { //이메일 저장에 체크가 되어있다면
+					var userInputId = $("#userId").val(); //이메일 값을 가지고온다
+					//쿠키생성
+					setCookie("userInputId", userInputId, 60); //이메일 저장
+					setCookie("setCookieYN", "Y", 60); //이메일 저장여부 저장
+				} else {
+					//쿠기삭제
+					deleteCookie("userInputId"); 
+					deleteCookie("setCookieYN");
+				}
+			});
+		});
+	
+	    
 	    //주소
 	    /* var script = document.createElement('script');
         script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
@@ -523,7 +443,7 @@ label {
             }).open();
         }
 		
-	
+				
 	</script>
 
 </body>

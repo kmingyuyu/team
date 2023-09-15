@@ -3,7 +3,6 @@ package com.recipe.controller;
 import java.security.Principal;
 import java.util.List;
 
-import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,13 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.recipe.dto.MemberDto;
 import com.recipe.dto.MyPageDto;
-import com.recipe.entity.BookMark;
 import com.recipe.entity.Member;
 import com.recipe.entity.Recipe;
 import com.recipe.repository.BookMarkRepository;
 import com.recipe.repository.CommentRepository;
+import com.recipe.repository.FollowRepository;
 import com.recipe.repository.MemberRepository;
 import com.recipe.service.MyPageService;
 
@@ -38,14 +36,15 @@ public class MypageController {
 	private final MemberRepository memberRepository;
 	private final CommentRepository commentRepository;
 	private final BookMarkRepository bookmarkRepository;
+	private final FollowRepository followRepository;
 	
 	//마이페이지 보여주기
-	@GetMapping(value="/myPage")
-	public String myPage(HttpSession session , Model model) {
-	
-		Long id = (Long) session.getAttribute("memberId");
+	@GetMapping(value= "/myPage" )
+	public String myPage(HttpSession session, Model model) {
 		
 		myPageService.deleteMarkedBookmarks();  // 여기서 삭제 로직을 호출
+		
+		Long id = (Long) session.getAttribute("memberId");
 		Member myPageDto = memberRepository.getfindmemberbyid(id);
 		
 		List<Recipe> recipeList =myPageService.getRecipeList(id);
@@ -55,13 +54,8 @@ public class MypageController {
 		List<MyPageDto> myCommentList = myPageService.getMyComment(id);
 		
 		List<MyPageDto> myReviewList = myPageService.getMyReview(id);
-		
 		List<MyPageDto> receivedReviewList = myPageService.getReceivedReview(id);
-		
-        for (Recipe recipe : recipeList) {
-            Long recipeId = recipe.getId();
-            int bookmarkCount = bookmarkRepository.countByRecipeId(recipeId);
-        }
+
 		
 		model.addAttribute("receivedReviewList" , receivedReviewList);
 		model.addAttribute("myReviewList" ,  myReviewList);
@@ -76,23 +70,26 @@ public class MypageController {
 		return "myPage";
 		
 	}
-	
 	//프로필 보여주기
 	@GetMapping(value="/profile/{id}")
-	public String profile(@PathVariable("id")Long id,Model model) {
+	public String profile(@PathVariable("id")Long id,Model model,Principal principal ) {
+		myPageService.getFollowingCount(id);		
 		Member myPageDto = memberRepository.getfindmemberbyid(id);
 		List<Recipe> allRecipeList =myPageService.getAllRecipeList(id);
 		List<Recipe> popularRecipeList =myPageService.getPopularRecipeList(id);
-		
         for (Recipe recipe : allRecipeList) {
             Long recipeId = recipe.getId();
             int bookmarkCount = bookmarkRepository.countByRecipeId(recipeId);
         }
+     
+
+        model.addAttribute("email",principal.getName().equals(myPageDto.getEmail()));
 		model.addAttribute("myPageDto",myPageDto);//회원정보
 		model.addAttribute("allRecipeList" , allRecipeList); //레시피목록
 		model.addAttribute("popularRecipeList" , popularRecipeList); //레시피목록
 		return "profile";
 	}
+	
 	
 	
 	//회원정보수정하기 
@@ -115,7 +112,7 @@ public class MypageController {
 			e.printStackTrace();
 		}
 		
-		return "redirect:/myPage/{id}";
+		return "redirect:/myPage";
 	}
 	
 	//회원탈퇴
@@ -174,6 +171,7 @@ public class MypageController {
 		
 	}
 	
+	//팔로우
 	@PostMapping(value = "/follow/{followingId}")
 	public ResponseEntity<String> followMember(@PathVariable Long followingId, Principal principal) {
 	    
@@ -187,12 +185,51 @@ public class MypageController {
 	    followingId = following.getId();
 	    // 팔로우 기능을 실행합니다.
 	    // 이 부분은 실제 팔로우 로직에 따라 다르게 구현될 수 있습니다.
-	    myPageService.saveFollow(followingId, principal);
-
-	    System.out.println(followingId);
-	    System.out.println(principal);
-	    return ResponseEntity.ok("Followed successfully.");
+	    if(myPageService.isFollowing(followingId, follower.getId())) {
+	    	
+	    	return ResponseEntity.badRequest().body("이미 팔로우한 사용자입니다.");
+	    	
+	    }else {
+	    	
+	    	myPageService.saveFollow(followingId, principal);
+	    	return ResponseEntity.ok("Followed successfully.");
+	    }
+	    
 	}
+	
+	//언팔로우
+	@DeleteMapping(value = "/unfollow/{followingId}")
+	public ResponseEntity<String> unfollowMember(@PathVariable Long followingId, Principal principal) {
+	    // 팔로우 대상 사용자의 정보를 가져옵니다.
+	    Member following = memberRepository.findById(followingId)
+	        .orElseThrow(() -> new EntityNotFoundException("Following user not found"));
+
+	    // 로그인한 사용자의 정보를 가져옵니다.
+	    String followerEmail = principal.getName();
+	    Member follower = memberRepository.findByEmail(followerEmail);
+
+	    // 언팔로우 기능을 실행합니다.
+	    boolean success = myPageService.unfollow(following.getId(), follower.getId());
+
+	    if (success) {
+	        return ResponseEntity.ok("Unfollowed successfully.");
+	    } else {
+	        return ResponseEntity.badRequest().body("Unfollow failed.");
+	    }
+	}
+	//팔로우 여부 체크 
+    @GetMapping("/api/follow/check/{toMemberId}")
+    @ResponseBody // 이 어노테이션을 사용하여 반환값을 HTTP 응답 본문으로 설정
+    public boolean checkFollowStatus(@PathVariable Long toMemberId, Principal principal) {
+        Member toMember = memberRepository.findById(toMemberId).orElseThrow(() -> new EntityNotFoundException("Following user not found"));
+    	String email = principal.getName();
+        Member fromMember = memberRepository.findByEmail(email);
+        return followRepository.existsByToMemberAndMember(toMember.getId(), fromMember);
+    }
+    
+    
+	
 }
 	
 	
+

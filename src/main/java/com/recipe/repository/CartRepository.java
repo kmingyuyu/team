@@ -31,7 +31,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 			+ "JOIN member m ON c.member_id = m.member_id\r\n"
 			+ "JOIN item i ON c.item_id = i.item_id\r\n"
 			+ "JOIN item_img img ON i.item_id = img.item_id\r\n"
-			+ "WHERE m.member_id = 502  AND img.img_main_ok = 'Y';"
+			+ "WHERE m.member_id = :memberId  AND img.img_main_ok = 'Y';"
 			, nativeQuery = true)
 	List<CartDto> getCartList(@Param("memberId") Long memberId);
 	

@@ -21,7 +21,6 @@ import com.recipe.dto.RecipeCategoryDto;
 import com.recipe.dto.RecipeSearchDto;
 import com.recipe.entity.QBookMark;
 import com.recipe.entity.QMember;
-import com.recipe.entity.QMemberImg;
 import com.recipe.entity.QRecipe;
 import com.recipe.entity.QReview;
 
@@ -41,7 +40,6 @@ public class RecipeRepositoryCustomImpl implements RecipeRepositoryCustom {
 		QBookMark bm = QBookMark.bookMark;
 		QReview rv = QReview.review;
 		QMember m = QMember.member;
-		QMemberImg mi = QMemberImg.memberImg;
 
 		List<Tuple> bookmarkResults = queryFactory
 		    .select(r.id, bm.recipe.id.count())
@@ -65,8 +63,7 @@ public class RecipeRepositoryCustomImpl implements RecipeRepositoryCustom {
 		                r.regTime,
 		                r.intro,
 		                m.nickname,
-		                mi.imgUrl,
-		                mi.imgMainOk,
+		                m.imgUrl,
 		                r.categoryEnum,
 		                rv.recipe.count().as("reviewCount"),
 		                rv.reting.avg().coalesce(0.0).as("retingAvg")
@@ -74,13 +71,12 @@ public class RecipeRepositoryCustomImpl implements RecipeRepositoryCustom {
 		        ))
 		        .from(r)
 		        .join(m).on(r.member.id.eq(m.id))
-		        .leftJoin(mi).on(m.id.eq(mi.member.id).and(mi.imgMainOk.eq(ImgMainOk.Y)))
 		        .leftJoin(rv).on(r.id.eq(rv.recipe.id))
 		        .where( r.writingStatus.eq(WritingStatus.PUBLISHED),
 		        		mainCategoryEq(recipeSearchDto.getMainCategory()),
 		        		searchByLike(recipeSearchDto.getSearchBy() , recipeSearchDto.getSearchQuery()))
 		        .groupBy(r.id, r.count, r.durTime, r.imageUrl, r.level, r.subTitle, r.title,
-		                r.member.id, r.regTime, r.intro, m.nickname, mi.imgUrl, mi.imgMainOk, r.categoryEnum
+		                r.member.id, r.regTime, r.intro, m.nickname, m.imgUrl, r.categoryEnum
 		               )
 		        .orderBy(orderByType(recipeSearchDto.getType()))
 		        .offset(pageable.getOffset())
@@ -100,7 +96,6 @@ public class RecipeRepositoryCustomImpl implements RecipeRepositoryCustom {
 		        .select(Wildcard.count)
 		        .from(r)
 		        .join(m).on(r.member.id.eq(m.id))
-		        .leftJoin(mi).on(m.id.eq(mi.member.id).and(mi.imgMainOk.eq(ImgMainOk.Y)))
 		        .where( r.writingStatus.eq(WritingStatus.PUBLISHED),
 		        		mainCategoryEq(recipeSearchDto.getMainCategory()),
 		        	    searchByLike(recipeSearchDto.getSearchBy() , recipeSearchDto.getSearchQuery()))

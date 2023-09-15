@@ -1,17 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout1}">
-
-<script src="https://code.jquery.com/jquery-latest.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<th:block layout:fragment="css">
+<html>
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Yoga Studio Template">  <meta name="keywords" content="Yoga, unica, creative, html">  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Yummy</title>
+	
+		<!-- 폰트어썸-->
+    <script src="https://kit.fontawesome.com/27cfb375b2.js" crossorigin="anonymous"></script>
+    
+    <!-- Google Font -->
+    <link th:href="@{https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+	<link th:href="@{https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css}"rel="stylesheet" />
+    <!-- Css Styles -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/nice-select.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/slicknav.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/style_custom.css}" type="text/css">
+    
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	
 	<style>
 	
 	.fieldError {
-		color: #bd2130;
-		font-size: 13px;
-		}
+    line-height: 1.5;
+    letter-spacing: -0.5px;
+    color: RGB(244, 74, 93);
+    font-size: 13px;
+    margin-top: 10px;
+}
+		
 			:root {
 	--green-color: #98FB98;
 }
@@ -19,24 +43,21 @@
 	margin: auto;
 	width: 500px;
 	border-radius: 5px;
-	padding: 20px;
+	padding: 0px 20px 20px 20px;
 	
 }
 
 .in {
-	width: 100%;
-	padding: 10px;
-	box-sizing: border-box;
-	border-radius: 5px;
-	border: none;
-	margin-bottom: 25px;
-	border: 1px solid;
-	/* border-color: var(--green-color); */
-	border-color: #dee2e6;
-	margin-top: 10px;
-	height: 50px;
-	font-size: 14px;
-	
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: none;
+    border: 1px solid;
+    /* border-color: var(--green-color); */
+    border-color: #dee2e6;
+    height: 50px;
+    font-size: 14px;
 }
 
 .in2 {
@@ -70,28 +91,17 @@
 	border: none;
 }
 
-#btn:hover{
-	background-color: gold;
-}
-
-
 .id_save {
 	margin-bottom: 15px;
 	text-align: left;
 }
 
-h3 {
- text-align: center;
- color: black;
-  margin: 10px; 0;	
+.h_d_l {
+  color: black;
+  text-align: center;
+  }
 
-}
 
-h6{
-	 text-align: center;
- color: black;	
-  margin: 30px; 0;	
-}
 
 p{
 	color: black;
@@ -140,16 +150,80 @@ p{
 
 
 .snsProfileImgMain{
-	margin-bottom: 0;
-	margin-top: 10px;
+margin-bottom: 0.5rem;
+    margin-top: 15px;
+}
+
+.ezen_logo {
+	width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.d_logo {
+    height: 94px;
+    left: -3px;
+    position: relative;
+}
+
+img {
+    max-width: 100%;
+}
+
+.logo_box_log {
+	justify-content: center;
+    align-items: center;
+    display: flex;
+    margin-top: 170px;
+}
+
+* {
+	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
+}
+
+label {
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+.next-button {
+    font-size: 18px;
+    width: 100%;
+    height: 50px;
+    outline: none;
+    cursor: pointer;
+    background-color: #A0BF6B;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    transition-duration: 0.2s;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+
+#btn:disabled {
+    background-color: #dbdbdb;
+    cursor: not-allowed;
+}
+
+.check_all_box {
+    margin-left: 4px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #A0BF6B;
 }
 	</style>
-</th:block>
-
-<div layout:fragment="content">
-	<h3>간편 로그인 회원 추가 정보 입력</h3>
-	<h6>회원가입을 완료하시면 간편로그인을 통해 이젠해먹자 사이트를 이용하실 수 있으십니다.</h6>
+</head>
+<body>
+	
+	<div class="site-wrap">
 	<div class="newForm">
+	<div class="logo_box_log">
+	<a href="/" class="d_logo"> <img alt="로고심볼" src="/img/이젠 해먹자 (1).svg" class="ezen_logo">
+					</a>
+	</div>
+	<p class="h_d_l">회원 추가 정보 입력</p>
 		<form role="joinform" id="joinform" action="/members/snsMember" method="post" th:object="${socialMemberDto}" enctype="multipart/form-data"> <!-- th:object="${memberDto}" dto필드값 이름 = field값 이름 -->
 			<!-- <div>
 				<label for="password" class="password">비밀번호</label>
@@ -164,20 +238,20 @@ p{
 				<input type="password" placeholder="비밀번호를 한번더 입력해주세요" class="in" th:field="*{passwordConfirm}">
 			</div> -->
 			<div>
-				<label for="phoneNum" class="phoneNum">휴대폰 번호</label>
-				<p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="fieldError">Incorrect Data</p> 
+				<label for="phoneNum" class="phoneNum">휴대폰 번호<span class="check_all_box">(필수)</span></label>
 				<input type="tel" placeholder="(-)를 제외한 숫자만 입력해주세요" class="in" th:field="*{phoneNumber}" oninput="oninputPhone(this)">
+				<p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="fieldError"></p> 
 			</div>
 			<div>
-				<label for="nickname" class="nickname">닉네임</label>
-				<p th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}" class="fieldError">Incorrect Data</p> 
+				<label for="nickname" class="nickname">닉네임<span class="check_all_box">(필수)</span></label>
 				<input type="text" placeholder="사용하실 닉네임을 2~8자 사이로 입력해주세요" class="in" th:field="*{nickname}" maxlength="8">
+				<p th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}" class="fieldError"></p> 
 			</div>
 			<div>
-				<label for="snsProfileImgMain" class="snsProfileImgMain">프로필 이미지(프로필로 사용하실 이미지를 넣어주세요)</label>
+				<label for="snsProfileImgMain" class="snsProfileImgMain">프로필 이미지<span style="font-size: 13px;"> (프로필로 사용하실 이미지를 넣어주세요)</span></label>
 				<input type="file" class="in" id="snsProfileImgFile" name="snsProfileImgFile" accept="image/*">
 			</div>
-		<button type="submit" id="btn" class="in">가입하기</button>
+		<button style="margin-top: 40px;" type="submit" id="btn" class="next-button" disabled>양식 작성해주세요</button>
 		<input type="hidden" th:field="*{email}" th:value="${socialMemberDto.email}">
 	<!-- <input type="hidden"th:field="*{passwordConfirm}" th:value="${memberDto.passwordConfirm}"> -->
 		<input type="hidden"th:field="*{password}" th:value="${socialMemberDto.password}">
@@ -188,10 +262,40 @@ p{
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 		</form>
 	</div>
+	
 </div>
 
-<th:block layout:fragment="script">
+  <!-- Js Plugins -->
+    <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/jquery.slicknav.js}"></script>
+
 	<script th:inline="javascript">
+	
+		$(document).ready(function () {
+ 
+   $("#nickname,#phoneNumber").on("input", function() {
+    finalCk();
+	});
+	
+	});
+	
+	function finalCk() {
+		
+		var nickname = $('#nickname').val();
+		var phone = $('#phoneNumber').val();
+		var regexp = new RegExp("^010-\\d{4}-\\d{4}$");
+		
+		   // 이 부분에 모든 조건을 넣습니다.
+    if (regexp.test(phone) === true  && nickname != "") {
+        $("#btn").prop('disabled', false); // 버튼 활성화
+        $("#btn").text('회원가입'); // 버튼 활성화
+        
+    } else {
+        $("#btn").prop('disabled', true); // 버튼 비활성화
+        $("#btn").text('양식 작성해주세요'); // 버튼 활성화
+    }
+    }
 		
 	 function oninputPhone(target) {
 	        target.value = target.value
@@ -204,10 +308,6 @@ p{
 			var email = $("#email").val();
 		    var nickname = $('#nickname').val();
 		    var name = $('#name').val(); 
-		    console.log(email);
-		    console.log(nickname);
-		    console.log(phoneNumber);
-		    console.log(name);
 		    var regexp = new RegExp("^010-\\d{4}-\\d{4}$");
 		    var phone = $('#phoneNumber').val();
 			 if(nickname != "" && regexp.test(phone) == true){
@@ -243,5 +343,5 @@ p{
 		});
 		
 	</script>
-</th:block>
+</body>
 </html>

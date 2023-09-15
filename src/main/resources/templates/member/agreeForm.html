@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout1}">
-
+<html>
 <head>
-	<meta name="_csrf" th:content="${_csrf.token}" />
-<!-- ajax를 이용해서 정보를 넘기기위해사용 , 보안관련-->
-<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-</head>
-
-<th:block layout:fragment="css">
-	<style>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Yoga Studio Template">
+<meta name="keywords" content="Yoga, unica, creative, html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Yummy</title>
+<style>
 			* {
   box-sizing: border-box;
 }
@@ -47,6 +47,7 @@ ul {
 }
 
 .contents label {
+	display: inline;
   font-weight: 700;
 }
 
@@ -55,7 +56,7 @@ label.required::after {
   font-size: 13px;
   font-weight: 400;
   line-height: 24px;
-  color: #0086ff;
+  color: #A0BF6B;
   content: "(필수)";
 }
 
@@ -70,24 +71,22 @@ label.required::after {
 }
 
 .next-button {
+	font-size: 18px;
   width: 100%;
-  height: 40px;
+  height: 50px;
   outline: none;
   cursor: pointer;
-  background-color: #1BBC9B;
+  background-color: #A0BF6B;
   color: #ffffff;
   border: none;
   border-radius: 5px;
   transition-duration: 0.2s;
   margin-bottom: 30px;
-}
-
-.next-button:hover:enabled {
-  background-color: #242222;
+  margin-top: 20px;
 }
 
 .next-button:disabled {
-  opacity: 0.2;
+  background-color: #dbdbdb;
   cursor: not-allowed;
 }
 
@@ -107,18 +106,87 @@ h3{
 	text-align: center;
 	margin: 30px;
 }
-	</style>
-</th:block>
 
-<div layout:fragment="content">
-	    <div class="wrap">
-      <div class="logo"><h3>회원가입 약관동의</h3></div>
+.ezen_logo {
+	width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.d_logo {
+    height: 94px;
+    left: -3px;
+    position: relative;
+}
+
+img {
+    max-width: 100%;
+}
+
+.logo_box_log {
+	justify-content: center;
+    align-items: center;
+    display: flex;
+    margin-top: 170px;
+}
+
+* {
+	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
+}
+
+.in:focus {
+    outline: 1px solid #A0BF6B;
+}
+
+.in2:hover {
+    color: #A0BF6B;
+}
+
+#loginbtn:hover {
+	background-color:RGB(160, 191, 107);
+}
+
+.check_all_box {
+	margin-left: 4px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #A0BF6B;
+}
+
+
+	</style>
+	
+	<!-- 폰트어썸-->
+    <script src="https://kit.fontawesome.com/27cfb375b2.js" crossorigin="anonymous"></script>
+    
+    <!-- Google Font -->
+    <link th:href="@{https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+	<link th:href="@{https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css}"rel="stylesheet" />
+    <!-- Css Styles -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/nice-select.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/slicknav.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/style_custom.css}" type="text/css">
+    
+</head>
+<body>
+	<div class="site-wrap">
+	 <div class="wrap">
+	<div class="logo_box_log">
+	<a href="/" class="d_logo"> <img alt="로고심볼" src="/img/이젠 해먹자 (1).svg" class="ezen_logo">
+					</a>
+	</div>
       <div class="contents">
         <form action="/members/newMembers" method="GET" id="agreementForm" class="form__wrap">
           <div class="terms__check__all">
             <input type="checkbox" name="checkAll" id="checkAll" />
             <label for="checkAll"
-              >이젠해먹자 이용약관, 개인정보 수집 및 이용, 프로모션 정보수신(선택)에 모두 동의합니다.</label
+              >이젠맛있게 이용약관, 개인정보 수집 및 이용, 프로모션 정보수신(선택)에 모두 동의합니다.<span class="check_all_box">(전체선택)</span> </label
             >
           </div>
           <ul class="terms__list">
@@ -132,16 +200,16 @@ h3{
                   required
                 />
                 <label for="termsOfService" class="required"
-                  >이젠해먹자 이용약관 동의</label
+                  >이젠맛있게 이용약관 동의</label
                 >
               </div>
               <div class="terms__content">
-                여러분을 환영합니다. 이젠해먹자 서비스 및 제품(이하 ‘서비스’)을 이용해
-                주셔서 감사합니다. 본 약관은 다양한 이젠해먹자 서비스의 이용과 관련하여
-                이젠해먹자 서비스를 제공하는 이젠해먹자 주식회사(이하 ‘이젠해먹자’)와 이를 이용하는
-                이젠해먹자 서비스 회원(이하 ‘회원’) 또는 비회원과의 관계를 설명하며,
-                아울러 여러분의 이젠해먹자 서비스 이용에 도움이 될 수 있는 유익한
-                정보를 포함하고 있습니다. 이젠해먹자 서비스를 이용하시거나 이젠해먹자 서비스
+                여러분을 환영합니다. 이젠맛있게 서비스 및 제품(이하 ‘서비스’)을 이용해
+                주셔서 감사합니다. 본 약관은 다양한 이젠맛있게 서비스의 이용과 관련하여
+                이젠맛있게 서비스를 제공하는 이젠맛있게 주식회사(이하 ‘이젠맛있게’)와 이를 이용하는
+                이젠맛있게 서비스 회원(이하 ‘회원’) 또는 비회원과의 관계를 설명하며,
+                아울러 여러분의 이젠맛있게 서비스 이용에 도움이 될 수 있는 유익한
+                정보를 포함하고 있습니다. 이젠맛있게 서비스를 이용하시거나 이젠맛있게 서비스
                 회원으로 가입하실 경우 여러분은 본 약관 및 관련 운영 정책을
                 확인하거나 동의하게 되므로, 잠시 시간을 내시어 주의 깊게 살펴봐
                 주시기 바랍니다.
@@ -161,7 +229,7 @@ h3{
                 >
               </div>
               <div class="terms__content">
-                개인정보보호법에 따라 이젠해먹자에 회원가입 신청하시는 분께 수집하는
+                개인정보보호법에 따라 이젠맛있게 회원가입 신청하시는 분께 수집하는
                 개인정보의 항목, 개인정보의 수집 및 이용목적, 개인정보의 보유 및
                 이용기간, 동의 거부권 및 동의 거부 시 불이익에 관한 사항을 안내
                 드리오니 자세히 읽은 후 동의하여 주시기 바랍니다.1. 수집하는
@@ -182,9 +250,9 @@ h3{
                 <label for="allowPromotions" class="required">프로모션 정보 수신 동의</label>
               </div>
               <div class="terms__content">
-                이젠해먹자에서 제공하는 이벤트/혜택 등 다양한 정보를 휴대전화
+                이젠맛있게에서 제공하는 이벤트/혜택 등 다양한 정보를 휴대전화
                 , 이메일로 받아보실 수 있습니다. 일부 서비스(별도
-                회원 체계로 운영하거나 이젠해먹자 가입 이후 추가 가입하여 이용하는
+                회원 체계로 운영하거나 이젠맛있게 가입 이후 추가 가입하여 이용하는
                 서비스 등)의 경우, 개별 서비스에 대해 별도 수신 동의를 받을 수
                 있으며, 이때에도 수신 동의에 대해 별도로 안내하고 동의를
                 받습니다.
@@ -192,14 +260,19 @@ h3{
             </li>
           </ul>
           <input type="hidden" name="checkedCount" id="checkedCountInput">
-          <button type="submit" class="next-button" disabled id="submitButton" onclick="location.href='/members/newMember'" >확인</button>
+          <button type="submit" class="next-button" disabled id="submitButton" onclick="location.href='/members/newMember'" >약관동의 선택해주세요</button>
         </form>
       </div>
     </div>
-</div>
+  </div>
+    
+    <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/jquery.slicknav.js}"></script>
 
-<th:block layout:fragment="script">
-	<script th:inline="javascript">
+    
+    
+    <script th:inline="javascript">
 		
 	
 	$(document).ready(function () {
@@ -248,8 +321,10 @@ h3{
 		    const checkedCount = $(checkBoxes).filter(":checked").length;
 		    if (termsOfService && privacyPolicy && allowPromotions) {
 		      submitButton.prop("disabled", false);
+		      submitButton.text('확인');
 		    } else {
 		      submitButton.prop("disabled", true);
+		      submitButton.text('약관동의 선택해주세요');
 		    }
 		  }
 
@@ -267,6 +342,5 @@ h3{
 		});
 		
 	</script>
-</th:block>
-
+</body>
 </html>

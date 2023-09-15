@@ -2,19 +2,16 @@ package com.recipe.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.groovy.parser.antlr4.util.StringUtils;
-import org.hibernate.proxy.EntityNotFoundDelegate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.recipe.dto.MemberDto;
 import com.recipe.dto.MyPageDto;
 import com.recipe.entity.BookMark;
 import com.recipe.entity.Comment;
@@ -23,12 +20,10 @@ import com.recipe.entity.Member;
 import com.recipe.entity.Recipe;
 import com.recipe.entity.RecipeOrder;
 import com.recipe.entity.Review;
-import com.recipe.exception.MemberNotFoundException;
 import com.recipe.repository.BookMarkRepository;
 import com.recipe.repository.CommentRepository;
 import com.recipe.repository.FollowRepository;
 import com.recipe.repository.MemberRepository;
-import com.recipe.repository.RecipeListRepository;
 import com.recipe.repository.RecipeRepository;
 import com.recipe.repository.ReviewRepository;
 
@@ -42,7 +37,7 @@ import lombok.extern.java.Log;
 @Transactional
 public class MyPageService {
 
-	private final String imgLocation = "C:/recipe/";
+	private final String imgLocation = "C:/recipe/profile";
 	private final MemberRepository memberRepository;
 	private final RecipeRepository recipeRepository;
 	private final BookMarkRepository bookMarkRepository;
@@ -95,7 +90,7 @@ public class MyPageService {
 			//oriImgName이 빈문자열이 아니라면 이미지 파일 업로드
 			imgName = uploadFile(imgLocation, 
 					oriImgName, imgFile.getBytes());
-			imgUrl = "images/" + imgName;
+			imgUrl = "/img/profile/" + imgName;
 		}
 		    
 		member.updateImg(oriImgName, imgName, imgUrl);
@@ -118,7 +113,7 @@ public class MyPageService {
 			
 			String oriImgName = imgFile.getOriginalFilename();
 			String imgName = uploadFile(imgLocation, oriImgName, imgFile.getBytes());
-			String imgUrl = "/images/" + imgName;
+			String imgUrl = "/img/profile/" + imgName;
 			System.out.println(imgUrl+"askjgnaskjnaskjgnasgkj");
 			//update쿼리문 실행
 			/* ★★★ 한번 insert를 진행하면 엔티티가 영속성 컨텍스트에 저장이 되므로 
@@ -248,6 +243,8 @@ public class MyPageService {
 		bookMarkRepository.save(bookmark); // 상태 변경 저장
 	}
 	public void deleteMarkedBookmarks() {
+	    List<BookMark> bookmarksToDelete = bookMarkRepository.findByIsDeleteTrue();
+	    bookMarkRepository.deleteAll(bookmarksToDelete);
 	}
 	
 	//댓글목록 불러오기
@@ -274,7 +271,6 @@ public class MyPageService {
 		commentRepository.delete(comment);
 	}
 	
-
 	//내후기불러오기
 	@Transactional(readOnly = true)
 	public List<MyPageDto> getMyReview(Long id){
@@ -313,17 +309,50 @@ public class MyPageService {
 		reviewRepository.delete(review);
 	}
 	
-	
-	
 	//팔로우
 	public void saveFollow(Long toMemberId, Principal fromMemberPrincipal) {
 		  Member toMember = memberRepository.findById(toMemberId).orElseThrow(EntityNotFoundException::new);
-		    Member fromMember = memberRepository.findByEmail(fromMemberPrincipal.getName()).orElseThrow(EntityNotFoundException::new);
+		    Member fromMember = memberRepository.findByEmail(fromMemberPrincipal.getName());
 
 		    Follow follow = new Follow();
-		    follow.setToMember(toMember);
-		    follow.setFromMember(fromMember);
+		    follow.setToMember(toMember.getId());
+		    follow.setMember(fromMember);
 
 		    followRepository.save(follow);
 	}
+	
+	//언팔로우
+	@Transactional
+	public boolean unfollow(Long toMemberId, Long fromMemberId) {
+	    Member toMember = memberRepository.findById(toMemberId)
+	        .orElseThrow(() -> new EntityNotFoundException("To member not found"));
+	    Member fromMember = memberRepository.findById(fromMemberId)
+	        .orElseThrow(() -> new EntityNotFoundException("From member not found"));
+
+	    // 언팔로우 관계를 제거합니다.
+	    followRepository.deleteByToMemberAndMember(toMember.getId() , fromMember);
+
+	    // 언팔로우 성공 여부를 반환합니다.
+	    return true;
+	}
+	
+	//팔로우확인
+    public boolean isFollowing(Long toMemberId, Long fromMemberId) {
+        // 팔로우 테이블에서 toUserId와 fromUserId로 데이터가 존재하는지 확인
+    	Member toMember = memberRepository.findById(toMemberId)
+    	        .orElseThrow(() -> new EntityNotFoundException("To member not found"));
+    	    Member fromMember = memberRepository.findById(fromMemberId)
+    	        .orElseThrow(() -> new EntityNotFoundException("From member not found"));
+        return followRepository.existsByToMemberAndMember(toMember.getId() , fromMember);
+    }
+    
+ // 특정 사용자가 팔로우한 사용자 수 조회
+    public void getFollowingCount(Long fromMemberId){
+    	int following = followRepository.countFromMember(fromMemberId);
+    	int follower = followRepository.countToMember(fromMemberId);
+    	
+    	Member member = memberRepository.findById(fromMemberId) .orElseThrow(() -> new EntityNotFoundException("To member not found"));
+
+    }
 }
+

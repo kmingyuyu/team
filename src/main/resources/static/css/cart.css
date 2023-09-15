@@ -216,6 +216,14 @@ table, th, td {
     color: #d9d9d9;
 }
 
+.click_disable_pay {
+    pointer-events: none !important;
+    cursor: default !important;
+    border: 1px solid #978b8b !important;
+    color: #d9d9d9 !important;
+    background: #978b8b !important;
+}
+
 .final_box {
 	margin-bottom: 30px;
 	padding: 20px;
@@ -530,4 +538,17 @@ table, th, td {
 
 .no_sale {
 	color: #999;
+}
+
+.null_box {
+    margin-bottom: 319px;
+    margin-top: 210px;
+    font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
+    color: #a9a9a9;
+    align-items: center;
+    /* background: gray; */
+    height: 200px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }

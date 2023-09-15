@@ -1,20 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-
+<html>
 <head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
-
-    <meta name="description" content="Yoga Studio Template">
-    <meta name="keywords" content="Yoga, unica, creative, html">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Yummy</title>
+  <meta name="description" content="Yoga Studio Template">  <meta name="keywords" content="Yoga, unica, creative, html">  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Yummy</title>
 	
-	<!-- 폰트어썸-->
+		<!-- 폰트어썸-->
     <script src="https://kit.fontawesome.com/27cfb375b2.js" crossorigin="anonymous"></script>
     
     <!-- Google Font -->
@@ -29,27 +22,19 @@
     <link rel="stylesheet" th:href="@{/css/slicknav.min.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/style_custom.css}" type="text/css">
-
-    
-<!-- 각 페이지의 CSS가 작성될 위치 -->
-<th:block layout:fragment="css"></th:block>
 </head>
 <body>
-  <div class="site-wrap">
-  	<div th:replace="fragments/header::header"></div>
-	<div layout:fragment="content" class="content"></div>
-	<div th:replace="fragments/footer::footer"></div>
-  </div>
+	
+	<div class="site-wrap">
+	
+	
+</div>
 
-    <!-- Js Plugins -->
+  <!-- Js Plugins -->
     <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/jquery.slicknav.js}"></script>
 
-  
-  <!-- 각 페이지의 스크립트가 작성될 위치 -->
-  <th:block layout:fragment="script"></th:block>
+
 </body>
-
-
 </html>

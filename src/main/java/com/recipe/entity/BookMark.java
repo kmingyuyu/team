@@ -36,4 +36,6 @@ public class BookMark extends BaseEntity {
 	@JoinColumn(name = "member_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Member member;
+	
+	private Boolean isDelete = false;
 }

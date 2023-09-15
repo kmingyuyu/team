@@ -12,18 +12,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.recipe.constant.ImgMainOk;
-import com.recipe.dto.MemberBestDto;
+import com.recipe.dto.MemberDto;
 import com.recipe.dto.MemberMainDto;
 import com.recipe.dto.MngMemberDto;
 import com.recipe.dto.MngRecipeSearchDto;
 import com.recipe.entity.Follow;
 import com.recipe.entity.Member;
-import com.recipe.entity.MemberImg;
+import com.recipe.entity.Point;
 import com.recipe.repository.CartRepository;
 import com.recipe.repository.FollowRepository;
-import com.recipe.repository.MemberImgRepository;
 import com.recipe.repository.MemberRepository;
+import com.recipe.repository.PointRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -33,13 +32,13 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class MemberService implements UserDetailsService {
 	
-	private final MemberRepository memberRepository;
+	private final MemberRepository memberRepository ;
 	
-	private final MemberImgRepository memberImgRepository;
+	private final CartRepository cartRepository ;
 	
-	private final CartRepository cartRepository  ;
+	private final FollowRepository followRepository ;
 	
-	private final FollowRepository followRepository;
+	private final PointRepository pointRepository  ;
 	
 	
 	public Member findMember(Long id) {
@@ -53,22 +52,75 @@ public class MemberService implements UserDetailsService {
 		 return member;
 	}
 	
-	public String findMemberImg(Long id) {
+	
+	public int findPoint(Long id) {
+		int point = 0;
 		
-		MemberImg memberImg = memberImgRepository.findByMemberIdAndImgMainOk(id, ImgMainOk.Y);
+		List<Point> pointList = pointRepository.findByMemberId(id);
 		
-		if (memberImg == null) {
-			return null;
+		if(pointList != null) {
+			for(Point p : pointList) {
+				point += p.getPoint();
+			}
 		}
+		return point;
 		
-		return memberImg.getImgUrl();
 	}
+
 	
 	public Long cartCount(Long id) {
 		
 		Long cartCount = cartRepository.countByMemberId(id);
 		
 		return cartCount;
+	}
+	
+	public boolean findMember(String email) {
+		
+		boolean ck = true;
+		
+		Member member = memberRepository.findByEmail(email);
+		
+		if(member != null) {
+			ck = false;
+		}
+		
+		return ck;
+	}
+	
+	public String findEmailSearch(Map<String, Object> psdata) {
+		
+		String phone = psdata.get("phoneNumber").toString();
+		String ck = null;
+		
+		Member member = memberRepository.findByPhoneNumber(phone);
+		
+		if (member == null) {
+		    return ck;
+		  }
+		
+		
+		ck = member.getEmail();
+		return ck;
+	}
+	
+	
+	public boolean findSns(String email) {
+		
+		boolean ck = true;
+		
+		Member member = memberRepository.findByEmail(email);
+		
+		if(member != null) {
+			ck = false;
+		}
+		
+		if(!"default".equals(member.getProviderId())) {
+			ck = false;
+		}
+		
+		
+		return ck;
 	}
 	
 	
@@ -131,12 +183,6 @@ public class MemberService implements UserDetailsService {
 		List<MemberMainDto> getMemberBestList = memberRepository.getMemberBestList();
 		return getMemberBestList;
 		
-	}
-	
-	@Transactional(readOnly = true)
-	public List<MemberBestDto> getRankMemberList() {
-		List<MemberBestDto> getRankMemberList = memberRepository.getRankMemberList();
-		return getRankMemberList;
 	}
 	
 	

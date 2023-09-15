@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.recipe.constant.ItemSellStatus;
 import com.recipe.dto.CartDto;
 import com.recipe.entity.Cart;
 import com.recipe.entity.Item;
@@ -41,14 +42,16 @@ public class OrderController {
 	
 	List<CartDto> cartList = orderService.getCartList(session);
 	
+	
 	int totalCount = 0; // 오리지널 총 금액
 	int saleCount = 0; //할인받는 총 금액
 	int deleveryCount = 4000;
 	
 	for(CartDto countPlus : cartList) {
-		
-		totalCount += countPlus.getPrice() * countPlus.getCount() ;
-		saleCount  +=  (countPlus.getPrice() * countPlus.getSale() / 100) * countPlus.getCount();
+		if(ItemSellStatus.SELL.equals(countPlus.getItemSellStatus())) {
+			totalCount += countPlus.getPrice() * countPlus.getCount() ;
+			saleCount  +=  (countPlus.getPrice() * countPlus.getSale() / 100) * countPlus.getCount();
+		}
 	}
 	
 //	주문 총금액(할인포함) 40000원 이상이면 배송비 4000원 추가 아니면 0 
@@ -56,14 +59,19 @@ public class OrderController {
 		deleveryCount = 0;
 	}
 	
-//	최종금액 오리지널총금액+배송비+할인받는총금액
+//	최종금액 오리지널총금액+배송비-할인받는총금액
 	int finalCount = totalCount+deleveryCount-saleCount;
+	
+	double totalDcFormat = ((double) saleCount / totalCount) * 100;
+	System.out.println("totalDcFormat" + totalDcFormat);
+	int totalDc = (int) Math.round(totalDcFormat);
 	
 	model.addAttribute("cartList",cartList);
 	model.addAttribute("totalCount",totalCount);
 	model.addAttribute("deleveryCount",deleveryCount);
 	model.addAttribute("saleCount",saleCount);
 	model.addAttribute("finalCount",finalCount);
+	model.addAttribute("totalDc",totalDc);
 	
 	
 	return "cart";
@@ -91,6 +99,10 @@ public class OrderController {
 	@PostMapping(value = "/cartDeleteButton")
 	public @ResponseBody ResponseEntity cartDeleteButton(@RequestBody Map<String, Object> requestBody, HttpSession session) {
 		
+		if (!isAuthenticated()) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+		
 		boolean check = orderService.cartDeleteButton(requestBody);
 		
 		if(!check) {
@@ -104,6 +116,9 @@ public class OrderController {
 	@PostMapping(value = "/cartDeletCkeckBox")
 	public @ResponseBody ResponseEntity cartDeletCkeckBox(@RequestBody List<Object> requestBody, HttpSession session) {
 		
+		if (!isAuthenticated()) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 		
 		
 		boolean check = orderService.cartDeleteCheckBox(requestBody);
@@ -113,6 +128,46 @@ public class OrderController {
 		}
 		
 		return new ResponseEntity<>("장바구니에서 삭제 되었습니다.", HttpStatus.OK);
+	}
+	
+//	카트 상품 품절 전체삭제
+	@PostMapping(value = "/cartDeleteSoldoutCheckBok")
+	public @ResponseBody ResponseEntity cartDeleteSoldoutCheckBok(@RequestBody List<Object> requestBody, HttpSession session) {
+		
+		if (!isAuthenticated()) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+		
+		
+		boolean check = orderService.cartDeleteSoldoutCheckBok(requestBody);
+		
+		if(!check) {
+			return new ResponseEntity<>("삭제중 에러가 발생했습니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+		return new ResponseEntity<>("장바구니에서 삭제 되었습니다.", HttpStatus.OK);
+	}
+	
+	
+//	카트 상품 개별수량 변경
+	@PostMapping(value = "/cartCountUpdateButton")
+	public @ResponseBody ResponseEntity cartCountUpdateButton(@RequestBody Map<String, Object> requestBody, HttpSession session) {
+		
+		if (!isAuthenticated()) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+		
+		String check = orderService.cartCountUpdateButton(requestBody);
+	
+		if("error".equals(check)) {
+			return new ResponseEntity<>("변경중 에러가 발생했습니다.", HttpStatus.BAD_REQUEST);
+		}
+		else if("stockError".equals(check)) {
+			return new ResponseEntity<>("재고가 부족합니다.", HttpStatus.BAD_REQUEST);
+		}
+		
+			
+		return new ResponseEntity<>("수량 변경되었습니다.", HttpStatus.OK);
 	}
 	
 	

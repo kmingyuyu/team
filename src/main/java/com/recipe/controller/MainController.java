@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.recipe.dto.MemberBestDto;
 import com.recipe.dto.MemberMainDto;
 import com.recipe.dto.RecipeMainDto;
 import com.recipe.service.MemberService;
@@ -49,7 +48,7 @@ public class MainController {
 	    List<RecipeMainDto> mainNewList = recipeService.getRecipeNewList(); // new 레시피
 	    model.addAttribute("mainNewList" , mainNewList);
 	    
-	    List<MemberBestDto> rankMemberList = memberService.getRankMemberList(); //베스트 쉐프 
+	    List<MemberMainDto> rankMemberList = memberService.getMemberBestList(); //베스트 쉐프 
 	    model.addAttribute("rankMemberList",rankMemberList);
 	    
 	

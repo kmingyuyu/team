@@ -40,11 +40,11 @@ List<Recipe> getPopularRecipe(Long id);
 //	조회수 가장 높은순으로 모든레시피 가져옴 (4개)
 //	메인
 	@Query ( value = "select recipe.recipe_id id , recipe.title title , recipe.sub_title subTitle , "
-			+ "recipe.intro intro , recipe.dur_time durTime , recipe.image_url imageUrl ,  "
-			+ "recipe.level level , recipe.count count "
-			+ "from recipe "
-			+ "where recipe.writing_status = 'PUBLISHED'"
-			+ "order by count desc, RAND() limit 4" 
+			+ " recipe.intro intro , recipe.dur_time durTime , recipe.image_url imageUrl ,  "
+			+ " recipe.level level , recipe.count count "
+			+ " from recipe "
+			+ " where recipe.writing_status = 'PUBLISHED'"
+			+ " order by count desc, RAND() limit 4" 
 			, nativeQuery = true)
 	List<RecipeMainDto> getRecipeHeaderBestList();
 
@@ -60,17 +60,12 @@ List<Recipe> getPopularRecipe(Long id);
 			+ "  r.count count, \r\n"
 			+ "  m.nickname nickname, \r\n"
 			+ "  r.image_url imageUrl , \r\n"
-			+ "  COALESCE(img.img_url, '/img/free-icon-member-5867267.png') imgUrl , "
+			+ "  m.img_url imgUrl , "
 			+ "  m.member_id memberId "
-			+ "FROM recipe r\r\n"
-			+ "JOIN member m ON r.member_id = m.member_id\r\n"
-			+ "LEFT JOIN (\r\n"
-			+ "  SELECT img_url, member_id\r\n"
-			+ "  FROM member_img\r\n"
-			+ "  WHERE img_main_ok = 'Y'\r\n"
-			+ ") img ON m.member_id = img.member_id\r\n"
+			+ " FROM recipe r\r\n"
+			+ " JOIN member m ON r.member_id = m.member_id\r\n"
 			+ " where r.writing_status = 'PUBLISHED'"
-			+ "ORDER BY r.reg_time DESC limit 15"
+			+ " ORDER BY r.reg_time DESC limit 15"
 			, nativeQuery = true)
 	List<RecipeMainDto> getRecipeNewList();
 	
@@ -84,7 +79,7 @@ List<Recipe> getPopularRecipe(Long id);
 			+ "    r.level level , r.sub_title subTitle, r.title title , r.member_id memberId ,"
 			+ "    r.reg_time regTime , r.intro intro ,\r\n"
 			+ "    m.nickname nickname ,\r\n"
-			+ "    COALESCE(mi.img_url, '/img/free-icon-member-5867267.png') imgUrl \r\n"
+			+ "    m.img_url imgUrl \r\n"
 			+ "FROM recipe r "
 			+ "LEFT JOIN ( "
 			+ "    SELECT recipe_id, COUNT(*) AS bm_count\r\n"
@@ -96,10 +91,9 @@ List<Recipe> getPopularRecipe(Long id);
 			+ "    FROM review\r\n"
 			+ "    GROUP BY recipe_id\r\n"
 			+ ") rv ON r.recipe_id = rv.recipe_id\r\n"
-			+ "JOIN member m ON r.member_id = m.member_id\r\n"
-			+ "LEFT JOIN member_img mi ON m.member_id = mi.member_id AND mi.img_main_ok = 'Y'\r\n"
+			+ " JOIN member m ON r.member_id = m.member_id\r\n"
 			+ " where r.writing_status = 'PUBLISHED'"
-			+ "ORDER BY rv_count DESC limit 10 "
+			+ " ORDER BY rv_count DESC limit 10 "
 			, nativeQuery = true)
 	List<RecipeMainDto> getRecipeBestList();
 	

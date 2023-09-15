@@ -33,7 +33,6 @@ import com.recipe.entity.QItemInqAnwser;
 import com.recipe.entity.QItemReview;
 import com.recipe.entity.QItemReviewAnswer;
 import com.recipe.entity.QMember;
-import com.recipe.entity.QMemberImg;
 import com.recipe.entity.QRecipe;
 import com.recipe.entity.QReview;
 
@@ -209,7 +208,6 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom  {
 		
 		QItemReview ir = QItemReview.itemReview;
 		QMember m = QMember.member;
-		QMemberImg mi = QMemberImg.memberImg;
 		QItemReviewAnswer a = QItemReviewAnswer.itemReviewAnswer;
 		
 		List<ItemReviewDto> content = queryFactory
@@ -221,14 +219,13 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom  {
 													ir.content,
 													ir.regTime,
 													m.nickname,
-													mi.imgUrl,
+													m.imgUrl,
 													a.id.as("answerId"),
 													a.content.as("answerContent"),
 													a.regTime.as("answerRegTime")
 													))	
 									.from(ir)
 									.join(m).on(ir.member.id.eq(m.id))
-									.leftJoin(mi).on(QMember.member.id.eq(mi.member.id).and(mi.imgMainOk.eq(ImgMainOk.Y)))
 									.leftJoin(a).on(QItemReview.itemReview.id.eq(a.itemReview.id))
 									.where(ir.item.id.eq(itemId))
 									.offset(pageable.getOffset())
@@ -239,7 +236,6 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom  {
 				 	.select(Wildcard.count)
 				 	.from(ir)
 					.join(m).on(ir.member.id.eq(m.id))
-					.leftJoin(mi).on(QMember.member.id.eq(mi.member.id).and(mi.imgMainOk.eq(ImgMainOk.Y)))
 					.where(ir.item.id.eq(itemId))
 					.fetchOne();
 		

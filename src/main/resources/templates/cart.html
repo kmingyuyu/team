@@ -21,7 +21,7 @@
 	<div class="right_contents">
 			<h2 class="title-page">C A R T<span class="cart_sp"> 장 바 구 니 </span></h2>
 			<!--cart process-->
-			<div class="page-sorting order font-mss">
+			<div class="page-sorting order font-mss" th:if="${cartList.size() != 0}">
 				<span class="current-page">장바구니</span>
 				<span><i class="ic-14-line-arrow-right"></i></span>
 				<span>주문서</span>
@@ -30,6 +30,16 @@
 			</div>
 			<!--//cart process-->
 		</div>
+		
+	<th:block th:if="${cartList.size() == 0}">
+		<div class="null_box">
+						 장바구니에 등록된 상품이 없습니다.
+		</div>
+	</th:block>
+	<th:block th:if="${cartList.size() != 0}">
+		
+		
+	
 	<div class="section_contents">
 				
 				<table class="table_basic cart_table n-cart-table">
@@ -45,7 +55,7 @@
 					</colgroup>
 					<thead>
 						<tr>
-							<th scope="col">전체<strong>2</strong>개
+							<th scope="col">전체<strong th:if="${cartList.size() == 0}"></strong><strong th:if="${cartList.size() != 0}">[[${cartList.size()}]]개</strong>
 							</th>
 							<th scope="col" style="cursor:pointer"><input type="checkbox" class="chk_all" id="chk_all" th:checked="true" title="전체 상품 선택"></th>
 							<th scope="col">상품명</th>
@@ -74,8 +84,13 @@
 									<tbody>
 									<tr class="cart_list_no" th:attr="data-cart-status=${cart.itemSellStatus}">
 										<td>[[${status.index+1}]]</td>
-										<td>
-											<input type="checkbox" class="checked_cart" th:value="${cart.cartId}" th:attr="data-cart-id=${cart.cartId}"  th:checked="true"  title="상품 선택">
+										<td th:if="${cart.itemSellStatus.toString} == 'SELL'">
+											<input type="checkbox" class="checked_cart" th:value="${cart.cartId}"
+											 th:attr="data-cart-id=${cart.cartId}, data-cart-status=${cart.itemSellStatus}"  th:checked="true"  title="상품 선택">
+										</td>
+										<td th:if="${cart.itemSellStatus.toString} == 'SOLD_OUT'">
+											<input type="checkbox" class="checked_cart" th:value="${cart.cartId}"
+											 th:attr="data-cart-id=${cart.cartId}, data-cart-status=${cart.itemSellStatus}"  th:checked="false"  title="상품 선택">
 										</td>
 										<td>
 											<div class="connect_img">
@@ -89,34 +104,58 @@
 														[[${cart.itemNm}]]
 													</a>
 												</p>
-												<p class="txt_option" th:if="${cart.stockNumber >= 5}">
-													남은재고 : 5개 이상
+												<p class="txt_option" th:if="${cart.stockNumber >= 20}">
+													남은재고 : 20개 이상
 												</p>
-												<p class="txt_option" th:unless="${cart.stockNumber >= 5}" th:text="'남은재고: ' + ${cart.stockNumber} + '개'">
+												<p class="txt_option" th:if="${cart.stockNumber > 1 and cart.stockNumber < 20}" th:text="'남은재고: ' + ${cart.stockNumber} + '개'">
+												</p>
+												<p class="txt_option"  th:if="${cart.itemSellStatus.toString} == 'SOLD_OUT'">
+													현재 품절입니다
 												</p>
 												
 											</div>
 										</td>
 										<td class="td_price">
-											<div class="td_price_wrap" id="so_ori_price">
+											<div class="td_price_wrap ori_price_so"
+											th:attr="data-cart-id=${cart.cartId} , data-ori-unit-price=${cart.price}">
 											[[${#numbers.formatInteger(cart.price * cart.count , 0, 'COMMA')}]]
 										</div>
 										</td>
-                                        <td th:if="${cart.sale} != 0" id="so_sale_price">
-											[[${#numbers.formatInteger((cart.price * cart.sale / 100) * cart.count , 0, 'COMMA')}]]원
-                                            </td>
+                                        <td class="sale_price_so" th:if="${cart.sale} != 0"
+   										 th:attr="data-cart-id=${cart.cartId}, data-sale-unit-price=${cart.price * cart.sale / 100}">
+  										  [[${#numbers.formatInteger((cart.price * cart.sale / 100) * cart.count, 0, 'COMMA')}]]원
+										</td>
+                                       
                                          <td th:if="${cart.sale} == 0"> 
 											 <span class="no_sale"> 할인상품 X </span>
                                             </td>
                                             
 										<td>
-											[[${cart.count}]]	
+											<span class="goods_qty" th:if="${cart.itemSellStatus.toString} == 'SELL'">
+         								  <span>
+           											   <button type="button" class="down goods_cnt" title="감소" th:attr="data-cart-id=${cart.cartId}">감소</button>
+             											 <input type="text" class="text goodsCnt_0" title="수량" 
+             											 th:value="${cart.count}" th:attr="data-cart-stock=${cart.stockNumber}, data-cart-id=${cart.cartId}" >
+            											 <button type="button" class="up goods_cnt" title="증가" th:attr="data-cart-id=${cart.cartId}">증가</button>
+         								  </span>
+       									 </span>	
+											<span class="goods_qty" th:if="${cart.itemSellStatus.toString} == 'SOLD_OUT'">
+         								  <span>
+           											   <button type="button" class="down goods_cnt click_disable" title="감소">감소</button>
+             											 <input type="text" class="text goodsCnt_0 click_disable" title="수량" 
+             											 th:value="${cart.count}">
+            											 <button type="button" class="up goods_cnt click_disable" title="증가">증가</button>
+         								  </span>
+       									 </span>	
 										</td>
-										<td id="so_total_price">
+										<td class="total_price_so" th:attr="data-cart-id=${cart.cartId}">
 											[[${#numbers.formatInteger((cart.price - (cart.price * cart.sale / 100)) * cart.count , 0, 'COMMA')}]]
 										</td>
 										<td>
-							<button onclick="cartCountUpdate_button(this)" th:attr="data-cart-id=${cart.cartId}" class="plain-btn btn">수량변경</button>
+							<button onclick="cartCountUpdate_button(this)" th:if="${cart.itemSellStatus.toString} == 'SELL'"
+							th:attr="data-cart-id=${cart.cartId}" class="plain-btn btn">수량변경</button>
+							<button th:if="${cart.itemSellStatus.toString} == 'SOLD_OUT'"
+							 th:attr="data-item-id=${cart.itemId}" class="plain-btn btn" onclick="showPopup(this);">문의하기</button>
 							<button onclick="cartDelete_button(this)" th:attr="data-cart-id=${cart.cartId}" class="plain-btn btn mt-2">삭제하기</button>
 										</td>
 									</tr>
@@ -129,17 +168,12 @@
 				</tbody>
 				</table>
 				<div class="delete-btn-area">
+					 <button id="del_chk_soldout" onclick="cartDelete_soldout_checkBok()" class="plain-btn btn">품절모두삭제</button> 
 					<button id="del_chk" onclick="cartDelete_checkBok()" class="plain-btn btn">선택삭제</button>
 				</div>
 			
 	
-	<!--	<span class="goods_qty">
-                                                        <span>
-                                                            <button type="button" class="down goods_cnt" title="감소" id="down">감소</button>
-                                                            <input type="text" id="goodsCnt" name="goodsCnt" class="text goodsCnt_0" title="수량" th:value="${cart.count}" th:attr="data-cart-stock=${cart.stockNumber}">
-                                                            <button type="button" class="up goods_cnt" title="증가" id="up">증가</button>
-                                                        </span>
-                                                    </span>-->
+		
 		
 		
 	</div>
@@ -168,15 +202,15 @@
 					<li>
 						<p class="final-payment-ti">할인 합계</p>
 						<input type="hidden" class="cart_total_save" value="40650">
-						<p class="final-payment-price"><span class="cart_total_add_opt_save">[[${#numbers.formatInteger(saleCount , 0, 'COMMA')}]]</span><span class="pay_won">원</span></p>
+						<p class="final-payment-price"><span class="cart_total_add_opt_save" id="sale_price">[[${#numbers.formatInteger(saleCount , 0, 'COMMA')}]]</span><span class="pay_won">원</span></p>
 					</li>
 					<li class="final-payment-ic">
 						<i class="ic-18-line-handle"></i>
 					</li>
 					<li>
 						<p class="final-payment-ti">최종 결제 금액</p>
-						<p class="final-payment-price"><span id="pay_amt" class="total_pay">[[${#numbers.formatInteger(finalCount , 0, 'COMMA')}]]</span><span class="pay_won">원</span></p>
-						<p class="final-payment-save"><span id="total_dc_rate">13</span>% SAVE</p>
+						<p class="final-payment-price"><span id="final_price" class="total_pay">[[${#numbers.formatInteger(finalCount , 0, 'COMMA')}]]</span><span class="pay_won">원</span></p>
+						<p class="final-payment-save"><span id="total_dc_rate">[[${totalDc}]]</span>% SAVE</p>
 					</li>
 				</ul>
 				
@@ -186,6 +220,8 @@
 					</button>
 				</div>
 		</div>
+		
+	</th:block>	
 		
 		
 			</div>
@@ -200,50 +236,207 @@
 		
 		
 	$(document).ready(function() {
-  // 전체 선택/해제 체크박스 클릭 이벤트
-  $('#chk_all').change(function() {
-    if($(this).prop('checked')) {
-      // 전체 선택
-      $('.checked_cart').prop('checked', true);
-    } else {
-      // 전체 해제
-      $('.checked_cart').prop('checked', false);
+	
+	initialButtonState();
+	
+});	
+	
+	
+	function initialButtonState() {
+  // SOLD_OUT인 체크박스가 하나라도 있다면
+  let hasSoldOut = false;
+  $('.checked_cart').each(function() {
+    if ($(this).data('cart-status') === 'SOLD_OUT') {
+      hasSoldOut = true;
+      return false; // each 문을 빠져나감
     }
   });
+
+  // SOLD_OUT 상품이 있으면 .click_disable 클래스를 제거, 없으면 추가
+  if (hasSoldOut) {
+    $('#del_chk_soldout').removeClass('click_disable');
+  } else {
+    $('#del_chk_soldout').addClass('click_disable');
+  }
+}
+	
+		
+	$(document).ready(function() {
+		
+		
+		
+	function updateButtonState() {
+
+  if ($('.checked_cart:checked').length > 0) {
+    $('#del_chk').removeClass('click_disable');
+    $('#btn-order').removeClass('click_disable_pay');
+    $('#btn-order').text('주문하기');
+  } else {
+    $('#del_chk').addClass('click_disable');
+    $('#btn-order').addClass('click_disable_pay');
+    $('#btn-order').text('상품을 선택해주세요');
+  }
+}
+	
+	updateButtonState();
+	
+	  $('.checked_cart').change(function() {
+    updateButtonState();
+    recalculateTotal();
+  });
+  
+ $('#chk_all').change(function() {
+  if($(this).prop('checked')) {
+    // 전체 선택
+    $('.checked_cart').each(function() {
+      if ($(this).data('cart-status') !== 'SOLD_OUT') {
+        $(this).prop('checked', true);
+      }
+    
+    });
+  } else {
+    // 전체 해제
+    $('.checked_cart').each(function() {
+      if ($(this).data('cart-status') !== 'SOLD_OUT') {
+        $(this).prop('checked', false);
+      }
+    });
+  }
+  updateButtonState();
+  recalculateTotal();
 });
 	
-$(document).ready(function() {
-  
-  // 함수 정의: 체크박스 상태 확인 후 버튼 클래스 업데이트
-  function updateButtonState() {
-    if ($('.checked_cart:checked').length > 0) {
-      $('#del_chk').removeClass('click_disable');
-    } else {
-      $('#del_chk').addClass('click_disable');
+		
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
-  }
+    
+ 
+    
+     function recalculateTotal() {
+        let totalOriPrice = 0;
+        let totalSalePrice = 0;
 
-  // 페이지 로드 시 초기 버튼 상태 설정
-  updateButtonState();
+     $('.checked_cart:checked').each(function() {
+		 
+		  if ($(this).data('cart-status') === 'SOLD_OUT') {
+            return true; // continue to next iteration
+        }
+		 
+        const cartId = $(this).data('cart-id');
+        const oriPrice = parseInt($(`.ori_price_so[data-cart-id=${cartId}]`).text().replace(/,/g, ''), 10);
+        const salePrice = parseInt($(`.sale_price_so[data-cart-id=${cartId}]`).text().replace(/,/g, ''), 10);
 
-  // 개별 체크박스 상태가 바뀔 때마다 버튼 상태 업데이트
-  $('.checked_cart').change(function() {
-    updateButtonState();
-  });
+        totalOriPrice += oriPrice;
+        totalSalePrice += salePrice;
+    });
 
-  // 전체 선택/해제 체크박스 클릭 이벤트
-  $('#chk_all').change(function() {
-    if($(this).prop('checked')) {
-      // 전체 선택
-      $('.checked_cart').prop('checked', true);
-    } else {
-      // 전체 해제
-      $('.checked_cart').prop('checked', false);
+       let finalPrice = totalOriPrice - totalSalePrice;
+        
+       let totalDcRate = 0;
+   		 if (totalOriPrice !== 0) {
+        totalDcRate = totalSalePrice / totalOriPrice  * 100;
+  		  }
+  		  
+  	    totalDcRate = Math.round(totalDcRate);
+  	    
+  	    let deleveryPrice = 0;
+
+		if(finalPrice !== 0 && finalPrice <= 40000){
+    		deleveryPrice = 4000;
+    		finalPrice += deleveryPrice;
+		}
+		   
+  	  
+		
+        $('#ori_price').text(numberWithCommas(totalOriPrice));
+        $('#sale_price').text(numberWithCommas(totalSalePrice));
+        $('#final_price').text(numberWithCommas(finalPrice));
+        $('#total_dc_rate').text(totalDcRate); 
+        $('#delevery_price').text(numberWithCommas(deleveryPrice));
     }
-    updateButtonState();  // 여기서 버튼 상태도 업데이트
-  });
+    
+
+
+    function recalculate($goodsCnt, $oriPriceSo, $salePriceSo, $totalPriceSo) {
+    const oriUnitPrice = parseInt($oriPriceSo.attr('data-ori-unit-price'), 10);
+    const saleUnitPrice = parseInt($salePriceSo.attr('data-sale-unit-price'), 10);
+    let cnt = parseInt($goodsCnt.val(), 10);
+        
+  $oriPriceSo.text(numberWithCommas(oriUnitPrice * cnt));
+    $salePriceSo.text(numberWithCommas(saleUnitPrice * cnt));
+    $totalPriceSo.text(numberWithCommas((oriUnitPrice - saleUnitPrice) * cnt));
+    
+    recalculateTotal();
+    }
+
+    $('.up, .down').click(function() {
+        const cartId = $(this).data('cart-id');
+        const $goodsCnt = $(`.text[data-cart-id=${cartId}]`);
+        const $oriPriceSo = $(`.ori_price_so[data-cart-id=${cartId}]`);
+        const $salePriceSo = $(`.sale_price_so[data-cart-id=${cartId}]`);
+        const $totalPriceSo = $(`.total_price_so[data-cart-id=${cartId}]`);
+
+        let currentVal = parseInt($goodsCnt.val(), 10);
+        let stock = parseInt($goodsCnt.attr('data-cart-stock'), 10);
+
+        if($(this).hasClass('up')) {
+            if(currentVal < stock) {
+                $goodsCnt.val(currentVal + 1);
+            } else {
+                alert('재고보다 많습니다');
+                return;
+            }
+        } else if($(this).hasClass('down')) {
+            if(currentVal > 1) {
+                $goodsCnt.val(currentVal - 1);
+            }
+        }
+
+        recalculate($goodsCnt, $oriPriceSo, $salePriceSo, $totalPriceSo);
+         recalculateTotal(); 
+    });
+
+    $('.text').on('input', function() {
+        let stock = parseInt($(this).attr('data-cart-stock'), 10);
+        let currentVal = parseInt($(this).val(), 10);
+
+        if(isNaN(currentVal) || currentVal <= 0) {
+            $(this).val(1);
+            return;
+        }
+
+        if(currentVal > stock) {
+            alert('재고보다 많습니다');
+            $(this).val(1);
+        }
+
+        const cartId = $(this).data('cart-id');
+        const $oriPriceSo = $(`.ori_price_so[data-cart-id=${cartId}]`);
+        const $salePriceSo = $(`.sale_price_so[data-cart-id=${cartId}]`);
+        const $totalPriceSo = $(`.total_price_so[data-cart-id=${cartId}]`);
+
+        recalculate($(this), $oriPriceSo, $salePriceSo, $totalPriceSo);
+         recalculateTotal(); 
+    });
+
+   $('.text').on('input', function() {
+    const value = $(this).val();
+    if(/[^0-9]/.test(value)) { // 숫자 외의 문자가 있다면
+        $(this).val(value.replace(/[^0-9]/g, '')); // 숫자만 남기고 다 지움
+    }
+});
 });
 		
+		function showPopup(button) {
+			
+			
+			var id = $(button).attr("data-item-id");
+			
+			url =  "/popup/" + id;
+			
+		    window.open( url , "popupWindow", "width=620, height=860, left=100, top=50"); 
+		}
 		
 		
 		
@@ -278,11 +471,10 @@ $(document).ready(function() {
 							
 						},
 						error : function(jqXHR, status, error) {
-							if (jqXHR.status == '401') {
-								alert('관리자로그인 후 이용해주세요.');
-								//	location.href = '/';
+								if (jqXHR.status == '403') {
+								alert('로그인 후 이용해주세요.');
+									location.href = '/';
 							} else {
-								//에러메세지 출력(ResponseEntity에서 받아온 값을 출력해준다)
 								alert(jqXHR.responseText);
 							}
 						}
@@ -290,6 +482,52 @@ $(document).ready(function() {
 			}
 								
 		}
+		
+		function cartCountUpdate_button(button){
+			
+			const cartId = $(button).attr("data-cart-id");
+   			const goodsCntElement = $(`.text[data-cart-id=${cartId}]`);
+    		const goodsCount = goodsCntElement.val();
+    		
+			var url = '/cartCountUpdateButton'
+			
+			const sendData = {
+   			      "cartId": cartId,
+      			  "count": goodsCount
+  				  };
+    			
+    		var param = JSON.stringify(sendData);
+    		
+    			if (confirm('상품 수량 저장하시겠습니까?')){
+						$.ajax({
+						url : url, //request URL
+						type : "POST", //전송방식
+						contentType : "application/json",
+						data : param, //서버에 전송할 데이터
+						beforeSend : function(xhr) {
+							xhr.setRequestHeader(header, token);
+						},
+						dataType : "text",
+						cache : false,
+						success : function(result, status, jqXHR) {
+							 alert(jqXHR.responseText);
+							 window.location.reload(true); 
+						},
+						error : function(jqXHR, status, error) {
+							if (jqXHR.status == '403') {
+								alert('로그인 후 이용해주세요.');
+									location.href = '/';
+							} else {
+								alert(jqXHR.responseText);
+							}
+						}
+					})
+					
+				}
+    			
+			
+		}
+		
 		
 		function cartDelete_checkBok(){
 			
@@ -320,9 +558,9 @@ $(document).ready(function() {
 							
 						},
 						error : function(jqXHR, status, error) {
-							if (jqXHR.status == '401') {
-								alert('관리자로그인 후 이용해주세요.');
-								//	location.href = '/';
+							if (jqXHR.status == '403') {
+								alert('로그인 후 이용해주세요.');
+									location.href = '/';
 							} else {
 								//에러메세지 출력(ResponseEntity에서 받아온 값을 출력해준다)
 								alert(jqXHR.responseText);
@@ -333,9 +571,53 @@ $(document).ready(function() {
 				}
     			
 			
+		} 
+
+		function cartDelete_soldout_checkBok() {
+			var selectedItems = [];
+			var url = '/cartDeleteSoldoutCheckBok'
+			
+    		$('.checked_cart').each(function() {
+   		 if ($(this).data('cart-status') === 'SOLD_OUT') {
+        selectedItems.push($(this).attr('data-cart-id'));
+   		 }
+  		});	
+  		
+  			var param = JSON.stringify(selectedItems);
+    		
+						$.ajax({
+						url : url, //request URL
+						type : "POST", //전송방식
+						contentType : "application/json",
+						data : param, //서버에 전송할 데이터
+						beforeSend : function(xhr) {
+							//데이터를 전송하기전에 헤더에 csrf 값을 설정
+							xhr.setRequestHeader(header, token);
+						},
+						dataType : "text",
+						cache : false,
+						success : function(result, status, jqXHR) {
+							 alert(jqXHR.responseText);
+							 window.location.reload(true); 
+							
+						},
+						error : function(jqXHR, status, error) {
+							if (jqXHR.status == '403') {
+								alert('로그인 후 이용해주세요.');
+									location.href = '/';
+							} else {
+								//에러메세지 출력(ResponseEntity에서 받아온 값을 출력해준다)
+								alert(jqXHR.responseText);
+							}
+						}
+					})
+					
+				
+  		
+  		
 		}
-
-
+		
+		
 		
 		
 	</script>

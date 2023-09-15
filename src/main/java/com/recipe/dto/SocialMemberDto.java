@@ -13,16 +13,16 @@ import lombok.Setter;
 @Setter
 public class SocialMemberDto {
 	
-	@NotEmpty(message = "이메일은 필수 입력 값입니다")
-	@Email(message = "이메일 형식으로 입력해주세요")
+	@NotEmpty(message = "* 이메일을 입력 해주세요 *")
+	@Email(message = "* 이메일 형식으로 입력해주세요 *")
 	private String email;
 	
-	@Length(min = 2, max = 8, message = "닉네임은 2~8자 사이로 입력해주세요")
+	@Length(min = 2, max = 8, message = "* 닉네임은 2~8자 사이로 입력해주세요 *")
 	@NotNull
 	private String nickname;
 	
-	@NotEmpty
-	@Pattern(regexp = "^010-\\d{4}-\\d{4}$", message = "올바른 휴대폰 번호를 입력해주세요. 양식은 010-xxxx-xxxx 입니다.")
+	@NotEmpty(message = "* 휴대폰번호를 입력 해주세요 *")
+	@Pattern(regexp = "^010-\\d{4}-\\d{4}$", message = "* 올바른 휴대폰 번호를 입력해주세요. 양식은 010-xxxx-xxxx 입니다 *")
 	private String phoneNumber;
 	
 	private String name; //구글,카카오에서 주는 구글닉네임 

@@ -27,7 +27,7 @@ public class RecipeController {
 	private final RecipeService recipeService;
 
 	// 레시피 등록화면
-	@GetMapping(value = "/recipe/new")
+	@GetMapping(value = "/myPage/recipe/new")
 	public String recipe(Model model) {
 
 		RecipeNewDto recipeNewDto = new RecipeNewDto();
@@ -38,18 +38,18 @@ public class RecipeController {
 	}
 
 	// 레시피 등록기능
-	@PostMapping(value = "/recipe/new")
+	@PostMapping(value = "/myPage/recipe/new")
 	public String recipeNew(@RequestParam("recipeImgFile") MultipartFile recipeImgFile ,  @Valid RecipeNewDto recipeNewDto ,  
 			BindingResult bindingResult , Model model, 
 			@RequestParam("recipeingreName") List<String> recipeingreNameList ,
 			@RequestParam("recipeingreMaterial") List<String> recipeingreMaterialList,
 			@RequestParam("recipeOrderContent") List<String> recipeOrderContentList,
 			@RequestParam("recipeOrderImgFile") List<MultipartFile> recipeOrderImgFile,
-			@RequestParam("categoryType") String categoryTypeString,
+			@RequestParam("categoryEnum") String categoryEnumString,
 			@RequestParam("writingStatus")String writingStatus, Principal principal) {
 		
-		CategoryEnum categoryType = CategoryEnum.fromString(categoryTypeString);
-		recipeNewDto.setCategoryEnum(categoryType);
+		CategoryEnum categoryEnum = CategoryEnum.fromString(categoryEnumString);
+		recipeNewDto.setCategoryEnum(categoryEnum);
 		
 		WritingStatus status = WritingStatus.valueOf(writingStatus);
 
@@ -70,7 +70,7 @@ public class RecipeController {
 	}
 	
 	//레시피 수정화면
-	@GetMapping(value = "/recipe/modify/{recipeId}")
+	@GetMapping(value = "/myPage/recipe/modify/{recipeId}")
 	public String recipeDtl(@PathVariable("recipeId") Long recipeId, Model model){	
 		
 		
@@ -93,18 +93,18 @@ public class RecipeController {
 	}
 	
 	//레시피 수정기능
-	@PostMapping(value = "/recipe/modify/{recipeId}")
+	@PostMapping(value = "/myPage/recipe/modify/{recipeId}")
 	public String recipeUpdate(@RequestParam("recipeImgFile") MultipartFile recipeImgFile ,  @Valid RecipeNewDto recipeNewDto ,  
 			BindingResult bindingResult , Model model, 
 			@RequestParam("recipeingreName") List<String> recipeingreNameList ,
 			@RequestParam("recipeingreMaterial") List<String> recipeingreMaterialList,
 			@RequestParam("recipeOrderContent") List<String> recipeOrderContentList,
 			@RequestParam("recipeOrderImgFile") List<MultipartFile> recipeOrderImgFile,
-			@RequestParam("categoryType") String categoryTypeString,
+			@RequestParam("categoryEnum") String categoryEnumString,
 			@RequestParam("writingStatus")String writingStatus) {
 		
-			CategoryEnum categoryType = CategoryEnum.fromString(categoryTypeString);
-			recipeNewDto.setCategoryEnum(categoryType);
+			CategoryEnum categoryEnum = CategoryEnum.fromString(categoryEnumString);
+			recipeNewDto.setCategoryEnum(categoryEnum);
 			
 			WritingStatus status = WritingStatus.valueOf(writingStatus);
 	
