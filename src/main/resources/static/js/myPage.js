@@ -1,51 +1,20 @@
-    // Initially show the '레시피' content
-    
-    $(document).ready(function() {
-    // 초기화 코드를 여기에 배치    
-    showContent('recipe');
-    filterRecipes('PUBLISHED');
-});
 
-function showContent(contentId) {
-    $('.content').hide();
-    $('#' + contentId).show();
 
-    $('.mypage-list').removeClass('active');
-    $('.mypage-list[data-menu="' + contentId + '"]').addClass('active');
-    $('.mypage-top').removeClass('active');
-    
-    if (contentId === 'recipe') {
-        // 로컬 스토리지에서 선택한 카테고리의 상태를 가져옴
-        var selectedTab = localStorage.getItem('selectedTab');
-        filterRecipes(selectedTab);
-    } else if(contentId === 'reviews'){
-		        // 로컬 스토리지에서 선택한 카테고리의 상태를 가져옴
-        var selectedTab = localStorage.getItem('selectedTab');
-        toggleReviews(selectedTab);
-	}
+
+/* 마이페이지 (레시피)*/
+
+function submitForm(data) {
+    window.location.href ="?data=" + data;
 }
-    
-	function filterRecipes(filterType) {
-	    // 모든 레시피 목록 숨기기
-	    $('.mypage-content .recipe1').hide();
-	    	        $('.mypage-top').removeClass('active');
-	        $('.mypage-top[data-menu="' + filterType + '"]').addClass('active');
 
-	    if (filterType === 'PUBLISHED') {
-	        // 공개중인 레시피만 보이도록 설정
-	        $('.mypage-content .recipe1[data-writing-status="PUBLISHED"]').show();
-	        $('.mypage-top').removeClass('active');
-	        $('.mypage-top[data-menu="' + filterType + '"]').addClass('active');
-	    } else if (filterType === 'DRAFT') {
-	        // 작성중인 레시피만 보이도록 설정
-	        $('.mypage-content .recipe1[data-writing-status="DRAFT"]').show();
-	        $('.mypage-top').removeClass('active');
-	        $('.mypage-top[data-menu="' + filterType + '"]').addClass('active');
-	    }
-	    localStorage.setItem('selectedTab', filterType);
-	    }
-
+function recipePage(page) {
+	var data = $("#data").val();
 	
+	location.href = "/myPage/" + page + 
+					"?data=" + data;
+}
+
+
 
     function updateImagePreview(event) {
         const fileInput = event.target;
@@ -65,11 +34,7 @@ function showContent(contentId) {
         const nickname = nicknameInput.value;
         const nicknameFeedback = document.getElementById("nicknameFeedback");
 
-        // Make an AJAX request to the server to check nickname availability
-        // You can use libraries like Axios or jQuery for the AJAX request
-
-        // Simulate a response from the server
-        const isAvailable = true; //Replace with actual response from the server
+        const isAvailable = true; 
 
         if (isAvailable) {
             nicknameInput.classList.remove("is-invalid");
@@ -313,77 +278,28 @@ function deleteBookmark(bookmarkId, imgElement) {
 	}
 
 
-	toggleReviews('myReviewList');
-function toggleReviews(contentId) {
-    $('.mypage-top').removeClass('active');
-    $('.my').addClass('active');
+    
 
-    if (contentId === 'myReviewList') {
-        if ($('#myReviewList tbody .mytr').length > 0) {
-            $('#myReviewList').css('display', '');
-            $('#receivedReviewList').css('display', 'none');
-            $('#myReviewListIsEmpty').css('display', 'none');
-            $('#receivedReviewListIsEmpty').css('display', 'none');
-        } else {
-            $('#myReviewList').css('display', 'none');
-            $('#receivedReviewList').css('display', 'none');
-            $('#myReviewListIsEmpty').css('display', '');
-            $('#receivedReviewListIsEmpty').css('display', 'none');
-        }
-    } else if (contentId === 'receivedReviewList') {
-        if ($('#receivedReviewList tbody .receivedtr').length > 0) {
-            $('#receivedReviewList').css('display', '');
-            $('#myReviewList').css('display', 'none');
-            $('#receivedReviewListIsEmpty').css('display', 'none');
-            $('#myReviewListIsEmpty').css('display', 'none');
-        } else {
-            $('#receivedReviewList').css('display', 'none');
-            $('#myReviewList').css('display', 'none');
-            $('#receivedReviewListIsEmpty').css('display', '');
-            $('#myReviewListIsEmpty').css('display', 'none');
-        }
 
-        $('.mypage-top').removeClass('active');
-        $('.you').addClass('active');
-         localStorage.setItem('selectedTab', contentId);
+ function toggleInfo(idToToggle) {
+    var element = document.getElementById(idToToggle);
+    var computedStyle = getComputedStyle(element);
+
+    if (computedStyle.display === 'none') {
+        element.style.display = 'grid';
+    } else {
+        element.style.display = 'none';
     }
-   
 }
 
-    // 현재 페이지 URL에서 id 추출
-    function extractIdFromUrl() {
-        const currentPageUrl = window.location.href;
-        const urlParts = currentPageUrl.split("/");
-        const idIndex = urlParts.indexOf("profile") + 1; // "profile" 다음 부분이 id
+// id="delivery_hide" 클릭 시 이벤트 처리
+document.getElementById('delivery_hide').addEventListener('click', function () {
+    toggleInfo('delivery_info');
+});
 
-        if (idIndex >= 0 && idIndex < urlParts.length) {
-            return urlParts[idIndex];
-        } else {
-            // id를 찾을 수 없는 경우 기본값 또는 오류 처리를 수행하세요
-            return null;
-        }
-    }
+// id="item_hide" 클릭 시 이벤트 처리
+document.getElementById('item_hide').addEventListener('click', function () {
+    toggleInfo('item_info');
+});
 
-$("#followImage").click(function() {
-    var followingId = $("#followingId").val();
 
-    var csrfToken = $('meta[name="_csrf"]').attr("content");
-    var csrfHeader = $('meta[name="_csrf_header"]').attr("content");
-
-    $.ajax({
-        url: '/follow/' + followingId,
-        method: 'POST',
-        contentType: 'application/json',
-        headers: {
-            [csrfHeader]: csrfToken
-        },
-        success: function(response) {
-            console.log(response);
-            alert('Followed successfully!');
-        },
-        error: function(error) {
-            console.error('Error:', error);
-        }
-    });
-}); 
-        

@@ -1,5 +1,7 @@
 package com.recipe.entity;
 
+import java.io.Serializable;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.recipe.constant.PrivateOk;
@@ -31,7 +33,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Member extends BaseEntity {
+public class Member extends BaseEntity  implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "member_id")
@@ -80,12 +84,22 @@ public class Member extends BaseEntity {
 
 	private String imgName; // 바뀐 사진이름(보안을위해)
 	
+	private int point = 0; // 회원 포인트
+	
+	
+	public void plusPoint(int point) {
+		this.point += point; 
+	}
+	
+	public void minusPoint(int point) {
+		this.point -= point; 
+	}
+	
+	
 	// member 엔티티 수정
 	public void editMember(MyPageDto myPageDto) {
 		this.nickname = myPageDto.getNickname();
 		this.phoneNumber = myPageDto.getPhoneNumber();
-		this.name = myPageDto.getName();
-		this.password = myPageDto.getPassword();
 		this.introduce = myPageDto.getIntroduce();
 		this.detailAddress = myPageDto.getDetailAddress();
 		this.postCode = myPageDto.getPostCode();
@@ -122,7 +136,9 @@ public class Member extends BaseEntity {
 
 		// 역할
 		member.setRole(Role.ADMIN); // 현재 일반회원은 ADMIN으로 바꿈
-
+		member.setPoint(5000);
+		member.setProvider("default");
+		
 		return member;
 	}
 
@@ -156,7 +172,8 @@ public class Member extends BaseEntity {
 
 		// 역할
 		member.setRole(Role.USER);
-
+		member.setPoint(5000);
+		
 		return member;
 	}
 

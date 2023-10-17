@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	
+	<div th:fragment="myPageSideBar" class="myPageSideBar">
+			<div>
+			<p class="page-side">MY PAGE</p>
+			</div>
+					<div class="list-group list-group-light">
+						<div>
+							<ul class="mypage-list">
+								<li class="mypage-list-li-f">레시피 관리</li>
+								<li class="mypage-list-li recipe_my" ><a>- 나의 레시피</a></li>
+								<li class="mypage-list-li recipe_book" ><a>- 찜한 레시피</a></li>
+							</ul> 
+							<ul class="mypage-list">
+								<li class="mypage-list-li-f">주문 관리</li>
+								<li class="mypage-list-li order"><a href="/myPage/order">- 주문내역/배송조회</a></li>
+							</ul> 
+							<ul class="mypage-list">
+								<li class="mypage-list-li-f">레시피 후기/문의 관리</li>
+								<li class="mypage-list-li recipe_inq"><a>- 나의 레시피 문의</a></li>
+								<li class="mypage-list-li recipe_review"><a>- 나의 레시피 후기</a></li>
+							</ul> 
+							<ul class="mypage-list">
+								<li class="mypage-list-li-f">상품 후기/문의 관리</li>
+								<li class="mypage-list-li item_inq"><a href="/myPage/item_inq">- 나의 상품 문의</a></li>
+								<li class="mypage-list-li item_review"><a href="/myPage/item_review">- 나의 상품 후기</a></li>
+							</ul> 
+							<ul class="mypage-list">
+								<li class="mypage-list-li-f">혜택관리</li>
+								<li class="mypage-list-li point"><a>- 포인트</a></li>
+							</ul> 
+							<ul class="mypage-list">
+								<li class="mypage-list-li-f">회원관리</li>
+								<li class="mypage-list-li follow"><a>- 팔로우</a></li>
+								<li class="mypage-list-li following"><a>- 팔로잉</a></li>
+								<li class="mypage-list-li info"><a>- 회원 정보 수정</a></li>
+							</ul> 
+						</div>
+					</div>
+	</div>
+</html>

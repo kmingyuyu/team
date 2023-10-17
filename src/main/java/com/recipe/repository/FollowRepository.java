@@ -21,11 +21,11 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 	
 	 // 특정 사용자를 팔로우한 사용자 수 조회
  	@Query(value="SELECT COUNT(*) FROM Follow WHERE member_id = ?1" , nativeQuery = true)
-    int countToMember(Long memberId);
+    Long countToMember(Long memberId);
  	
  	// 특정 사용자가 팔로우한 사용자 수 조회
- 	@Query(value="SELECT COUNT(*) FROM Follow WHERE from_member_id = ?1" , nativeQuery = true)
- 	int countFromMember(Long fromMember);
+ 	@Query(value="SELECT COUNT(*) FROM Follow WHERE to_member = ?1" , nativeQuery = true)
+ 	Long countFromMember(Long fromMember);
 	
 	Follow findByMemberIdAndToMember(Long memberId, Long id);
 

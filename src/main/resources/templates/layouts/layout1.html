@@ -37,7 +37,10 @@
 <body>
   <div class="site-wrap">
   	<div th:replace="fragments/header::header"></div>
-	<div layout:fragment="content" class="content"></div>
+	<div layout:fragment="content" class="content">
+    <div th:insert="fragments/myPageMemberInfo::myPageMemberInfo"></div>
+    <div th:insert="fragments/myPageSideBar::myPageSideBar"></div>
+	</div>
 	<div th:replace="fragments/footer::footer"></div>
   </div>
 
@@ -45,7 +48,8 @@
     <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/jquery.slicknav.js}"></script>
-
+    <script th:src="@{/js/header.js}"></script>
+	
   
   <!-- 각 페이지의 스크립트가 작성될 위치 -->
   <th:block layout:fragment="script"></th:block>

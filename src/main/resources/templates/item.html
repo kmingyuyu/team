@@ -10,11 +10,11 @@
 
 	</th:block>
 
-		<div class="container_custom mt-5 mb-5">
+		<div class="container_custom mb-5 back_g">
+			<div>
 				<th:block th:object="${itemSearchDto}">
 				<input type="hidden" th:value="${currentPage}" id="page">
 				<input type="hidden" th:value="${itemSearchDto.itemCategoryEnum}" id="itemCategoryEnum">
-				
 				<div class="search_form pb-3">
 					<input type="text" class="form-control form_search"
 						th:field="*{searchQuery}" placeholder="상품명를 입력해주세요">
@@ -29,7 +29,7 @@
 				</ul>
 				<div class="thmb_list02 pt60">
 					<div
-						class="items-header items-meta d-lg-flex justify-content-between align-items-center">
+						class="items-header items-meta justify-content-between align-items-center">
 						<div class="item-count">
 							<p class="prdCount">
 								검색결과 <strong>[[${category.getTotalElements()}]]</strong>건 조회
@@ -57,11 +57,9 @@
 										title="조회" value="조회" onclick="javascript:dynamicSearch()"></input>
 								</div>
 							</div>
-
 						</div>
 					</div>
 					</th:block>
-
 					<div class="list_box">
 						<div class="list_area">
 
@@ -89,19 +87,19 @@
 												item.sale / 100), 0, 'COMMA')}]]</p>
 											<span>원</span>
 										</div>
-										<div class="review-list__rating-wrap d-flex" th:if="${item.retingAvg > 1.5}">
+										<div class="review-list__rating-wrap d-flex" th:if="${item.ratingAvg > 1.5}">
 											<span class="review-list__rating"> <span
 												class="review-list__rating__unit"> <span
 													class="review-list__rating__active"
-													th:style="'width:' + (${item.retingAvg} * 20) + '%'"></span>
+													th:style="'width:' + (${item.ratingAvg} * 20) + '%'"></span>
 											</span>
 											</span>
 											<p class="review_count_1">
-												[[${item.retingAvg}]]<span class="reting_line">([[${item.reviewCount}]])</span>
+												[[${item.ratingAvg}]]<span class="reting_line">([[${item.reviewCount}]])</span>
 											</p>
 										</div>
 
-										<!-- 40,000원 이상 무료배송 -->
+										<!-- 40000원 이상 무료배송 -->
 										<th:block
 											th:if="${(item.price - (item.price * item.sale / 100)) > 40000}">
 

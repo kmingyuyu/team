@@ -35,5 +35,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 			, nativeQuery = true)
 	List<CartDto> getCartList(@Param("memberId") Long memberId);
 	
+
+	
 	
 }

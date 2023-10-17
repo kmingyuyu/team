@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<div layout:fragment="content">
+
+	<th:block layout:fragment="css">
+
+		<link rel="stylesheet" href="/css/orderThank.css">
+		
+	</th:block>
+	
+	
+	
+	<div class="container_custom">
+		
+		<div class="right_contents">
+			<h2 class="title-page">T H A N K !<span class="cart_sp"> 주 문 완 료</span></h2>
+			<!--cart process-->
+			<div class="page-sorting order font-mss">
+				<span >장바구니</span>
+				<span><i class="ic-14-line-arrow-right"></i></span>
+				<span>주문서</span>
+				<span><i class="ic-14-line-arrow-right"></i></span>
+				<span class="current-page">주문 완료</span>
+			</div>
+		</div>
+		
+		
+		<div class="section_contents">
+		<div class="thank_form_f"> 이젠스토어를 이용해주셔서 감사합니다. </div>
+		<div class="thank_form_s"> 고객님의 <span>주문이 완료</span> 되었습니다. </div>
+		<div class="n-btn-group n-btn-order">
+					<button type="button" class="n-btn btn-lg btn-accent" id="btn-order" >주문내역 확인</button>
+				</div>
+		
+		<div class="TwoStagedLayoutWrapper-module_content__my60G">
+			<div class="TwoStagedLayoutWrapper-module_content-left__2eGzo">
+		<div class="OrderDetail_article__3Ro55">
+			<dl class="OrderDetail_list-detail__h_mYl">
+			<div class="OrderDetail_item-detail__2PqYi"><dt class="OrderDetail_label__1-Uf9">배송지</dt>
+			<dd class="OrderDetail_area-detail__2xjCF">
+				<div class="OrderDetail_area-value__1R5rk">
+					<span class="OrderDetail_value__2_kVN">[[${order.takerName}]]</span>
+				</div>
+				<ul class="OrderDetail_list-phone__2ZJjz">
+					<li class="OrderDetail_item-phone__3ZWy6">[[${order.takeTell}]]</li>
+				</ul>
+				    <p class="OrderDetail_address__2amDj">[[${order.address}]] [[${order.detailAddress}]]<br>([[${order.postCode}]])</p>
+				<ul class="OrderDetail_list-phone__2ZJjz">
+					<li class="OrderDetail_item-deliveryMemo__3ZWy6">[[${order.deliveryMemo}]]</li>
+				</ul>
+				</dd>
+			</div>
+			</dl>
+			</div>
+			<div class="OrderDetail_article__3Ro55"><dl class="OrderDetail_list-detail__h_mYl">
+				<div class="OrderDetail_item-detail__2PqYi">
+					<dt class="OrderDetail_label__1-Uf9">주문번호</dt>
+					<dd class="OrderDetail_area-detail__2xjCF">
+						<div class="OrderDetail_area-value__1R5rk">
+							<span class="OrderDetail_value__2_kVN">[[${order.orderNumber}]]</span>
+							</div></dd></div></dl></div>
+			<div class="SectionBox_article__1wZxh">
+				<div class="SectionBox_area__2TlAo">
+					<header id="item_hide" class="bgbLYq">
+					<p>
+						<span>주문일자</span>
+						<span th:text="${ T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm:ss').format(order.regTime)}"></span>
+						<span></span>
+						<span th:text="${'총 ' + orderHistoryList.size + '건'}"></span>
+					</p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 18">
+						<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+					</svg>
+				</header>
+				<th:block th:each="item , status:${orderHistoryList}">
+				
+			 	<ul class="ProductList_article__D4ZD8 item_box">
+						<li class="ProductList_item__2ht5b">
+							<div class="ProductList_area__3vX2A">
+								<a th:href="'/item/' + ${item.itemId}" class="ProductList_thumbnail__b9yWE">
+								<img th:src="${item.imgUrl}"  width="70" height="70"></a>
+								<div class="ProductList_info__zakl7">
+			<a th:href="'/item/' + ${item.itemId}" class="ProductList_name__25RyL">[[${item.itemNm}]]</a>
+             <div class="ProductList_amount__1tp1P">
+				<span class="mincubx"><b>[[${#numbers.formatInteger(item.orderPrice * item.orderCount , 0, 'COMMA')}]]</b>원</span>
+			 	<span class="ProductList_price__WE858"><b>[[${#numbers.formatInteger((item.salePrice + item.orderPrice) * item.orderCount , 0, 'COMMA')}]]</b>원</span>
+			 	<span class="count_bx"><span>수량 :</span> [[${item.orderCount}]]개</span>
+			 	</div>
+			 </div>
+			 </div>
+			 </li>
+			 </ul>
+			 </th:block>
+			 </div>
+			 </div>
+			
+			
+			
+			</div>
+			<div class="TwoStagedLayoutWrapper-module_content-right__3orrb DoubleColumn_content-right__-iKST">
+				
+				<section class="AmountSummarySectionstyle__Section-sc-1gqkb5l-0 joJzei">
+			<header><p>결제금액</p><strong id="final_price">[[${#numbers.formatInteger(order.finalPrice , 0, 'COMMA')}]]<span class="pay_won">원</span></strong></header>
+			<div class="AmountSummarySectionstyle__Content-sc-1gqkb5l-1 jIXpaz">
+				<p>총 상품금액</p><p id="total_price">[[${#numbers.formatInteger(order.totalPrice , 0, 'COMMA')}]]<span class="pay_won">원</span></p>
+				<p>총 배송비</p><p id="delevery_price">[[${#numbers.formatInteger(order.deleveryPrice , 0, 'COMMA')}]]<span class="pay_won">원</span></p>
+				<p>할인금액</p><p id="sale_price">[[${#numbers.formatInteger(order.salePrice , 0, 'COMMA')}]]<span class="pay_won">원</span></p>
+				<p>포인트사용</p><p id="use_point">[[${#numbers.formatInteger(order.usePoint , 0, 'COMMA')}]]<span class="pay_won">p</span></p>
+				</div>
+			
+		</section>
+				<section class="mincu_s">
+					<header id="pay_hide" class="min_head">
+					<p>결제 정보</p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 18">
+						<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+					</svg>
+				</header>
+			<div class="AmountSummarySectionstyle__Content-sc-1gqkb5l-1 mincu" id="pay_box">
+				
+					<p>결제명</p>
+					<p>[[${info.orderItemName}]]</p>
+					
+					<th:block th:if="${info.payMethod != null}">
+					<p>결제 유형</p>
+					<p th:if="${info.payMethod == 'card'}">카드결제</p>
+					<p th:if="${info.payMethod == 'point'}">포인트결제</p>
+					</th:block>
+					
+					<p>결제 방식</p>
+					<p >[[${info.payProvider}]]</p>
+					<p th:if="${info.payProvider == null}">직접 결제</p>
+					
+					<th:block th:if="${info.cardName != null}">
+					<p>카드 정보</p>
+					<p>[[${info.cardName}]]</p>
+					</th:block>
+					
+					<th:block th:if="${info.cardNumber != null}">
+					<p>카드 번호</p>
+					<p>[[${info.cardNumber}]]</p>
+					</th:block>
+					
+					<th:block th:if="${info.bankName != null}">
+					<p>은행 정보</p>
+					<p>[[${info.bankName}]]</p>
+					</th:block>
+				
+				</div>
+			
+		</section>
+				
+				
+				
+			</div>
+		</div>
+			
+		</div>
+		
+		
+	</div>
+	
+	
+</div>
+
+
+<th:block layout:fragment="script">
+	
+	
+	<script>
+		
+				
+document.addEventListener("DOMContentLoaded", function() {
+  var payHideButton = document.getElementById("pay_hide");
+  var payBox = document.getElementById("pay_box");
+
+  var itemHideButton = document.getElementById("item_hide");
+  var itemBoxes = document.getElementsByClassName("item_box");
+
+  // payHideButton 클릭 이벤트
+  payHideButton.addEventListener("click", function() {
+    if (payBox.style.display === "none") {
+      payBox.style.display = "grid";
+    } else {
+      payBox.style.display = "none";
+    }
+  });
+
+  // itemHideButton 클릭 이벤트
+  itemHideButton.addEventListener("click", function() {
+    Array.from(itemBoxes).forEach(function(itemBox) {
+      if (itemBox.style.display === "none") {
+        itemBox.style.display = "block";
+      } else {
+        itemBox.style.display = "none";
+      }
+    });
+  });
+});
+		
+		
+	</script>
+	
+	<script th:inline="javascript">
+		
+		
+
+
+
+
+
+	</script>
+	</th:block>
+
+
+</html>

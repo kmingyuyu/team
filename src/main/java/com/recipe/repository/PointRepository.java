@@ -8,6 +8,6 @@ import com.recipe.entity.Point;
 
 public interface PointRepository extends JpaRepository<Point, Long> {
 	
-	List<Point> findByMemberId(Long id); 
+	List<Point> findByMemberId(Long id);
 	
 }

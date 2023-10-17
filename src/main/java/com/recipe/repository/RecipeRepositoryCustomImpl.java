@@ -66,7 +66,7 @@ public class RecipeRepositoryCustomImpl implements RecipeRepositoryCustom {
 		                m.imgUrl,
 		                r.categoryEnum,
 		                rv.recipe.count().as("reviewCount"),
-		                rv.reting.avg().coalesce(0.0).as("retingAvg")
+		                rv.rating.avg().coalesce(0.0).as("ratingAvg")
 
 		        ))
 		        .from(r)
@@ -123,8 +123,8 @@ public class RecipeRepositoryCustomImpl implements RecipeRepositoryCustom {
 	        return r.regTime.desc();
 	    }
 	    else if ("reviewAvg".equals(type)) {
-	    	System.out.println("avg" + rv.reting.avg().coalesce(0.0).desc());
-	    	return rv.reting.avg().coalesce(0.0).desc();
+	    	System.out.println("avg" + rv.rating.avg().coalesce(0.0).desc());
+	    	return rv.rating.avg().coalesce(0.0).desc();
 	    }
 	    else if ("reviewCount".equals(type)) {
 	    	System.out.println("rvc" +  rv.recipe.count().desc());

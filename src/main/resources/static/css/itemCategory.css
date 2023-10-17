@@ -131,9 +131,9 @@
 }
 
 .list_box {
-	margin: 0px 5px;
-	padding-top: 40px;
-    border-bottom: 1px solid #dedede;
+	background: white;
+    padding: 0px 26px;
+    padding-top: 40px;
 }
 
 .search_form {
@@ -335,7 +335,7 @@ ul.key2 li a {
 }
 
 .items-header {
-    border-bottom: 1px solid #e2e2e2;
+    border-bottom: 1px solid #ddd;
 }
 
 .item-count .number {
@@ -432,6 +432,10 @@ ul.key2 li a {
 }
 
 .items-meta {
+    padding-right: 20px;
+    padding-left: 25px;
+    background: white;
+    display: flex;
     padding-bottom: 15px;
 }
 
@@ -555,7 +559,6 @@ ul.key2 .active a {
     justify-content: center;
     -webkit-box-align: center;
     align-items: center;
-    margin-bottom: 24px;
 }
 
 .loxVUo {

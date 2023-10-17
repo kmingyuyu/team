@@ -19,12 +19,14 @@ import com.recipe.dto.MngRecipeSearchDto;
 import com.recipe.entity.Follow;
 import com.recipe.entity.Member;
 import com.recipe.entity.Point;
+import com.recipe.exception.FindNotException;
 import com.recipe.repository.CartRepository;
 import com.recipe.repository.FollowRepository;
 import com.recipe.repository.MemberRepository;
 import com.recipe.repository.PointRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,46 +36,7 @@ public class MemberService implements UserDetailsService {
 	
 	private final MemberRepository memberRepository ;
 	
-	private final CartRepository cartRepository ;
-	
 	private final FollowRepository followRepository ;
-	
-	private final PointRepository pointRepository  ;
-	
-	
-	public Member findMember(Long id) {
-		
-		Member member = memberRepository.findById(id).orElseThrow();
-		
-		if (member == null) {
-		    return null;
-		}
-		 
-		 return member;
-	}
-	
-	
-	public int findPoint(Long id) {
-		int point = 0;
-		
-		List<Point> pointList = pointRepository.findByMemberId(id);
-		
-		if(pointList != null) {
-			for(Point p : pointList) {
-				point += p.getPoint();
-			}
-		}
-		return point;
-		
-	}
-
-	
-	public Long cartCount(Long id) {
-		
-		Long cartCount = cartRepository.countByMemberId(id);
-		
-		return cartCount;
-	}
 	
 	public boolean findMember(String email) {
 		
@@ -88,6 +51,21 @@ public class MemberService implements UserDetailsService {
 		return ck;
 	}
 	
+	public Member findMember(Long id) throws FindNotException {
+		Member member = null;
+		
+		try {
+			member = memberRepository.findById(id).orElseThrow(() 
+					->  new FindNotException("ItemId " + id + " not found"));
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		
+	    return member;
+	    	   
+	}
+	
 	public String findEmailSearch(Map<String, Object> psdata) {
 		
 		String phone = psdata.get("phoneNumber").toString();
@@ -98,7 +76,6 @@ public class MemberService implements UserDetailsService {
 		if (member == null) {
 		    return ck;
 		  }
-		
 		
 		ck = member.getEmail();
 		return ck;

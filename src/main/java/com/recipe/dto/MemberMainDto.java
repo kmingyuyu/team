@@ -12,7 +12,7 @@ public interface MemberMainDto {
 	
 	int getReviewCount();
 	
-	double getRetingAvg();
+	double getRatingAvg();
 	
 	int getTotalCountCount();
 	

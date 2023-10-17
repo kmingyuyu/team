@@ -66,13 +66,13 @@ public class RecipeCategoryDto {
 	private String imgUrl;
 	private CategoryEnum categoryEnum;
 	private Long reviewCount;
-	private double retingAvg;
+	private double ratingAvg;
 	private Long bookmarkCount;
 	
 	@QueryProjection
 	public RecipeCategoryDto(Long id, int count, String durTime, String imageUrl, String level, String subTitle,
 			String title, Long memberId, LocalDateTime regTime, String intro, String nickname, String imgUrl,
-			 CategoryEnum categoryEnum , Long reviewCount, double retingAvg) {
+			 CategoryEnum categoryEnum , Long reviewCount, double ratingAvg) {
 		
 		
 		this.id = id;
@@ -89,7 +89,7 @@ public class RecipeCategoryDto {
 		this.imgUrl = imgUrl;
 		this.categoryEnum = categoryEnum;
 		this.reviewCount = reviewCount;
-		this.retingAvg = retingAvg;
+		this.ratingAvg = ratingAvg;
 	
 	}
 	

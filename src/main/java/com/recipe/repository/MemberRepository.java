@@ -17,6 +17,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> , MemberRe
 		
 		Member findByPhoneNumber(String phoneNumber);
 		
+		Member findByNickname(String nickname);
+		
 		//이메일 찾기
 		@Query("SELECT m.email FROM Member m WHERE m.phoneNumber = :phoneNumber")
 		String findEmailByPhoneNumber(@Param("phoneNumber") String phoneNumber);

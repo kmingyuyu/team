@@ -1,7 +1,10 @@
 @charset "UTF-8";
 
  .section_contents {
-    padding: 37px 20px 37px;
+	background: white;
+	border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    padding: 37px 20px 140px;
 }
 
 .section_contents {
@@ -96,7 +99,7 @@ table, th, td {
 
 .img-block {
     display: block;
-    padding-top: 120%;
+    padding-top: 100%;
     position: relative;
     overflow: hidden;
 }
@@ -225,7 +228,10 @@ table, th, td {
 }
 
 .final_box {
-	margin-bottom: 30px;
+	background: white;
+	  border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+	margin-bottom: 55px;
 	padding: 20px;
  border-bottom: 1px solid #ddd;
  border-top: 1px solid #ddd;
@@ -426,8 +432,9 @@ table, th, td {
 .right_contents {
     clear: both;
     position: relative;
-    padding: 73px 20px 10px 20px;
-    border-bottom: 1px solid #ddd;
+    padding: 20px 20px 20px 20px;
+    border: 1px solid #ddd;
+    background: white;
 }
 
 .title-page {
@@ -441,7 +448,7 @@ table, th, td {
 
 .page-sorting.order {
     position: absolute;
-    top: 77px;
+    top: 19px;
     right: 20px;
 }
 
@@ -451,22 +458,21 @@ table, th, td {
 }
 
 .page-sorting.order span.current-page {
-	font-size: 17px;
-	font-weight: 600;
-	color: RGB(244, 74, 93);
+    font-size: 18px;
+    font-weight: 600;
+    color: black;
 }
 
 .page-sorting.order span {
 	letter-spacing: 0.5px;
 	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif";
-    font-size: 16px;
-    color: #777;
+    font-size: 14px;
+     color: #7d7d7d;
     font-weight: 400;
     line-height: 1.5;
 }
 
 .page-sorting.order span > i {
-    padding: 0 4px 0 2px;
     margin-top: -1px;
 }
 
@@ -541,12 +547,14 @@ table, th, td {
 }
 
 .null_box {
-    margin-bottom: 319px;
-    margin-top: 210px;
+	border: 1px solid #ddd;
+	border-top: none;
+    padding-bottom: 319px;
+    padding-top: 210px;
     font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
-    color: #a9a9a9;
+    color: #7b7b7b;
     align-items: center;
-    /* background: gray; */
+     background: white; 
     height: 200px;
     width: 100%;
     display: flex;

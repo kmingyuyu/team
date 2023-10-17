@@ -33,7 +33,7 @@ public interface RecipeMainDto {
     
     Long getBookCount();
     
-    double getRetingAvg();
+    double getRatingAvg();
     
     Long getMemberId();
 	

@@ -7,10 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import com.recipe.dto.RecipeCategoryDto;
+import com.recipe.constant.WritingStatus;
 import com.recipe.dto.RecipeMainDto;
-import com.recipe.dto.RecipeSearchDto;
 import com.recipe.entity.Recipe;
 
 
@@ -18,8 +18,13 @@ public interface RecipeRepository extends JpaRepository<Recipe , Long>  ,  Recip
 										{
 	
 	
-	@Query(value = "SELECT * FROM recipe WHERE member_id = ?1  ORDER BY recipe_id DESC" , nativeQuery = true)
-	List<Recipe> findRecipe(Long id);
+	@Query(value = 
+			"SELECT * "
+			+ "FROM recipe "
+			+ "WHERE member_id = :memberId AND writing_status = :writingStatus " 
+			+ "ORDER BY reg_time DESC" , nativeQuery = true)
+	Page<Recipe> findMypageRecipe(@Param("memberId") Long memberId, @Param("writingStatus") String writingStatus ,  Pageable pageable);
+	
 	
 	@Query(value = "SELECT * FROM recipe WHERE member_id = ?1 AND writing_status = 'PUBLISHED' ORDER BY recipe_id DESC ", nativeQuery = true)
 	List<Recipe> findAllRecipe(Long id);
@@ -74,7 +79,7 @@ List<Recipe> getPopularRecipe(Long id);
 	@Query ( value = "SELECT \r\n"
 			+ "    ifnull(bm_count , 0) bookCount ,"
 			+ "    ifnull(rv_count , 0) reviewCount ,\r\n"
-			+ "    COALESCE(rv_avg, 0) retingAvg ,\r\n"
+			+ "    COALESCE(rv_avg, 0) ratingAvg ,\r\n"
 			+ "    r.recipe_id id , r.count count , r.dur_time durTime , r.image_url imageUrl , "
 			+ "    r.level level , r.sub_title subTitle, r.title title , r.member_id memberId ,"
 			+ "    r.reg_time regTime , r.intro intro ,\r\n"
@@ -87,7 +92,7 @@ List<Recipe> getPopularRecipe(Long id);
 			+ "    GROUP BY recipe_id\r\n"
 			+ ") bm ON r.recipe_id = bm.recipe_id "
 			+ "LEFT JOIN (\r\n"
-			+ "    SELECT recipe_id, COUNT(*) AS rv_count, COALESCE(AVG(reting), 0) AS rv_avg\r\n"
+			+ "    SELECT recipe_id, COUNT(*) AS rv_count, COALESCE(AVG(rating), 0) AS rv_avg\r\n"
 			+ "    FROM review\r\n"
 			+ "    GROUP BY recipe_id\r\n"
 			+ ") rv ON r.recipe_id = rv.recipe_id\r\n"

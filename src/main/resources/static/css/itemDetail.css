@@ -241,7 +241,9 @@
 }
 
 .option_display_area tbody {
-    border-bottom: 8px solid #fff;
+	border: 1px solid #f1f1f1;
+	border-left: none;
+	border-right: none;
 }
 
 .item_choice_list table tbody:last-child tr td {
@@ -1452,9 +1454,8 @@ svg:not(:root) {
     border-bottom: 1px solid #dee2e6;
     border-top: 1px solid #dee2e6;
     font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
-     color: #a9a9a9;
+    color: #7b7b7b;
     align-items: center;
-    /* background: gray; */
     height: 200px;
     width: 100%;
     display: flex;
@@ -1465,7 +1466,7 @@ svg:not(:root) {
 	font-size: 1rem;
 	margin-top: 15px;
     font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
-    color: #a9a9a9;
+    color: #7b7b7b;
     align-items: center;
     height: 200px;
     width: 100%;

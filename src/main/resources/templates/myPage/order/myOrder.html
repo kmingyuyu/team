@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<th:block layout:fragment="css">
+	<link rel="stylesheet" th:href="@{/css/myPage.css}" type="text/css" />
+</th:block>
+<div layout:fragment="content" class="layout">
+	<div th:insert="fragments/myPageMemberInfo::myPageMemberInfo"></div>
+	
+	<section class="container_custom spad d-flex">
+		<div class="side_bx">
+			<div th:insert="fragments/myPageSideBar::myPageSideBar"></div>
+		</div>
+		<div  class="content_bx po_ab align_min">
+			<input type="hidden" th:value="${loginOk}" id="loginOk">
+					<div class="right_contents">
+						<span class="cart_sp">주문내역/배송조회</span>
+						<div class="page-sorting order font-mss">
+						<a href="/">home</a>
+						<span><i class="ic-14-line-arrow-right"></i></span>
+						<span class="current-page">마이페이지(주문내역/배송조회)</span>
+						</div>
+						</div>
+					<section>
+					<div class="dLBPEv">
+					<ul class="state">
+					<input type="hidden" id="data" th:value="${myPageSerchDto.data}">
+					<li th:classappend="${myPageSerchDto.data == '주문완료'} ? 'is-active'"><a onclick="goList('주문완료','order')">주문완료 [[${countMap['주문완료']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == '발송요청완료'} ? 'is-active'"><a onclick="goList('발송요청완료','order')">발송요청완료 [[${countMap['발송요청완료']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == '배송준비중'} ? 'is-active'"><a onclick="goList('배송준비중','order')">배송준비중 [[${countMap['배송준비중']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == '배송중'} ? 'is-active'"><a onclick="goList('배송중','order')">배송중 [[${countMap['배송중']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == '배송완료'} ? 'is-active'"><a onclick="goList('배송완료','order')">배송완료 [[${countMap['배송완료']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == '구매확정'} ? 'is-active'"><a onclick="goList('구매확정','order')">구매확정 [[${countMap['구매확정']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == '반품요청'} ? 'is-active'"><a onclick="goList('반품요청','order')">반품요청 [[${countMap['반품요청']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == '반품진행중'} ? 'is-active'"><a onclick="goList('반품진행중','order')">반품진행중 [[${countMap['반품진행중']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == '환불완료'} ? 'is-active'"><a onclick="goList('환불완료','order')">환불완료 [[${countMap['환불완료']}]]</a></li>
+				</ul>
+					<div class="date_check_box">
+                    <div class="date_check_list">
+                        <button type="button" value="0" >오늘</button>
+                        <button type="button" value="7" >7일</button>
+                        <button type="button" value="15" >15일</button>
+                        <button type="button" value="30" >1개월</button>
+                        <button type="button" value="90" >3개월</button>
+                        <button type="button" class="oneYear" value="365" >1년</button>
+                    </div>
+                    <div class="date_check_calendar">
+                        <input type="date" class="anniversary js_datepicker st_date" th:value="${myPageSerchDto.startTime}">
+                        <span class="ml-1 mr-1"> ~ </span>  
+                        <input type="date" class="anniversary js_datepicker end_date" th:value="${myPageSerchDto.endTime}">
+                    </div>
+                    <div>
+						<input type="text"  class="inp_nm" placeholder="상품명을 입력해주세요" th:value="${myPageSerchDto.searchQuery}">
+					</div>
+                    <button type="button" class="btn_date_check" onclick="dynamicSearch('order')"><em>조회</em></button>
+            	</div>
+           
+				<table class="table_basic cart_table n-cart-table">
+					<colgroup>
+						<col width="35%">
+						<col width="20%">
+						<col width="10%">
+						<col width="12%">
+						<col width="11%">
+						<col width="12%">
+						
+					</colgroup>
+					<thead>
+						<tr class="cart-header">
+							<th scope="col">상품정보</th>
+							<th scope="col">주문 번호</th>
+							<th scope="col">주문 날짜</th>
+							<th scope="col">주문 금액(수량)</th>
+							<th scope="col">주문 상태</th>
+							<th scope="col">주문 관리</th>
+							
+						</tr>
+					</thead>
+					<tbody th:if="${!OrderList.isEmpty}">
+					 <th:block th:each="order , status:${OrderList}">
+					<tr class="cart-group">
+							<td colspan="9" class="cart_cont">
+								<table class="table_basic cart_table">
+									<colgroup>
+										<col width="35%">
+										<col width="20%">
+										<col width="10%">
+										<col width="12%">
+										<col width="11%">
+										<col width="12%">
+									</colgroup>
+									<tbody>
+									<tr class="cart_list_no">
+										<td>
+											<div class="connect_img">
+												<a class="img-block" th:href="'/item/' + ${order.itemId}">
+                                                    <img th:src="${order.imgUrl}" th:alt="${order.itemNm}">
+												</a>																																					
+											</div>
+											<div class="article_info connect_info">
+												<p class="list_info">
+													<a th:href="'/item/' + ${order.itemId}" class="itemNm">[[${order.itemNm}]]</a>
+												</p>
+											</div>
+										</td>
+										<td class="order_num">
+											<a class="td_price_wrap ori_price_so" th:href="'/myPage/order/detail/' + ${order.orderNumber}" title="상세보기">
+											[[${order.orderNumber}]]
+										</a>
+										</td>
+										<td>
+											[[${T(java.time.format.DateTimeFormatter).ofPattern('yyyy.MM.dd').format(order.regTime)}]]
+										</td>
+										<td>
+											<p class="order_price">[[${#numbers.formatInteger(order.orderPrice , 0, 'COMMA')}]]원</p>
+											<p class="order_count">[[${order.orderCount}]]개</p>
+											
+										</td>
+                                        <td class="order_stat">
+  										  [[${order.orderStatus}]]
+  										  <button  onclick="deliveryPopup(this)" th:attr="data-invoiceNumber=${order.invoiceNumber}"
+  										  		   class="delivery-btn btn" 
+												   th:unless="${order.orderStatus.toString == '주문완료' or order.orderStatus.toString == '발송요청완료' or 
+												   				order.orderStatus.toString == '반품요청' or order.orderStatus.toString == '환불완료'}">배송조회</button>
+										</td>
+										<td>
+										<button onclick="orderCancel(this)"  class="plain-btn btn" th:attr="data-orderItemId=${order.orderItemId}"
+										th:if="${order.orderStatus.toString == '주문완료'}">주문취소</button>
+										
+										<button onclick="orderConfirmed(this)"  class="plain-btn btn" th:attr="data-orderItemId=${order.orderItemId}"
+										th:if="${order.orderStatus.toString == '배송완료'}">구매확정</button>
+										
+										<button onclick="itemReviewPopupReg(this)"  class="plain-btn btn" th:attr="data-orderItemId=${order.orderItemId}"
+										th:if="${order.orderStatus.toString == '구매확정' and order.reviewOk == false}">후기작성</button>
+										
+										<p  class="review_true" th:if="${order.reviewOk == true}">후기 작성 완료</p>
+										
+										</td>
+								
+									</tr>
+							</tbody>
+								</table>
+							</td>
+						</tr>
+						</th:block>
+				</tbody>
+				</table>
+				
+				<div th:if="${!OrderList.isEmpty}" class="style__PagingWrapper-b83qno-6 bYnXQa" 
+							th:with="start=${(OrderList.number/maxPage)*maxPage + 1}
+			    ,end=(${(OrderList.totalPages == 0) ? 1 : (start + (maxPage - 1) < OrderList.totalPages ? start + (maxPage - 1) : OrderList.totalPages)})">
+
+							<button class="style__PagePrevButton-b83qno-8 loxVUo"
+								th:classappend="${OrderList.first}?'bt_hd'"
+								th:onclick="'javascript:orderPage(' + ${OrderList.number - 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+									<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+								</svg>
+							</button>
+							<ul>
+								<a offset="0" class="style__PageNumber-b83qno-7"
+									th:each="page: ${#numbers.sequence(start, end)}"
+									th:classappend="${OrderList.number eq page-1}?'hIVTuk':'iBHoeR'"
+									th:onclick="'javascript:orderPage(' + ${page - 1} +')'"> <span>[[${page}]]</span>
+								</a>
+							</ul>
+							<button class="style__PageNextButton-b83qno-9 gCfLmH"
+								th:classappend="${OrderList.last}?'bt_hd'"
+								th:onclick="'javascript:orderPage(' + ${OrderList.number + 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+							        <path stroke="#000"
+										d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+					            </svg>
+							</button>
+					</div>
+						<div class="null_box" th:if="${OrderList.isEmpty}">
+							주문 상품이 없습니다.			
+						</div>
+						<div class="my-order-state">
+							<dl>
+								<dt>주문상태 안내</dt>
+								<dd><em>주문 완료</em>상품 결제가 완료 되었습니다. 발송요청 전까지 주문취소가 가능합니다.</dd>
+								<dd><em>발송요청 완료</em>택배사에게 수거요청 완료 되었습니다. 주문취소가 불가능합니다.</dd>
+								<dd><em>배송 준비중</em>택배사에게 상품을 전달하였으며, 출고지로 이동중 입니다.</dd>
+								<dd><em>배송중</em>출고지에 도착 하였습니다, 고객님이 요청한 배송지로 배송중 입니다.</dd>
+								<dd><em>배송 완료</em>주문하신 상품이 배송지에 잘 도착했습니다.</dd>
+								<dd><em>구매 확정</em>상품을 정상적으로 수령하여 구매 확정 되었습니다. 구매 확정을 하지 않으시더라도 배송 완료 후 7일이 지나면 자동으로 확정됩니다. 구매 확정 시 환불 요청이 불가능합니다.</dd>
+								<dd><em>반품 요청</em>반품 접수 후 회수 요청 택배사에 반품 상품 수거를 요청한 상태입니다.</dd>
+								<dd><em>반품 진행중</em>보내주신 반품 요청 상품의 회수 진행중이며, 반품 상품의 검수 후 환불처리 예정입니다.</dd>
+								<dd><em>환불 완료</em>주문전 취소 / 반품 요청 상품의 검수가 완료되어 환불 요청이 승인 되었습니다.</dd>
+							</dl>
+						</div>
+			
+				
+				</section>
+				
+				</div>
+
+	</section>
+
+
+</div>
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/myPage/global/global.js}"></script>
+	<script th:src="@{/js/myPage/global/dateAndSearch.js}"></script>
+	<script th:src="@{/js/myPage.js}"></script>
+	<script th:src="@{/js/myPage/order/order.js}"></script>
+</th:block>
+
+
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Yoga Studio Template">  <meta name="keywords" content="Yoga, unica, creative, html">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Yummy</title>
+	
+		<!-- 폰트어썸-->
+    <script src="https://kit.fontawesome.com/27cfb375b2.js" crossorigin="anonymous"></script>
+    
+    <!-- Google Font -->
+    <link th:href="@{https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+	<link th:href="@{https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css}"rel="stylesheet" />
+    <!-- Css Styles -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/nice-select.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/slicknav.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/style_custom.css}" type="text/css">
+	<link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+	<link href="/css/nprogress.css" rel="stylesheet">
+	<link href="/css/green.css" rel="stylesheet">
+	<link href="/css/custom.min.css" rel="stylesheet">
+
+
+
+	<style>
+.hd {
+	display: none;
+}
+
+* {
+	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto' !important;
+}
+</style>
+
+</head>
+<body>
+	<div class="nav-md">
+		<div class="container body">
+			<div class="main_container">
+				<div class="col-md-3 left_col">
+					<div class="left_col scroll-view">
+						<div class="navbar nav_title" style="border: 0;">
+							<a href="/" class="site_title_custom">
+								<span>메인 페이지</span></a>
+						</div>
+
+						<div id="sidebar-menu"
+							class="main_menu_side hidden-print main_menu">
+							<div class="menu_section">
+								<ul class="nav side-menu">
+									<li><a>회원</a>
+										<ul class="nav child_menu">
+											<li><a href="/admin/memberMng"> - 회원관리</a></li>
+										</ul></li>
+									<li><a>상품</a>
+										<ul class="nav child_menu">
+											<li><a href="/admin/itemMng"> - 상품관리</a></li>
+											<li><a href="/admin/orderMng"> - 주문관리</a></li>
+										</ul></li>
+									<li><a>레시피</a>
+										<ul class="nav child_menu">
+											<li><a href="/admin/recipeMng"> - 레시피 관리</a></li>
+										</ul></li>
+									<li><a>댓글 관리</a>
+										<ul class="nav child_menu">
+											<li><a href="/admin/commentMng"> - 댓글 관리</a></li>
+										</ul></li>
+									<li><a>문의사항</a>
+										<ul class="nav child_menu">
+											<li><a href="/admin/qaMng">문의사항 관리</a></li>
+										</ul></li>
+								</ul>
+							</div>
+
+
+						</div>
+
+
+					</div>
+				</div>
+
+
+
+				<div class="right_col" role="main">
+					<div class="">
+						<div class="page-title_custom">
+								<h3>상품 관리</h3>
+							<form class="filter-search" th:object="${itemSearchDto}">
+								<input type="hidden" th:value="${currentPage}" id="page">
+										<div class="input_group_coustom">
+											<input type="text" class="form-control form_search"
+												 placeholder="검색어를 입력 해주세요" th:field="*{searchQuery}">
+											<span class="input-group-btn">
+												<button id="searchBtn" class="form_search_bt"
+													onclick="dynamicSearch()">조회</button>
+											</span>
+										</div>
+							</form>
+						</div>
+
+								<div class="x_panel">
+									<div class="x_content">
+										<div class="row">
+											<div class="col-sm-12">
+												<div class="card-box table-responsive">
+
+													<table id="datatable"
+														class="table table-striped table-bordered"
+														style="width: 100%">
+														<thead>
+															<tr>
+																<th>No</th>
+																<th>상품명</th>
+																<th>카테고리</th>
+																<th>상품 상태</th>
+																<th>가격</th>
+																<th>할인율</th>
+																<th>판매 수</th>
+																<th>남은 재고</th>
+																<th>상품 관리</th>
+															</tr>
+														</thead>
+													<th:block th:each="item , status:${items}">
+															<tbody>
+																<tr>
+																	<td>[[${status.index+1}]]</td>
+																	<td>[[${item.itemNm}]]</td>
+																	<td>[[${item.itemCategoryEnum}]]</td>
+																	<td th:if="${item.itemSellStatus.toString} == 'SELL'">판매중</td>
+																	<td th:if="${item.itemSellStatus.toString} == 'SOLD_OUT'">품절</td>
+																	<td>[[${#numbers.formatInteger(item.price, 0, 'COMMA')}]]원</td>
+																	<td>[[${item.sale}]]%</td>
+																	<td>[[${#numbers.formatInteger(item.orderCount, 0, 'COMMA')}]]건</td>
+																	<td>[[${#numbers.formatInteger(item.stockNumber, 0, 'COMMA')}]]개</td>
+
+
+
+																	<td>
+																		<form id="delete_form" action="" th:method="delete">
+																		<button 
+																		 class="plain-btn btn"
+																		 onclick="">상품삭제</button>
+																			<input type="hidden" th:name="${_csrf.parameterName}"
+																				th:value="${_csrf.token}">
+																		</form>
+																	</td>
+																</tr>
+
+															</tbody>
+															</th:block>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="style__PagingWrapper-b83qno-6 bYnXQa"
+							th:with="start=${(items.number/maxPage)*maxPage + 1}
+			                         ,end=(${(items.totalPages == 0) ? 1 : (start + (maxPage - 1) < items.totalPages ? start + (maxPage - 1) : items.totalPages)})">
+
+							<button class="style__PagePrevButton-b83qno-8 loxVUo"
+								th:classappend="${items.first}?'bt_hd'"
+								th:onclick="'javascript:page(' + ${items.number - 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+									<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+								</svg>
+							</button>
+							<ul>
+								<a offset="0" class="style__PageNumber-b83qno-7"
+									th:each="page: ${#numbers.sequence(start, end)}"
+									th:classappend="${items.number eq page-1}?'hIVTuk':'iBHoeR'"
+									th:onclick="'javascript:page(' + ${page - 1} +')'"> <span>[[${page}]]</span>
+								</a>
+							</ul>
+							<button class="style__PageNextButton-b83qno-9 gCfLmH"
+								th:classappend="${items.last}?'bt_hd'"
+								th:onclick="'javascript:page(' + ${items.number + 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+							        <path stroke="#000"
+										d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+					            </svg>
+							</button>
+						</div>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/bootstrap.bundle.min.js"></script>
+	<script src="/js/fastclick.js"></script>
+	<script src="/js/nprogress.js"></script>
+	<script src="/js/icheck.min.js"></script>
+	<script src="/js/custom.min.js"></script>
+
+	<script th:inline="javascript">
+		function dynamicSearch(){
+		var searchQuery = $("#searchQuery").val();
+		var page = $("#page").val();
+
+	//주소 이동
+	location.href = "/admin/itemMng/" + page
+			+ "?searchQuery=" + searchQuery + "";
+		}
+
+		//페이징버튼 눌렀을때 검색어와 selectbox를 get방식으로 주소이동시켜준다
+		function page(page) {
+			var searchBy = $("#searchBy").val();
+			var searchQuery = $("#searchQuery").val();
+			//주소 이동
+			location.href = "/admin/itemMng/" + page 
+			                + "?searchQuery=" + searchQuery;
+
+		}
+
+	</script>
+	<body>
+</html>

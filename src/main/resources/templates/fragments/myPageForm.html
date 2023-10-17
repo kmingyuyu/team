@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<th:block layout:fragment="css">
+	<link rel="stylesheet" th:href="@{/css/myPage.css}" type="text/css" />
+</th:block>
+
+<div layout:fragment="content" class="layout">
+	<div th:insert="fragments/myPageMemberInfo::myPageMemberInfo"></div>
+	
+	<section class="container_custom spad d-flex">
+		<div class="side_bx">
+			<div th:insert="fragments/myPageSideBar::myPageSideBar"></div>
+		</div>
+		<div class="content_bx po_ab align_min">
+		<div class="right_contents">
+			<span class="cart_sp">주문내역/배송조회</span>
+			<div class="page-sorting order font-mss">
+				<a href="/">home</a>
+				<span><i class="ic-14-line-arrow-right"></i></span>
+				<span class="current-page">마이페이지(주문내역/배송조회)</span>
+			</div>
+		</div>
+		<section class="dLBPEv">
+			
+			
+		</section>
+			
+		</div>
+	</section>
+	
+</div>
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/myPage/global/global.js}"></script>
+	<script th:src="@{/js/myPage/global/dateAndSearch.js}"></script>
+</th:block>
+
+
+</html>

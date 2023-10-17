@@ -23,7 +23,6 @@ public class MyPageDto {
 	private Long id;
 	private String phoneNumber;
 	private String nickname;
-	private String name;
 	private String postCode;
 	private String address;
 	private String detailAddress;

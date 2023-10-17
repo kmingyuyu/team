@@ -48,6 +48,14 @@ public class Item extends BaseEntity {
 	@Enumerated(EnumType.STRING) //상품상태 sell , sold_out
 	private ItemSellStatus itemSellStatus;
 	
+	public void orderStockAndSellStatus(int count) {
+		this.stockNumber -= count;
+		if(stockNumber == 0) {
+			this.itemSellStatus = ItemSellStatus.SOLD_OUT;
+		}
+		
+	}
+	
 	
 	
 	

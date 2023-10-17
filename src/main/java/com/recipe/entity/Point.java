@@ -1,10 +1,13 @@
 package com.recipe.entity;
 
+
 import com.recipe.constant.PointEnum;
 
 import groovy.transform.ToString;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,20 +23,51 @@ import lombok.Setter;
 @ToString
 @Entity
 @Table(name="point")
-public class Point {
+public class Point extends BaseTimeEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="point_id")
 	private Long id;
 	
-	private int point;
+	private int point; // 포인트
 	
-	private PointEnum pointEnum;
+	@Enumerated(EnumType.STRING)
+	private PointEnum pointEnum; // 포인트종류
+	
+	private String pointInfo; // 포인트 내용
+	
+	private String pointDetailInfo; // 포인트 상세내용
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="member_id")
 	private Member member;
+	
+	public static Point createPlusPoint (Member member , int point, String pointInfo , String pointDetailInfo) {
+		
+		Point pointEntity = new Point() ;
+		
+		pointEntity.setMember(member);
+		pointEntity.setPoint(point);
+		pointEntity.setPointEnum(PointEnum.PLUS);
+		pointEntity.setPointInfo(pointInfo);
+		pointEntity.setPointDetailInfo(pointDetailInfo);
+		
+		return pointEntity;
+	}
+	
+	public static Point createMinusPoint (Member member , int point, String pointInfo , String pointDetailInfo) {
+		
+		Point pointEntity = new Point() ;
+		
+		pointEntity.setMember(member);
+		pointEntity.setPoint(point);
+		pointEntity.setPointEnum(PointEnum.MINUS);
+		pointEntity.setPointInfo(pointInfo);
+		pointEntity.setPointDetailInfo(pointDetailInfo);
+		
+		return pointEntity;
+	}
 	
 	
 }

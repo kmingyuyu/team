@@ -12,7 +12,7 @@
 	</th:block>
 	
 	<div class="site-section mt-5 mb-5">
-	<div class="container">
+	<div class="container_custom">
 		<th:block th:object="${recipeSearchDto}">
 			<input type="hidden" th:value="${currentPage}" id="page">
 			<input type="hidden" th:value="${recipeSearchDto.mainCategory}" id="mainCategory">
@@ -37,8 +37,7 @@
 					<li id="link6"><a href="/category?mainCategory=초대요리" class="menu-link">#초대요리</a></li>
 				</ul>
 	
-		<div class="thmb_list02 pt60">
-		<div class="items-header items-meta d-lg-flex justify-content-between align-items-center">
+		<div class="items-header items-meta justify-content-between align-items-center">
 						<div class="item-count">
 							<p class="prdCount">
 								<p>검색결과 <strong>[[${category.getTotalElements()}]]</strong>건 조회</p>
@@ -115,12 +114,12 @@
 					
 					
 					<!--리뷰 2.0 이하면 표시안함-->
-					<th:block th:if="${recipe.retingAvg > 2}">
+					<th:block th:if="${recipe.ratingAvg > 2}">
 						
 						<div class="RecipeItemstyle__Time-sc-1gt7vz8-6 kKXboO" title="평점">
 						<i class="fa-solid fa-star fa-xs"></i>
 						<span class="RecipeItemstyle__SummaryText-sc-1gt7vz8-5 MiXMV">
-							[[${recipe.retingAvg}]]<th:block th:if="${recipe.reviewCount !=0 }">([[${recipe.reviewCount}]])</th:block></span>
+							[[${recipe.ratingAvg}]]<th:block th:if="${recipe.reviewCount !=0 }">([[${recipe.reviewCount}]])</th:block></span>
 					</div>
 						
 					</th:block>
@@ -186,8 +185,6 @@
 	</div>
 </div>
 	
-	
-</div>
 
 
 

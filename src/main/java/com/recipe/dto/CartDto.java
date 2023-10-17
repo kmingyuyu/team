@@ -23,7 +23,4 @@ public interface CartDto {
 	
 	 String getImgUrl(); // 메인이미지 
 	 
-	 boolean getChecked(); // 체크박스 
-	
-	
 }

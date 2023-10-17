@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<th:block layout:fragment="css">
+	<link rel="stylesheet" th:href="@{/css/myPage.css}" type="text/css" />
+</th:block>
+<div layout:fragment="content" class="layout">
+	<div th:insert="fragments/myPageMemberInfo::myPageMemberInfo"></div>
+	
+	<section class="container_custom spad d-flex">
+		<div class="side_bx">
+			<div th:insert="fragments/myPageSideBar::myPageSideBar"></div>
+		</div>
+				<div id="order" class="content_bx">
+						<div class="right_contents">
+						<span class="cart_sp">주문 상세내역</span>
+						<div class="page-sorting order font-mss">
+						<a href="/">home</a>
+						<span><i class="ic-14-line-arrow-right"></i></span>
+						<a href="/myPage/order">마이페이지(주문내역/배송조회)</a>
+						<span><i class="ic-14-line-arrow-right"></i></span>
+						<span class="current-page">주문 상세내역</span>
+						</div>
+						</div>
+						<section class="hwurrN">
+						<div class="detivb">
+						<p class="content_p">
+						<span class="title_span">주문 번호</span><span class="title_content_span">[[${order.orderNumber}]]</span>
+						<span class="title_span">주문일자</span><span class="title_content_span">[[${T(java.time.format.DateTimeFormatter).ofPattern('yyyy.MM.dd HH:mm').format(order.regTime)}]]</span>
+						<button th:if="${deleteOk == 0}"
+						th:onclick="orderDelete([[${order.orderNumber}]])" class="delete-btn" >주문내역삭제</button>
+						</p>
+						<section class="item">
+						<header id="item_hide">
+						<p>주문 상품<span></span><span>[[${orderHistoryList.size()}]] 건</span></p>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 18">
+							<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+						</svg>
+					</header>
+					<div class="dLBPEvCu" id="item_info">
+				<table class="table_basic cart_table n-cart-table ordet-table">
+					<colgroup>
+						<col width="8%">
+						<col width="50%">
+						<col width="10%">
+						<col width="10%">
+						<col width="12%">
+					</colgroup>
+					<thead>
+						<tr class="ordttrcol">
+							<th scope="col">번호</th>
+							<th scope="col">상품명</th>
+							<th scope="col">할인금액</th>
+							<th scope="col">주문금액(수량)</th>
+							<th scope="col">주문상태</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+					 <th:block th:each="item , status:${orderHistoryList}">
+					<tr class="cart-group-cu">
+							<td colspan="9" class="cart_cont">
+								<table class="table_basic cart_table">
+									<colgroup>
+										<col width="8%">
+										<col width="50%">
+										<col width="10%">
+										<col width="10%">
+										<col width="12%">
+									</colgroup>
+									<tbody>
+									<tr class="order_tetail_list_no">
+										<td>
+											[[${status.index+1}]]
+										</td>
+										<td>
+											<div class="connect_img">
+												<a class="img-block" th:href="'/item/' + ${item.itemId}">
+                                                    <img th:src="${item.imgUrl}" th:alt="${item.itemNm}">
+												</a>																																					
+											</div>
+											<div class="article_info connect_info">
+												<p class="list_info">
+													<a th:href="'/item/' + ${item.itemId}" class="itemNm">[[${item.itemNm}]]</a>
+												</p>
+											</div>
+										</td>
+                                        <td>
+  										  <p class="sale_price">[[${#numbers.formatInteger(item.salePrice , 0, 'COMMA')}]]원</p>
+										</td>
+										<td>
+											<p class="order_price">[[${#numbers.formatInteger(item.orderPrice , 0, 'COMMA')}]]원</p>
+											<p class="order_count">[[${item.orderCount}]]개</p>
+										</td>
+										<td>
+											[[${item.orderStatus}]]
+										</td>
+								
+									</tr>
+							</tbody>
+								</table>
+							</td>
+						</tr>
+						</th:block>
+				</tbody>
+				
+				</table>
+				</div>
+				</section>
+				<section class="delivery">
+				<header id="delivery_hide">
+				<p>배송 정보</p>
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 18">
+							<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+						</svg>
+				</header>
+				<div class="delivery_div" id="delivery_info">
+				<p>이름</p><p>[[${order.takerName}]]</p>
+				<p>연락처</p><p>[[${order.takeTell}]]</p>
+				<p>배송지 주소</p><p>[[${order.address}]] [[${order.detailAddress}]]<br>([[${order.postCode}]])</p>
+				<p>배송 메세지</p><p>[[${order.deliveryMemo}]]</p>
+				</div>
+			
+				</section>
+				<section class="pay">
+				<header>
+				<p>결제 정보</p>
+				</header>
+				<div class="d-flex">
+				<div class="flex_w_f">
+				<div class="pay_div_info">
+				<p><span>결제명</span><span>[[${buyInfo.orderItemName}]]</span></p>
+				<p th:if="${buyInfo.payMethod != null and buyInfo.payMethod == 'card'}"><span>결제 유형</span><span>카드결제</span></p>
+				<p th:if="${buyInfo.payMethod != null and buyInfo.payMethod == 'point'}"><span>결제 유형</span><span>포인트결제</span></p>
+				<p th:if="${buyInfo.payProvider == null}"><span>결제 방식</span><span>직접결제</span></p>
+				<p th:if="${buyInfo.payProvider != null}"><span>결제 방식</span><span>[[${buyInfo.payProvider}]]</span></p>
+				<p th:if="${buyInfo.cardName != null}"><span>카드 정보</span><span>[[${buyInfo.cardName}]]</span></p>
+				<p th:if="${buyInfo.cardNumber != null}"><span>카드 번호</span><span>[[${buyInfo.cardNumber}]]</span></p>
+				<p th:if="${buyInfo.bankName != null}"><span>은행 정보</span><span>[[${buyInfo.bankName}]]</span></p>
+				</div>
+				</div>
+				<div class="flex_w_s">
+				<div class="pay_div_total">
+				<p>총 상품 금액</p><p>[[${#numbers.formatInteger(order.totalPrice , 0, 'COMMA')}]]<span class="pay_won">원</span></p>
+				<th:block th:if="${order.deleveryPrice != 0}">
+				<p>배송비 ( + )</p><p>[[${#numbers.formatInteger(order.deleveryPrice , 0, 'COMMA')}]]<span class="pay_won">원</span></p>
+				</th:block>
+				<th:block th:if="${order.deleveryPrice == 0}">
+				<p>배송비</p><p class="del_free">배송비 무료</p>
+				</th:block>
+				<p>총 할인 금액 ( - )</p><p>[[${#numbers.formatInteger(order.salePrice , 0, 'COMMA')}]]<span class="pay_won">원</span></p>
+				<th:block th:if="${order.usePoint != 0}">
+				<p>포인트 사용 ( - )</p><p>[[${#numbers.formatInteger(order.usePoint , 0, 'COMMA')}]]<span class="pay_won">P</span></p>
+				</th:block>
+				<p class="pay_final_price">최종 결제 금액</p><p class="pay_final_info">[[${#numbers.formatInteger(order.finalPrice , 0, 'COMMA')}]]<span class="pay_won_total">원</span></p>
+				</div>
+				</div>
+				</div>
+				</section>
+				<section class="cancel" th:if="${cancelInfo != null}">
+					<header>
+					<p>환불 정보</p>
+					</header>
+					<div class="cancel_div">
+						<p>환불 내용</p><p>[[${cancelInfo.cancelStatus}]]</p>
+						<th:block th:if="${cancelInfo.cancelPoint !=0}">
+						<p>포인트 반환</p><p>[[${cancelInfo.cancelPoint}]]P</p>
+						</th:block>
+						<th:block th:if="${cancelInfo.cancelDeliveryPrice !=0}">
+						<p>배송비 차감 ( - )</p><p>[[${cancelInfo.cancelDeliveryPrice}]]원</p>
+						</th:block>
+						<p class="cancelptitle">환불 금액</p><p class="cancelpinfo">[[${#numbers.formatInteger(cancelInfo.cancelPrice , 0, 'COMMA')}]]<span class="pay_won">원</span></p>
+					</div>
+				</section>
+				</div>
+				<div class="dbtiv">
+				<a class="n-btn btn-lighter" href="javascript:void(0)" onclick="history.back();">이전 페이지로</a>
+				</div>
+				</section>
+				
+				</div>
+
+	</section>
+
+
+</div>
+
+
+<!-- Search model end -->
+<th:block layout:fragment="script">
+	<script th:src="@{/js/myPage.js}"></script>
+	<script th:src="@{/js/myPage/global/global.js}"></script>
+	<script th:src="@{/js/myPage/order/orderDetail.js}"></script>
+	<script th:inline="javascript">
+		
+	</script>
+</th:block>
+
+
+</body>
+
+</html>

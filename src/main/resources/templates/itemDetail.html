@@ -18,7 +18,7 @@
 
 	</th:block>
 
-		<div class="container  mt-5 mb-5">
+		<div class="container_custom back_g mb-5">
 			<div class="d-flex justify-content-center">
 			<div class="banner_slider slider-wrap ">
 				<th:block th:each="img , status:${imgList}">
@@ -104,10 +104,10 @@
                         <span class="review-total__rating">
                          <span class="review-total__rating__unit">
                                 <span class="review-total__rating__active"
-                                 th:style="'width:' + (${item.retingAvg} * 20) + '%'"></span>
+                                 th:style="'width:' + (${item.ratingAvg} * 20) + '%'"></span>
                             </span>
                         </span>
-                        <p class="review_count_1">[[${item.retingAvg}]]  <span class="reting_line">&nbsp;/&nbsp;</span> 
+                        <p class="review_count_1">[[${item.ratingAvg}]]  <span class="reting_line">&nbsp;/&nbsp;</span> 
                          <a class="review_count_2" onclick="clickTab('review');">리뷰 <th:block th:if="${itemReviewList.getTotalElements() != 0}"> [[${itemReviewList.getTotalElements()}]]개 </th:block>  보기</a>  </p>
                 </div>
 					<div class="price_box_info_btn">
@@ -124,7 +124,7 @@
 								<img src="//recipe1.ezmember.co.kr/img/mobile/icon_delivery3.png" alt="배송아이콘">배송
 							</dt>
 							<dd>
-								 <th:block th:if="${(item.price - (item.price * item.sale / 100)) < 40000}"> 40,000원 이상 무료배송 </th:block> 
+								 <th:block th:if="${(item.price - (item.price * item.sale / 100)) < 40000}"> 40000원 이상 무료배송 </th:block> 
 								 <th:block th:if="${(item.price - (item.price * item.sale / 100)) > 40000}"> 무료배송 </th:block> 
 								  </dd>
 						</dl>
@@ -163,6 +163,9 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                	<input type="hidden" th:value="${item.id}" id="itemId">
+									<input type="hidden" th:value="${item.itemNm}" id="itemNm">
+									<input type="hidden" th:value="${imgList.get(0).imgUrl}" id="imgUrl">
 									<input type="hidden" th:value="${item.price}" id="price" name="price">
 									<input type="hidden" th:value="${item.sale}" id="sale" name="sale">
 									<input type="hidden" th:value="${item.stockNumber}" id="stockNumber" name="stockNumber">
@@ -189,7 +192,7 @@
 						<div class="btn_go_box" th:if="${item.itemSellStatus.toString} == 'SELL'">
 							<button type="button" id="cartBtn" class="btn_go_cart" onclick="cartReg()"
 								style="width: 39%;">장바구니</button>
-							<button type="button" class="btn_go_order" style="width: 60%;">바로구매</button>
+							<button type="button" class="btn_go_order" style="width: 60%;" onclick="itemOrder()">바로구매</button>
 						</div>
 						<div class="btn_go_box" th:if="${item.itemSellStatus.toString} == 'SOLD_OUT' ">
 						
@@ -245,9 +248,8 @@
 						 등록된 리뷰가 없습니다.
 					</div>
 					
-					
-						<ul class="review_list" th:each="review , status:${itemReviewList}" id="review_list">
-
+						<th:block  th:each="review , status:${itemReviewList}">
+						<ul class="review_list" id="review_list">
 
 							<li class="review_li"><div class="review_list_top">
 								<div class="review-profile">
@@ -259,7 +261,7 @@
                     <div class="review-profile__text-wrap">
                         <div class="review-profile__text">
                             <p class="review-profile__name">[[${review.nickname}]]</p>
-                            <p class="review-profile__date" th:text="${#temporals.format(review.regTime, 'yyyy.MM.dd')}"></p>
+                            <p class="review-profile__date">[[${#temporals.format(review.regTime, 'yyyy.MM.dd')}]]</p>
                         </div>
                         <div class="review-profile__information">
                             <p class="review-profile__body_information">여기에 구매내역 적기</p>
@@ -269,24 +271,20 @@
 								<div class="review-list__rating-wrap">
                         <span class="review-list__rating">
                             <span class="review-list__rating__unit">
-                                
-                                
                                 <span class="review-list__rating__active"
-                                 th:style="'width:' + (${review.reting} * 20) + '%'"></span>
-                                
-                                
+                                 th:style="'width:' + (${review.rating} * 20) + '%'"></span>
                             </span>
                         </span>
                 </div>
 								</div>
 								
-								<div class="review-content-photo " th:attr="data-review-id=${review.id}" >
+								<div class="review-content-photo "  th:attr="data-review-id=${review.itemReviewId}" >
 							
                             <div class="review-content-photo__wrap">
                                 <ul class="review-content-photo__list" >
-                     				<th:block th:each="reviewImg , status:${itemReviewImgList}" th:if="${review.id == reviewImg.itemReviewId}" >
+                     				<th:block th:each="reviewImg , status:${review.itemReviewImgList}">
 											  
-                                        <li class="review-content-photo__item" th:style="'background-image: url(' + ${reviewImg.imgUrl} + ');'" th:attr="data-review-id=${review.id}">
+                                        <li class="review-content-photo__item" th:style="'background-image: url(' + ${reviewImg.imgUrl} + ');'" th:attr="data-review-id=${review.itemReviewId}">
                                             <img th:src="${reviewImg.imgUrl}" alt="리뷰이미지">
                                         </li>
 										 
@@ -297,15 +295,15 @@
                         </div>
                         <div class="review_list_cont">
 									<p> [[${review.content}]]
-									<span th:if="${review.answerContent == null}" 
+									<span th:if="${review.itemReviewAnswer == null}" 
 									class="reivew_reg_choice" sec:authorize="hasAnyAuthority('ROLE_ADMIN')"
-									onclick="reviewAnwerBoxOpen(this)" th:attr="data-review-id=${review.id}">답변 등록&nbsp;▼</span>
+									onclick="reviewAnwerBoxOpen(this)" th:attr="data-review-id=${review.itemReviewId}">답변 등록&nbsp;▼</span>
 									</p>   
 								</div>
 								<div class="comment_box">
 
 									<div class="comment_recomment comment_wrap"
-										th:if="${review.answerContent != null}"
+										th:if="${review.itemReviewAnswer != null}"
 										style="display: block;">
 										<div class="recomment_right">
 
@@ -313,42 +311,42 @@
 
 												<span><b class="txt-info">이젠스토어 관리자 </b></span> <span
 													class="recomment_date"
-													th:text="${#temporals.format(review.answerRegTime, 'yyyy.MM.dd HH:mm:ss')}"></span>
+													th:text="${#temporals.format(review.itemReviewAnswer.regTime, 'yyyy.MM.dd HH:mm:ss')}"></span>
 												<span class="admin_ch" onclick="answerUpdate(this)"
 													sec:authorize="hasAnyAuthority('ROLE_ADMIN')"
-													th:attr="data-review-id=${review.id}">수정</span> <span
+													th:attr="data-review-id=${review.itemReviewId}">수정</span> <span
 													class="admin_ch"
 													sec:authorize="hasAnyAuthority('ROLE_ADMIN')"
-													th:attr="data-answerId=${review.answerId}"
+													th:attr="data-answerId=${review.itemReviewId}"
 													onclick="answerOk(this,'delete')">삭제</span>
 											</p>
 											<p class="recomment_txt">
 												<span class="cmt_detail">안녕하세요. 이젠 스토어 고객센터입니다. <br>
-													<br> [[${review.answerContent}]] <br> <br>
+													<br> <span th:utext="${#strings.replace(review.itemReviewAnswer.content, '\n', '<br>')}"></span><br> <br>
 													이용해주셔서 항상 감사합니다.
 
 												</span>
 											</p>
 										</div>
 									</div>
-									<div class="comment_store cFormTriger" id="update_box"
+									<div class="comment_store cFormTriger" id="update_box" th:if="${review.itemReviewAnswer != null}"
 										style="display: none;">
 
 										<div class="admin_box">
 										</div>
 										<div class="admin_box">
-											<textarea class="answer_box" placeholder="답변을 입력해주세요">[[${review.answerContent}]]</textarea>
+											<textarea class="answer_box" placeholder="답변을 입력해주세요">${review.itemReviewAnswer.content}</textarea>
 
 										</div>
 											<div class="plain-btn btn comment_area_btn"
-												th:attr="data-answerId=${review.answerId}"
+												th:attr="data-answerId=${review.itemReviewAnswer.id}"
 												onclick="answerOk(this ,'update')">답변 수정</div>
 											<div class="update_x" onclick="updateCancle(this)"
-												data-review-id="${review.id}">x</div>
+												data-review-id="${review.itemReviewId}">x</div>
 									</div>
 
 									<div class="comment_store cFormTriger" id="reg_box" style="display: none; "
-										th:if="${review.answerContent == null}">
+										th:if="${review.itemReviewAnswer == null}">
 
 										<div class="admin_box">
 										</div>
@@ -357,13 +355,15 @@
 
 										</div>
 										<div class="comment_area_btn plain-btn btn active"
-											th:attr="data-review-id=${review.id}"
+											th:attr="data-review-id=${review.itemReviewId}"
 											onclick="answerOk(this ,'reg')">답변등록</div>
 									</div>
 								</div> 
-								<input type="hidden" th:value="${review.id}" id="reviewId" name="reviewId">
+								<input type="hidden" th:value="${review.itemReviewId}" id="reviewId" name="reviewId">
 								</li>
 						</ul>
+						</th:block>
+						
 						<div class="style__PagingWrapper-b83qno-1 bYnXQa mt-3" 
 				th:with="start=${(itemReviewList.number/maxPage)*maxPage + 1}
 			    ,end=(${(itemReviewList.totalPages == 0) ? 1 : (start + (maxPage - 1) < itemReviewList.totalPages ? start + (maxPage - 1) : itemReviewList.totalPages)})">
@@ -559,13 +559,21 @@
 
 
 
-			<input type="hidden" th:value="${item.id}" id="itemId">
-
+		
+			
 
 
 		</div>
 
 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -577,8 +585,13 @@
 	<link rel="stylesheet"
 		href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
 	<script>
+		
 		var token = $("meta[name='_csrf']").attr("content");
 		var header = $("meta[name='_csrf_header']").attr("content");
+		
+	
+		
+		
 	
 	$(document).ready(function(){
 	
@@ -791,7 +804,8 @@ function ezhld_detail_more() {
 			//등록
 			if (choice == 'reg') { 
 			Id = $(button).attr("data-review-id");
-			content = $(button).closest(".comment_store").find(".answer_box").val();
+			content = $(button).closest(".comment_store").find(".answer_box").val().replace(/\n/g, '\\n');
+			
 			url = "/answerReg";	
 			paramData = {id : Id, content : content};
 			text = '답변 등록 하시겠습니까?';
@@ -1060,7 +1074,62 @@ function inqAnwerBoxOpen(button){
 
 
 	<script th:inline="javascript">
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
 		
+	function itemOrder() {
+	
+		var loginOk = [[${loginOk}]];
+				
+				if(!loginOk){
+    			if(confirm("로그인이 필요한 기능입니다. \n로그인 페이지로 이동하시겠습니까?")){
+     				   location.href = "/members/login";
+     				   return;
+ 			   }
+ 			   else{
+					return;
+				}
+			   }
+	
+		
+    const formData = new FormData();
+
+    var itemId = document.getElementById('itemId').value;
+    var itemNm = document.getElementById('itemNm').value;
+    var price = document.getElementById('price').value;
+    var sale = document.getElementById('sale').value;
+    var count = document.getElementById('goodsCnt').value;
+    var imgUrl = document.getElementById('imgUrl').value;
+  	
+  	formData.append("id", itemId);
+  	formData.append("itemNm", itemNm);
+  	formData.append("price", price);
+  	formData.append("sale", sale);
+    formData.append("count", count);
+  	formData.append("imgUrl", imgUrl);
+
+ fetch('/order/item', {
+    method: 'POST',
+    body: formData,
+    headers: {
+        'X-CSRF-TOKEN': token, 
+        'X-CSRF-HEADER': header
+    }
+})
+.then(response => {
+    if (response.ok) {
+        // 딜레이를 준 후 페이지 이동
+            location.href="/order/final";
+     // 2000밀리초 (즉, 2초) 동안 대기
+    } else {
+        throw new Error("Server response wasn't OK");
+    }
+})
+.catch(error => {
+    alert(error.message); 
+});	
+		
+};		
 		
 		$(document).ready(function() {
 
@@ -1096,6 +1165,7 @@ function inqAnwerBoxOpen(button){
 			if(!loginOk){
     			if(confirm("로그인이 필요한 기능입니다. \n로그인 페이지로 이동하시겠습니까?")){
      				   location.href = "/members/login";
+     				   return;
  			   }
  			   else{
 					return;
@@ -1116,6 +1186,7 @@ function inqAnwerBoxOpen(button){
 				if(!loginOk){
     			if(confirm("로그인이 필요한 기능입니다. \n로그인 페이지로 이동하시겠습니까?")){
      				   location.href = "/members/login";
+     				   return;
  			   }
  			   else{
 					return;
@@ -1123,7 +1194,7 @@ function inqAnwerBoxOpen(button){
 			}
 		var id = $("#itemId").val();
 		var count = $("#goodsCnt").val();
-			url = "/cartReq";	
+			url = "/cart/cartReq";	
 			paramData = {id : id , count : count};
 			
 			

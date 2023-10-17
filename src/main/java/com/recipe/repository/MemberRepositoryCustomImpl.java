@@ -43,11 +43,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 	@Override
 	public Page<MngMemberDto> getAdminMemberPage(MngRecipeSearchDto mngRecipeSearchDto, Pageable pageable) {
 		QMember m = QMember.member;
-		QComment c = QComment.comment;
-		QRecipe r = QRecipe.recipe;
-		/*
-		 * select * from item where item_nm like %검색어% order by item_id desc;
-		 */
+		
 
 		JPQLQuery<MngMemberDto> query = queryFactory
 				.select(Projections.constructor(
@@ -55,26 +51,21 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 						m.id, 
 						m.nickname, 
 						m.email, 
-						m.password, 
 						m.phoneNumber,
-						c.count().as("allCommentCount"), 
-						r.count().as("allRecipeCount"),
-						m.regTime))
+						m.postCode,
+						m.address,
+						m.detailAddress,
+						m.provider,
+						m.regTime
+						))
 
 				.from(m)
-				.leftJoin(c)
-				.on(c.member.eq(m))
-				.leftJoin(r)
-				.on(r.member.eq(m))
 				.where(searchByLike(m, mngRecipeSearchDto.getSearchBy(), mngRecipeSearchDto.getSearchQuery()))
-				.groupBy(m.id, m.nickname, m.email, m.password, m.phoneNumber, m.regTime).orderBy(m.id.desc());
+				.orderBy(m.id.desc());
 
 		List<MngMemberDto> content = query.offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
 
-		/*
-		 * select count(*) from item where reg_time = ? and item_sell_status = ? and
-		 * item_nm like %검색어% order by item_id desc;
-		 */
+		
 		long total = query.fetchCount();
 
 		return new PageImpl<>(content, pageable, total);

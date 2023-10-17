@@ -60,9 +60,10 @@ public class ItemController {
 		Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, pageNm);
 
 		Page<ItemCategoryDto> category = itemService.getItemCategoryList(pageable, itemSearchDto);
-
+		
 		int currentPage = page.isPresent() ? page.get() : 0;
-
+		
+		
 		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("itemSearchDto", itemSearchDto);
 		model.addAttribute("category", category);
@@ -89,26 +90,13 @@ public class ItemController {
 
 		Pageable inqPageable = PageRequest.of(inqPage.isPresent() ? inqPage.get() : 0, 10);
 		Page<ItemInqDto> itemInqList = itemService.getItemInqList(inqPageable, itemId);
-		List<ItemReviewImgDto> itemReviewImgList = new ArrayList<>();
-
-		try {
-			for (ItemReviewDto d : itemReviewList) {
-				List<ItemReviewImgDto> test = itemService.getItemReviewImgList(d.getId());
-				for (ItemReviewImgDto tt : test) {
-					itemReviewImgList.add(tt);
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 
 		model.addAttribute("item", item);
 		model.addAttribute("imgList", imgList);
 		model.addAttribute("imgDetailList", imgDetailList);
 		model.addAttribute("itemReviewList", itemReviewList);
 		model.addAttribute("itemInqList", itemInqList);
-		model.addAttribute("itemReviewImgList", itemReviewImgList);
 		model.addAttribute("maxPage", 5);
 		model.addAttribute("itemId", itemId);
 		model.addAttribute("email", email);

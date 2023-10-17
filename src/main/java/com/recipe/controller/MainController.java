@@ -1,6 +1,5 @@
 package com.recipe.controller;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +32,6 @@ public class MainController {
 	private final RecipeService recipeService;
 	
 	private final MemberService memberService;
-	
-	
 	
 	@GetMapping(value = "/")
 	public String main(Model model) {
@@ -77,7 +74,6 @@ public class MainController {
 		
 		return new ResponseEntity<>(followOk , HttpStatus.OK);
 	}
-	
 	
 	
 	private boolean isAuthenticated() {

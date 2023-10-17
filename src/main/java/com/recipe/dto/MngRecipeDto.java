@@ -33,7 +33,7 @@ public class MngRecipeDto {
 
 	private String imageUrl;
 	
-	private double reting; 
+	private double rating; 
 
 	private static ModelMapper modelMapper = new ModelMapper();
 
@@ -48,14 +48,14 @@ public class MngRecipeDto {
 	}
 
 	@QueryProjection
-	public MngRecipeDto(Long id, String title ,String intro ,  String nickname, Long commentCount, String imageUrl, double reting) {
+	public MngRecipeDto(Long id, String title ,String intro ,  String nickname, Long commentCount, String imageUrl, double rating) {
 		this.id = id;
 		this.title = title;
 		this.intro = intro;
 		this.nickname = nickname;
 		this.commentCount = commentCount;
 		this.imageUrl = imageUrl;
-		this.reting = reting;
+		this.rating = rating;
 	}
 
 }

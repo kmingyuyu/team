@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<th:block layout:fragment="css">
+	<link rel="stylesheet" th:href="@{/css/myPage.css}" type="text/css" />
+</th:block>
+<div layout:fragment="content" class="layout">
+	<div th:insert="fragments/myPageMemberInfo::myPageMemberInfo"></div>
+	
+	<section class="container_custom spad d-flex">
+				<div class="side_bx">
+					<div th:insert="fragments/myPageSideBar::myPageSideBar"></div>
+				</div>
+				
+				<input type="hidden" th:value="${myPageSerchDto.data}" id="data">
+				<!--마이페이지 = 레시피-->
+				<div class="content_bx">
+				<div class="my_category_bx">
+				<div class="right_contents">
+			<h2 class="title-page"><span class="cart_sp">나의 레시피</span></h2>
+			</div>
+					<div class="os_box">
+							<form th:object="${myPageSerchDto}">
+						<div class="c_box">
+							<a onclick="submitForm('PUBLISHED')"
+							   th:classappend="${myPageSerchDto.data == 'PUBLISHED' }?'active_custom'"
+							   class="list-group-item list-group-item-action list-group-item-light mypage-top cursor">
+								공개중
+							</a> 
+							<a onclick="submitForm('DRAFT')"
+							   th:classappend="${myPageSerchDto.data == 'DRAFT' }?'active_custom'"
+							   class="list-group-item list-group-item-action list-group-item-light mypage-top cursor">
+								작성중
+							</a>
+						</div>
+							</form>
+						<div
+							style="display: flex; flex-direction: row; align-items: center">
+
+						</div>
+					</div>
+					
+					<div class="mypage-content" th:if="${!recipeList.isEmpty()}">
+						<div
+							style="display: flex; flex-direction: column; align-items: center;">
+							<p style="font-size: 28px; font-weight: 500;">| RECIPE |</p>
+							<p style="font-size: 15px; font-weight: 500;">레시피 목록</p>
+						</div>
+						<div
+							style="display: flex; justify-content: flex-end; margin-top: 45px;">
+							<button type="submit"
+								style="width: 110px; height: 36px; display: flex; align-items: center; justify-content: center; margin-top: 4px; background-color: #808000bd; color: #fff; font-size: 14px; border: none;"
+								class="btn btn-outline-danger">레시피등록</button>
+						</div>
+
+						<table style="border-bottom: 1px solid #dee2e6; margin-top: 15px;">
+							<tbody>
+								<tr style="height: 45px; background-color: #f9fbf7;">
+
+									<th class="col-7 recipeList-th" style="text-align: center;">레시피</th>
+									<th class="col-2 recipeList-th" style="text-align: center;">조회수</th>
+									<th class="col-1 recipeList-th" style="text-align: center;">찜</th>
+									<th class="col-2 recipeList-th" style="text-align: center;">수정/삭제</th>
+								</tr>
+
+								<tr class="recipe1"
+									th:each="recipe : ${recipeList}"
+									style="border-bottom: 1px solid #dee2e6;">
+
+									<th class="col-7"
+										style="text-align: center; margin-left: 0; padding: 0;">
+										<div
+											style="display: flex; flex-direction: row; align-items: center;">
+
+											<img th:src="${recipe.imageUrl}"
+												style="min-width: 150px !important; height: 145px !important; width: 150px;">
+											<div style="width: 100%;">
+												<p th:text="${recipe.title}"
+													style="font-size: 17px; font-weight: 600; margin-bottom: 0;"></p>
+
+												<p th:text="${recipe.subTitle}"
+													style="font-size: 14px; font-weight: 600;"></p>
+												<p th:text="'#'+${recipe.intro}"
+													style="font-size: 14px; font-weight: 600;"></p>
+											</div>
+										</div>
+
+									</th>
+									<th class="col-2" style="text-align: center;"><p
+											th:text="${recipe.count}"></p></th>
+									<th class="col-1" style="text-align: center;">
+										<P th:text="${recipe.bookmarkCount}"></P>
+									</th>
+									<th class="col-2" style="text-align: center;">
+										<div
+											style="display: flex; flex-direction: column; align-items: center;">
+											<button type="submit"
+												style="width: 75px; height: 33px; display: flex; align-items: center; justify-content: center;"
+												class="btn btn-outline-danger">수정</button>
+											<button type="submit"
+												th:onclick="'deleteRecipe(' + ${published.id} + ')'"
+												style="width: 75px; height: 33px; display: flex; align-items: center; justify-content: center; margin-top: 4px;"
+												class="btn btn-outline-danger">삭제</button>
+										</div>
+									</th>
+
+								</tr>
+
+							</tbody>
+						</table>
+						
+						<div class="style__PagingWrapper-b83qno-6 bYnXQa mt-3"
+							th:with="start=${(recipeList.number/maxPage)*maxPage + 1}
+			    ,end=(${(recipeList.totalPages == 0) ? 1 : (start + (maxPage - 1) < recipeList.totalPages ? start + (maxPage - 1) : recipeList.totalPages)})">
+
+							<button class="style__PagePrevButton-b83qno-8 loxVUo"
+								th:classappend="${recipeList.first}?'bt_hd'"
+								th:onclick="'javascript:recipePage(' + ${recipeList.number - 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+									<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+								</svg>
+							</button>
+							<ul>
+								<a offset="0" class="style__PageNumber-b83qno-7"
+									th:each="page: ${#numbers.sequence(start, end)}"
+									th:classappend="${recipeList.number eq page-1}?'hIVTuk':'iBHoeR'"
+									th:onclick="'javascript:recipePage(' + ${page - 1} +')'"> <span>[[${page}]]</span>
+								</a>
+							</ul>
+							<button class="style__PageNextButton-b83qno-9 gCfLmH"
+								th:classappend="${recipeList.last}?'bt_hd'"
+								th:onclick="'javascript:recipePage(' + ${recipeList.number + 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+							        <path stroke="#000"
+										d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+					            </svg>
+							</button>
+						</div>
+						
+					</div>
+					
+					<!-- 등록된게 없을떄-->
+					<div class="null_box" th:if="${recipeList.isEmpty()}">
+						<p>자랑하고 싶은 나만의 레시피!</p>
+						<p>공유하고 싶은 멋진 레시피를 올려 주세요.</p>
+						<button type="submit" class="bt_custom">레시피 등록</button>
+					</div>
+					
+			
+
+		</div>
+		</div>
+
+	</section>
+
+
+</div>
+
+
+<!-- Search model end -->
+<th:block layout:fragment="script">
+	<script th:src="@{/js/myPage.js}"></script>
+	<script th:inline="javascript">
+		
+	</script>
+</th:block>
+
+
+</body>
+
+</html>

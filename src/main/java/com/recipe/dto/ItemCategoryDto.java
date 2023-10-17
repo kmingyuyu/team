@@ -30,14 +30,19 @@ public class ItemCategoryDto {
 	
 	private int sale;
 	
-	private double retingAvg;
+	private int stockNumber;
+	
+	private double ratingAvg;
 	
 	private Long reviewCount;
 	
+	private Long orderCount;
+	
 	@QueryProjection
 	public ItemCategoryDto (Long id ,String itemNm , String itemSubNm , 
-			int price , ItemSellStatus itemSellStatus , String imgUrl
-			, ItemCategoryEnum itemCategoryEnum ,LocalDateTime regTime , int sale , double retingAvg , Long reviewCount) {
+			int price , ItemSellStatus itemSellStatus , String imgUrl,
+			ItemCategoryEnum itemCategoryEnum ,LocalDateTime regTime , 
+			int sale , int stockNumber ,double ratingAvg , Long reviewCount , Long orderCount) {
 		this.id = id;
 		this.itemNm = itemNm;
 		this.itemSubNm = itemSubNm;
@@ -47,8 +52,10 @@ public class ItemCategoryDto {
 		this.itemCategoryEnum = itemCategoryEnum;
 		this.regTime = regTime;
 		this.sale = sale;
-		this.retingAvg = retingAvg;
+		this.stockNumber = stockNumber;
+		this.ratingAvg = ratingAvg;
 		this.reviewCount = reviewCount;
+		this.orderCount = orderCount;
 	}
 	
 	

@@ -82,7 +82,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 	                session.setAttribute("role", role);
 	                
 	                
-	                session.setAttribute("isTemporary", false);
 					response.sendRedirect("/");
 				}
 			}

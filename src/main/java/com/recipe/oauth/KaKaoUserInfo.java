@@ -21,9 +21,9 @@ public class KaKaoUserInfo implements Oauth2UserInfo{
     }
 
     @Override
-    public String getProviderId() {
-        return attributes.get("id").toString();
-    }
+	public String getProviderId() {
+		return String.valueOf(attributes.get("id"));
+	} 
 
     @Override
     public String getProvider() {

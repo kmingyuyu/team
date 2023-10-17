@@ -59,7 +59,7 @@ public class RecipeListRepositoryCustomImpl implements RecipeListRepositoryCusto
 								r.member.nickname,
 								c.count().as("CommentCount"),
 								r.imageUrl,
-								rv.reting
+								rv.rating
 								))
 				.from(r)
 				.join(r.member , m)
@@ -67,7 +67,7 @@ public class RecipeListRepositoryCustomImpl implements RecipeListRepositoryCusto
 				.leftJoin(rv).on(r.id.eq(rv.recipe.id))
 				.where(searchByLike(mngRecipeSearchDto.getSearchBy(),
 						mngRecipeSearchDto.getSearchQuery()))
-				.groupBy(r.id, r.title, r.intro, r.member.nickname, r.imageUrl, rv.reting)
+				.groupBy(r.id, r.title, r.intro, r.member.nickname, r.imageUrl, rv.rating)
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize())
 				.fetch();

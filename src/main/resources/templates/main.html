@@ -60,7 +60,7 @@
 
 	</div>
 	
-	<div class="container" th:if="${mainNewList.size() != 0 }">
+	<div class="container_custom" th:if="${mainNewList.size() != 0 }">
 			<div class="best_recipe_box">
 				
 				<h2 class="def_title">신규 레시피 
@@ -141,7 +141,7 @@
 				<div class="RecipeItemstyle__Time-sc-1gt7vz8-6 kKXboO mx_1">
 						<i class="fa-solid fa-star fa-xs" title="평점"></i>
 						<span class="RecipeItemstyle__SummaryText-sc-1gt7vz8-5 MiXMV">
-							[[${n_b.retingAvg}]]([[${n_b.reviewCount}]])</span>
+							[[${n_b.ratingAvg}]]([[${n_b.reviewCount}]])</span>
 						<span class="count_s" title="조회수">조회수 : 5,000</span>
 
 					</div>
@@ -156,7 +156,7 @@
 			
 		</div>
 			
-		<div class="container" th:if="${rankMemberList.size() != 0}">	
+		<div class="container_custom back_g" th:if="${rankMemberList.size() != 0}">	
 			<div class="main_box main_hit">
 			<h2 class="def_title">베스트 쉐프!</h2>
 			<ul class="clr ul_l">
@@ -164,9 +164,9 @@
 				<th:block th:each="bestMember , status:${rankMemberList}">
 							<li class="rec_list" style="display:flex">
 					<div class="num">[[${status.index+1}]]</div>
-					<a th:href="'/profile/' + ${bestMember.id}" class="clr">
+					<a th:href="'/profile/' + ${bestMember.nickname}" class="clr">
 						<div class="img_box">
-							<img src="img/장어덮밥.jpg" alt="등록된 이미지가 없습니다">
+							<img th:src="${bestMember.imgUrl}" alt="회원이미지">
 							</div>
 						<div class="text_box">
 							<p class="s_title">자개소개 칸</p>
@@ -337,11 +337,6 @@ function more_recipe() {
 							if (confirm(jqXHR.responseText)) {
 							    location.href = "/members/login";
 							}
-							if (jqXHR.status == '401') {
-								alert('관리자로그인 후 이용해주세요.');
-								//	location.href = '/';
-							} else {
-							}
 						}
 					})
 
@@ -350,7 +345,17 @@ function more_recipe() {
  	
           
     </script>
-	
+    
+		<script th:inline="javascript">
+		
+		var errorMessage = [[${errorMessage}]];
+
+    if (errorMessage != null) {
+        alert(errorMessage);
+    }
+    
+		
+	</script>
 	
 	</th:block>
 	

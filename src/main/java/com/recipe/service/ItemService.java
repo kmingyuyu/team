@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,26 +13,32 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.recipe.constant.AnswerOk;
+import com.recipe.constant.ImgMainOk;
 import com.recipe.constant.ItemInqBoardEnum;
 import com.recipe.constant.ItemInqEnum;
+import com.recipe.constant.ItemSellStatus;
 import com.recipe.dto.ItemCategoryDto;
 import com.recipe.dto.ItemDetailDto;
 import com.recipe.dto.ItemInqDto;
 import com.recipe.dto.ItemReviewDto;
 import com.recipe.dto.ItemReviewImgDto;
 import com.recipe.dto.ItemSearchDto;
-import com.recipe.dto.ItemReviewAnswerDto;
+import com.recipe.dto.OrderPayDto;
 import com.recipe.entity.Item;
+import com.recipe.entity.ItemImg;
 import com.recipe.entity.ItemInq;
 import com.recipe.entity.ItemInqAnwser;
 import com.recipe.entity.ItemReview;
 import com.recipe.entity.ItemReviewAnswer;
 import com.recipe.entity.Member;
+import com.recipe.exception.CustomException;
+import com.recipe.exception.FindNotException;
+import com.recipe.repository.ItemImgRepository;
 import com.recipe.repository.ItemInqAnswerRepository;
 import com.recipe.repository.ItemInqRepository;
 import com.recipe.repository.ItemRepository;
 import com.recipe.repository.ItemReviewAnswerRepository;
-import com.recipe.repository.ItemReviewImgRepositroy;
+import com.recipe.repository.ItemReviewImgRepository;
 import com.recipe.repository.ItemReviewRepository;
 import com.recipe.repository.MemberRepository;
 
@@ -49,12 +57,31 @@ public class ItemService {
 
 	private final ItemReviewAnswerRepository itemReviewAnswerRepository;
 	
-	private final ItemReviewImgRepositroy itemReviewImgRepositroy;
+	private final ItemReviewImgRepository itemReviewImgRepository ;
 	
 	private final ItemInqRepository itemInqRepository;
 	
 	private final ItemInqAnswerRepository itemInqAnswerRepository; 
 	
+	private final ItemImgRepository itemImgRepository;
+	
+	private final Logger log = LoggerFactory.getLogger(OrderService.class);
+	
+	
+	public Item findItem(Long id) {
+		
+		Item item = itemRepository.findById(id).orElseThrow(
+                () -> new FindNotException("itemId " + id + " not found"));
+		return item;
+	}
+	
+	
+	public ItemImg findItemImg(Long id) {
+		
+		ItemImg itemImg = itemImgRepository.findByItemIdAndImgMainOk(id, ImgMainOk.Y);
+		
+		return itemImg;
+	}
 	
 	
 	
@@ -81,7 +108,7 @@ public class ItemService {
 //	상품의 리뷰의 이미지 가져오기
 	@Transactional(readOnly = true)
 	public List<ItemReviewImgDto> getItemReviewImgList(Long id) {
-		List<ItemReviewImgDto> getItemReviewImgList = itemReviewImgRepositroy.getItemReviewImgList(id) ;
+		List<ItemReviewImgDto> getItemReviewImgList = itemReviewImgRepository.getItemReviewImgList(id) ;
 		return getItemReviewImgList;
 	}
 	
@@ -93,17 +120,20 @@ public class ItemService {
 	}
 
 //	리뷰 답변 등록
+	@Transactional
 	public void itemReviewAnswerReg(@RequestBody Map<String, Object> requestBody , String email) {
+		
 		Long id = Long.parseLong(requestBody.get("id").toString());
 		String content = requestBody.get("content").toString();
-		ItemReview itemReview = itemReviewRepository.findById(id).orElseThrow();
+		
+		Optional<ItemReview> itemReviewOp = itemReviewRepository.findById(id);
+		ItemReview itemReview = itemReviewOp.get();
 		
 		Member member = memberRepository.findByEmail(email);
-		ItemReviewAnswer itemReviewAnswer = new ItemReviewAnswer();
-		itemReviewAnswer.setMember(member);
-		itemReviewAnswer.setItemReview(itemReview);
-		itemReviewAnswer.setContent(content);
-		itemReviewAnswerRepository.save(itemReviewAnswer);
+		
+		ItemReviewAnswer itemReviewAnswer = ItemReviewAnswer.createItemReviewAnswer(member, itemReview, content);
+		itemReview.setItemReviewAnswer(itemReviewAnswer);
+		
 	}
 
 //	리뷰 답변 수정
@@ -111,9 +141,10 @@ public class ItemService {
 		Long id = Long.parseLong(requestBody.get("id").toString());
 		String content = requestBody.get("content").toString();
 		
-		ItemReviewAnswer itemReviewAnswer = itemReviewAnswerRepository.findById(id)
-				.orElseThrow();
-
+		Optional<ItemReviewAnswer> itemReviewAnswerOp = itemReviewAnswerRepository.findById(id);
+		ItemReviewAnswer itemReviewAnswer = itemReviewAnswerOp.get();
+		
+		
 		itemReviewAnswer.setId(id);
 		itemReviewAnswer.setContent(content);
 
@@ -123,8 +154,9 @@ public class ItemService {
 //	리뷰 답변 삭제
 	public void itemReviewAnswerDelete(Long id) {
 		
-		ItemReviewAnswer itemReviewAnswer = itemReviewAnswerRepository.findById(id).orElseThrow();
-
+		Optional<ItemReviewAnswer> itemReviewAnswerOp = itemReviewAnswerRepository.findById(id);
+		ItemReviewAnswer itemReviewAnswer = itemReviewAnswerOp.get();
+		
 		itemReviewAnswerRepository.delete(itemReviewAnswer);
 	}
 
@@ -138,7 +170,8 @@ public class ItemService {
 		int itemInqEnum = Integer.parseInt(requestBody.get("itemInqEnum").toString());
 		Member member = memberRepository.findByEmail(email);
 		
-		Item item = itemRepository.findById(id).orElseThrow();
+		Optional<Item> itemOp = itemRepository.findById(id);
+		Item item = itemOp.get();
 		
 		ItemInq itemInq = new ItemInq();
 		itemInq.setMember(member);
@@ -186,7 +219,9 @@ public class ItemService {
 		
 		Member member = memberRepository.findByEmail(email);
 		
-		ItemInq itemInq = itemInqRepository.findById(id).orElseThrow();
+		Optional<ItemInq> itemInqOp = itemInqRepository.findById(id);
+		ItemInq itemInq = itemInqOp.get();
+		
 		itemInq.setAnswerOk(AnswerOk.답변완료);
 		itemInqRepository.save(itemInq);
 		
@@ -205,7 +240,9 @@ public class ItemService {
 		Long id = Long.parseLong(requestBody.get("id").toString());
 		String content = requestBody.get("content").toString();
 		
-		ItemInqAnwser itemInqAnwser = itemInqAnswerRepository.findById(id).orElseThrow();
+		Optional<ItemInqAnwser> itemInqAnwserOp = itemInqAnswerRepository.findById(id);
+		ItemInqAnwser itemInqAnwser = itemInqAnwserOp.get();
+		
 		itemInqAnwser.setId(id);
 		itemInqAnwser.setContent(content);
 		
@@ -219,12 +256,21 @@ public class ItemService {
 		
 		Long id = Long.parseLong(requestBody.get("id").toString());
 		
-		ItemInqAnwser itemInqAnwser = itemInqAnswerRepository.findById(id).orElseThrow();
+		Optional<ItemInqAnwser> itemInqAnwserOp = itemInqAnswerRepository.findById(id);
+		ItemInqAnwser itemInqAnwser = itemInqAnwserOp.get();
 		
-		ItemInq itemInq = itemInqRepository.findById(itemInqAnwser.getItemInq().getId()).orElseThrow();
+		Optional<ItemInq> itemInqOp = itemInqRepository.findById(itemInqAnwser.getItemInq().getId());
+		ItemInq itemInq = itemInqOp.get();
+		
 		itemInq.setAnswerOk(AnswerOk.답변대기);
 		itemInqRepository.save(itemInq);
 		
 		itemInqAnswerRepository.delete(itemInqAnwser);
 	}
+	
+
+	
+	
+	
+	
 }

@@ -24,6 +24,9 @@ import com.recipe.dto.ItemInqDto;
 import com.recipe.dto.ItemReviewAnswerDto;
 import com.recipe.dto.ItemReviewDto;
 import com.recipe.dto.ItemSearchDto;
+import com.recipe.dto.OrderDto;
+import com.recipe.entity.ItemReviewAnswer;
+import com.recipe.entity.ItemReviewImg;
 import com.recipe.entity.QBookMark;
 import com.recipe.entity.QItem;
 import com.recipe.entity.QItemDetailImg;
@@ -32,7 +35,9 @@ import com.recipe.entity.QItemInq;
 import com.recipe.entity.QItemInqAnwser;
 import com.recipe.entity.QItemReview;
 import com.recipe.entity.QItemReviewAnswer;
+import com.recipe.entity.QItemReviewImg;
 import com.recipe.entity.QMember;
+import com.recipe.entity.QOrderItem;
 import com.recipe.entity.QRecipe;
 import com.recipe.entity.QReview;
 
@@ -57,7 +62,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom  {
 	        return i.regTime.desc();
 	    }
 	    else if ("reviewAvg".equals(type)) {
-	    	return ir.reting.avg().coalesce(0.0).desc();
+	    	return ir.rating.avg().coalesce(0.0).desc();
 	    }
 	    else if ("reviewCount".equals(type)) {
 	    	return ir.count().desc();
@@ -94,7 +99,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom  {
 		QItem i = QItem.item;
 		QItemImg im = QItemImg.itemImg;
 		QItemReview ir = QItemReview.itemReview;
-		
+		QOrderItem oi = QOrderItem.orderItem;
 		
 		List<ItemCategoryDto> content = queryFactory
 		        .select(
@@ -109,22 +114,26 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom  {
 		                i.itemCategoryEnum,
 		                i.regTime,
 		                i.sale,
-		                ir.reting.avg().coalesce(0.0).as("retingAvg"),
-		                ir.count().as("reviewCount") 
+		                i.stockNumber,
+		                ir.rating.avg().coalesce(0.0).as("ratingAvg"),
+		                ir.count().as("reviewCount"),
+		                oi.count().as("orderCount")  
 		            )
 		        )
 		        .from(i)
 		        .join(im).on(im.item.id.eq(i.id).and(im.imgMainOk.eq(ImgMainOk.Y))) 
 		        .leftJoin(ir).on(i.id.eq(ir.item.id))
+		        .leftJoin(oi).on(i.id.eq(oi.item.id))
 		        .where( mainCategoryEq(itemSearchDto.getItemCategoryEnum()),
 		        		searchByLike(itemSearchDto.getSearchQuery()))
 		        .groupBy(i.id, i.itemNm, i.itemSubNm, i.price, i.itemSellStatus, i.itemCategoryEnum,
-		                i.sale, im.imgUrl, i.regTime)
+		                i.sale, i.stockNumber, im.imgUrl, i.regTime )
 		        .orderBy(orderByType(itemSearchDto.getType()))
 		        .offset(pageable.getOffset())
 		        .limit(pageable.getPageSize())
 		        .fetch();
 		    
+		
 		    Long total = queryFactory
 		        .select(Wildcard.count)
 		        .from(i)
@@ -133,6 +142,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom  {
 		        .where( mainCategoryEq(itemSearchDto.getItemCategoryEnum()),
 		        		searchByLike(itemSearchDto.getSearchQuery()))
 		        .fetchOne();
+		    
 		    
 		    return new PageImpl<>(content, pageable, total);
 	}
@@ -187,7 +197,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom  {
 													i.itemCategoryEnum,
 													i.sale,
 													i.stockNumber,
-													ir.reting.avg().coalesce(0.0).as("retingAvg"),
+													ir.rating.avg().coalesce(0.0).as("ratingAvg"),
 													ir.item.count().as("reviewCount")
 													))
 											.from(i)
@@ -208,29 +218,43 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom  {
 		
 		QItemReview ir = QItemReview.itemReview;
 		QMember m = QMember.member;
-		QItemReviewAnswer a = QItemReviewAnswer.itemReviewAnswer;
+		QItemReviewImg iri = QItemReviewImg.itemReviewImg;
+		QItemReviewAnswer ira = QItemReviewAnswer.itemReviewAnswer;
 		
 		List<ItemReviewDto> content = queryFactory
 									.select(
 											Projections.constructor(
 													ItemReviewDto.class,
-													ir.id,
-													ir.reting,
+													ir.id.as("itemReviewId"),
+													ir.rating,
 													ir.content,
 													ir.regTime,
 													m.nickname,
-													m.imgUrl,
-													a.id.as("answerId"),
-													a.content.as("answerContent"),
-													a.regTime.as("answerRegTime")
+													m.imgUrl
 													))	
 									.from(ir)
 									.join(m).on(ir.member.id.eq(m.id))
-									.leftJoin(a).on(QItemReview.itemReview.id.eq(a.itemReview.id))
 									.where(ir.item.id.eq(itemId))
 									.offset(pageable.getOffset())
 								    .limit(pageable.getPageSize())
 									.fetch();
+		
+		for(ItemReviewDto dto : content) {
+			List<ItemReviewImg> itemReviewImg = queryFactory
+    				.select(iri)
+    				.from(iri)
+    				.where(iri.itemReview.id.eq(dto.getItemReviewId()))
+    				.fetch();
+			ItemReviewAnswer itemReviewAnswer = queryFactory
+    				.select(ira)
+    				.from(ira)
+    				.where(ira.itemReview.id.eq(dto.getItemReviewId()))
+    				.fetchOne();
+			
+		    dto.setItemReviewImgList(itemReviewImg);
+		    dto.setItemReviewAnswer(itemReviewAnswer);
+		}
+		
 		
 		Long total = queryFactory
 				 	.select(Wildcard.count)
@@ -287,6 +311,8 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom  {
 	
 		return new PageImpl<>(content, pageable, total);
 	}
+
+
 
 
 

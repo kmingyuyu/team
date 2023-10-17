@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.recipe.entity.ItemReview;
+import com.recipe.entity.ItemReviewAnswer;
+import com.recipe.entity.ItemReviewImg;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,9 +16,9 @@ import lombok.Setter;
 @Setter
 public class ItemReviewDto {
 	
-	private Long id;
+	private Long itemReviewId;
 	
-	private double reting;
+	private double rating;
 	
 	private String content;
 	
@@ -28,38 +28,19 @@ public class ItemReviewDto {
 	
 	private String imgUrl;
 	
-	private Long answerId;
+	private ItemReviewAnswer itemReviewAnswer;
 	
-	private String answerContent;
-	
-	private LocalDateTime answerRegTime;
-	
-	List<ItemReviewAnswerDto> itemReviewAnswerList = new ArrayList<>();
-	
-	private static ModelMapper modelMapper = new ModelMapper();
-	
-//	dto -> entity 변환
-	public ItemReview createReview() {
-		return modelMapper.map(this, ItemReview.class);
-	}
-	
-//	entity -> dto 변환
-	public static ItemReviewDto of(ItemReview itemReview) {
-		return modelMapper.map(itemReview, ItemReviewDto.class);
-	}
+	private List<ItemReviewImg> itemReviewImgList = new ArrayList<>();
 	
 	@QueryProjection
-	public ItemReviewDto(Long id ,double reting , String content ,LocalDateTime regTime , String nickname 
-			, String imgUrl, Long answerId , String answerContent , LocalDateTime answerRegTime) {
-		this.id = id;
-		this.reting = reting;
+	public ItemReviewDto(Long itemReviewId ,double rating , String content ,LocalDateTime regTime , String nickname , String imgUrl) {
+		
+		this.itemReviewId = itemReviewId;
+		this.rating = rating;
 		this.content = content;
 		this.regTime = regTime;
 		this.nickname = nickname;
 		this.imgUrl = imgUrl;
-		this.answerId = answerId;
-		this.answerContent = answerContent;
-		this.answerRegTime = answerRegTime;
 		
 	}
 	

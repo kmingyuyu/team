@@ -34,4 +34,17 @@ public class ItemReviewImg {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_review_id")
 	private ItemReview itemReview;
+	
+	public static ItemReviewImg createItemReviewImg(String imgUrl,String imgName,String imgOriName,ItemReview itemReview) {
+		
+		ItemReviewImg itemReviewImg = new ItemReviewImg();
+		
+		itemReviewImg.setImgUrl(imgUrl);
+		itemReviewImg.setImgName(imgName);
+		itemReviewImg.setImgOriName(imgOriName);
+		itemReviewImg.setItemReview(itemReview);
+		
+		return itemReviewImg;
+	}
+	
 }

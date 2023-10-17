@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,8 +31,19 @@ public class ItemReviewAnswer extends BaseEntity {
 	@JoinColumn(name = "member_id")
 	private Member member;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "item_review_id")
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "itemReviewAnswer")
 	private ItemReview itemReview;
+	
+	public static ItemReviewAnswer createItemReviewAnswer(Member member, ItemReview itemReview,String content) {
+		
+		ItemReviewAnswer itemReviewAnswer = new ItemReviewAnswer();
+		
+		itemReviewAnswer.setMember(member);
+		itemReviewAnswer.setItemReview(itemReview);
+		itemReviewAnswer.setContent(content);
+		
+		return itemReviewAnswer;
+	}
+	
 	
 }

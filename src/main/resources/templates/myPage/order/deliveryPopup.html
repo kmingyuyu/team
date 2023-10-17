@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>이젠 맛있게</title>
+	<link rel="stylesheet" type="text/css" href="/css/deliveryPopup.css" />
+	<!-- 폰트어썸-->
+    <script src="https://kit.fontawesome.com/27cfb375b2.js" crossorigin="anonymous"></script>
+    
+    <!-- Google Font -->
+    <link th:href="@{https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+	<link th:href="@{https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css}"rel="stylesheet" />
+</head>
+<body>
+	<div class="container">
+	<div class="site-wrap">
+		
+	<section class="n-qa-write-pop">
+		<header class="h2_header">
+			<h2>배송조회</h2>
+		</header>
+		<input type="hidden" id="loginOk" th:value="${loginOk}">
+		<div class="search_form pb-3">
+					<input id="delivery_search" type="text" class="form-control form_search" placeholder="송장번호를 입력 해주세요" >
+					<button class="form_search_bt" onclick="dynamicSearch()">조회</button>
+		</div>
+		<th:block th:if="${delivery != null}">
+		<div class="dinfiv">
+		<header class="h3_header">
+			<h3>기본정보</h3>
+		</header>
+		<table class="table_basic cart_table n-cart-table">
+					<colgroup>
+						<col width="30%">
+						<col width="20%">
+						<col width="20%">
+						<col width="15%">
+					</colgroup>
+					<thead>
+						<tr class="cart-header">
+							<th scope="col">송장번호</th>
+							<th scope="col">보내는 분/접수일자</th>
+							<th scope="col">받는 분</th>
+							<th scope="col">배달결과</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+					<tr class="cart-group">
+							<td colspan="9" class="cart_cont">
+								<table class="table_basic cart_table">
+									<colgroup>
+										<col width="30%">
+										<col width="20%">
+										<col width="20%">
+										<col width="15%">
+									</colgroup>
+									<tbody>
+									<tr>
+										<td>
+											[[${delivery.invoiceNumber}]]
+										</td>
+										<td>
+											[[${address.sendName}]]
+											<p class="mt-2">
+											[[${T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd').format(delivery.regTime)}]]
+											</p>
+										</td>
+										<td>
+											[[${address.receiveName}]]
+										</td>
+										<td>
+											[[${delivery.deliveryStatus}]]
+										</td>
+									</tr>
+							</tbody>
+								</table>
+							</td>
+						</tr>
+				</tbody>
+				</table>
+			</div>
+		<div class="dinginfiv">
+		<header class="h3_header">
+			<h3>배송 진행상황</h3>
+		</header>
+		<table class="table_basic cart_table n-cart-table">
+					<colgroup>
+						<col width="15%">
+						<col width="15%">
+						<col width="40%">
+					</colgroup>
+					<thead>
+						<tr class="cart-header">
+							<th scope="col">날짜</th>
+							<th scope="col">시간</th>
+							<th scope="col">처리현황</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+					<th:block th:each="info , status:${infos}">
+					<tr class="cart-group">
+							<td colspan="9" class="cart_cont">
+								<table class="table_basic cart_table">
+									<colgroup>
+										<col width="15%">
+										<col width="15%">
+										<col width="40%">
+									</colgroup>
+									<tbody>
+									<tr>
+										<td>
+											[[${T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd').format(info.regTime)}]]
+										</td>
+										<td>
+											[[${T(java.time.format.DateTimeFormatter).ofPattern('HH:mm').format(info.regTime)}]]
+										</td>
+										<td>
+											[[${info.deliveryMessage}]]
+										</td>
+									</tr>
+							</tbody>
+								</table>
+							</td>
+						</tr>
+					</th:block>
+				</tbody>
+				</table>
+			</div>
+			</th:block>
+			<th:block th:if="${delivery == null}">
+				<div class="null_box">
+					송장번호를 찾을수 없습니다.
+				</div>
+				
+			</th:block>
+			<div class="dbtiv">
+				<a class="n-btn btn-lighter" onclick="inqCancle()">나가기</a>
+			</div>
+		
+	</section>
+		
+	</div>
+	</div>
+	
+	<script th:src="@{/js/myPage/order/deliveryPopup.js}"></script>
+</body>
+</html>

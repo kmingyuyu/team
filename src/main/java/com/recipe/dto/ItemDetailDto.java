@@ -33,7 +33,7 @@ public class ItemDetailDto {
 	
 	private int stockNumber;
 	
-	private double retingAvg;
+	private double ratingAvg;
 	
 	private Long reviewCount;
 	
@@ -44,7 +44,7 @@ public class ItemDetailDto {
 	@QueryProjection
 	public ItemDetailDto (Long id ,String itemNm , String itemSubNm , 
 			int price , ItemSellStatus itemSellStatus , ItemCategoryEnum itemCategoryEnum  , 
-			int sale ,int stockNumber , double retingAvg , Long reviewCount) {
+			int sale ,int stockNumber , double ratingAvg , Long reviewCount) {
 		this.id = id;
 		this.itemNm = itemNm;
 		this.itemSubNm = itemSubNm;
@@ -53,7 +53,7 @@ public class ItemDetailDto {
 		this.itemCategoryEnum = itemCategoryEnum;
 		this.sale = sale;
 		this.stockNumber = stockNumber;
-		this.retingAvg = retingAvg;
+		this.ratingAvg = ratingAvg;
 		this.reviewCount = reviewCount;
 	}
 	

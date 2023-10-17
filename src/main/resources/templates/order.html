@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<div layout:fragment="content">
+
+	<th:block layout:fragment="css">
+
+		<link rel="stylesheet" href="/css/order.css">
+		
+	</th:block>
+	
+	
+	<div class="container_custom">
+		<div class="right_contents">
+			<h2 class="title-page">O R D E R<span class="cart_sp"> 주 문 서 </span></h2>
+			<!--cart process-->
+			<div class="page-sorting order font-mss">
+				<span>장바구니</span>
+				<span><i class="ic-14-line-arrow-right"></i></span>
+				<span  class="current-page">주문서</span>
+				<span><i class="ic-14-line-arrow-right"></i></span>
+				<span>주문 완료</span>
+			</div>
+		</div>
+		
+		<div class="section_contents">
+			<section class="BuyerSectionstyle__Layout-sc-178d4ez-0 bgbLYq">
+				<header id="member_hide">
+					<p>주문고객</p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 18">
+						<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+					</svg>
+				</header>
+			<div class="BuyerSectionstyle__Content-sc-178d4ez-1 eTvqNT" id="member_info">
+				<div>
+				<div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp">
+					<label for="buyer_name">주문고객 이름</label>
+					<input id="buyer_name" name="buyer_name" class="Input-sc-1wi5lks-1 iuJjeO buyerName"
+					th:if="${member.name != null and member.name != ''}" th:value="${member.name}" >
+					<input id="buyer_name" name="buyer_name" class="Input-sc-1wi5lks-1 iuJjeO buyerName"
+					th:if="${member.name == null or member.name == ''}"  value="">
+					</div>
+				<div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp">
+					<label for="buyer_tel">휴대전화 번호</label>
+					<input type="buyer_tel" id="buyer_tel" name="buyer_tel" class="Input-sc-1wi5lks-1 dRFPTh buyerTel" placeholder="숫자만 입력해 주세요."  
+					th:value="${member.phoneNumber}" disabled="">
+				</div>
+						<div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp post_mg">
+							<label for="postcode_member">우편번호</label>
+							<div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp" th:if="${member.postCode != null and member.postCode != ''}">
+								<input id="postcode_member" class="Input-sc-1wi5lks-1 dRFPTh postcode_member"  disabled="" th:value="${member.postCode}">
+							</div>
+							<div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp" th:if="${member.postCode == null or member.postCode == ''}">
+								<input id="postcode_member" class="Input-sc-1wi5lks-1 dRFPTh postcode_member" placeholder="우편번호"  disabled="">
+							</div>
+						</div>
+						
+				<div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp">
+					
+						<textarea th:if="${member.address != null and member.address != ''}" th:text="${member.address}"
+						 id="addr1_member" name="addr1_member"  placeholder="주소" disabled="" class="Textarea__Component-sc-13mc99-0 mincu"></textarea>
+						<textarea th:if="${member.address == null or member.address == ''}"
+						 id="addr1_member" name="addr1_member"  placeholder="주소" disabled="" class="Textarea__Component-sc-13mc99-0 mincu"></textarea>
+						 
+						 <textarea th:if="${member.detailAddress != null and member.detailAddress != ''}" th:text="${member.detailAddress}" disabled=""
+						id="addr2_member" name="addr2_member" class="Textarea__Component-sc-13mc99-0 mincu2"></textarea>
+						<textarea th:if="${member.detailAddress == null or member.detailAddress == ''}"  disabled=""
+						id="addr2_member" name="addr2_member" placeholder="상세주소" class="Textarea__Component-sc-13mc99-0 mincu2"></textarea>
+						
+				</div>
+				<p>* 잠금된 고객 정보는 <a href="/myPage">마이페이지</a> (우측상단)에서 수정 가능합니다.
+				</p>
+			</div>
+		</div>
+		</section>
+		<section class="DeliverySectionstyle__Section-sc-1z0zu9r-0 TXqFW">
+			<header id="delivery_hide">
+				<p>배송지</p>
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 18"><path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path></svg>
+			</header>
+			<div class="DeliverySectionstyle__Content-sc-1z0zu9r-1 dLBPEv" id="delivery_info">
+				<div class="NewAddressstyle__Layout-a48nli-0 khyGIS">
+					<label class="Checkbox__Component-sc-1jb0vbg-0 jgFZGX checkbox">
+						<input type="checkbox" id="delivery_check" checked="true"><span class="checkmark"></span><span class="text">주문고객과 동일</span>
+					</label>
+				<div class="NewAddressstyle__FormInput-a48nli-1 deYeBt">
+					<div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp" th:if="${member.name != null and member.name != ''}">
+						<label for="taker_name">받는분 이름</label>
+						<input id="taker_name" name="taker_name" class="Input-sc-1wi5lks-1 iuJjeO takerName" th:value="${member.name}">
+					</div>
+					<div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp" th:if="${member.name == null or member.name == ''}">
+						<label for="taker_name">받는분 이름</label>
+						<input id="taker_name" name="taker_name" class="Input-sc-1wi5lks-1 iuJjeO takerName">
+					</div>
+					</div>
+					<div class="NewAddressstyle__FormInput-a48nli-1 deYeBt">
+						<div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp"  th:if="${member.phoneNumber != null and member.phoneNumber != ''}">
+							<label for="tell">휴대전화 번호</label>
+							<input type="text" id="tell" name="tell" class="Input-sc-1wi5lks-1 iuJjeO tel1" placeholder="숫자만 입력해 주세요." th:value="${member.phoneNumber}">
+						</div>
+						<div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp" th:if="${member.phoneNumber == null or member.phoneNumber == ''}">
+							<label for="tell">휴대전화 번호</label>
+							<input type="text" id="tell" name="tell" class="Input-sc-1wi5lks-1 iuJjeO tel1" placeholder="숫자만 입력해 주세요.">
+						</div>
+						</div>
+					<div class="NewAddressstyle__AddressFormInput-a48nli-2 jAFoNo">
+						<div class="NewAddressstyle__SearchPostCodeFormInput-a48nli-3 dZZESg">
+							<label for="postcode">우편번호</label>
+							<div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp" th:if="${member.postCode != null and member.postCode != ''}">
+								<input id="postcode" class="Input-sc-1wi5lks-1 dRFPTh postcode" name="postcode" placeholder="우편번호" disabled="" th:value="${member.postCode}">
+								<button type="button" onclick="sample6_execDaumPostcode()" th:value="${member.postCode}">우편번호 찾기</button>
+							</div>
+							<div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp" th:if="${member.postCode == null or member.postCode == ''}">
+								<input id="postcode" class="Input-sc-1wi5lks-1 dRFPTh postcode" name="postcode" placeholder="우편번호" disabled="">
+								<button type="button" onclick="sample6_execDaumPostcode()">우편번호 찾기</button>
+							</div>
+							<input type="text" id="add_extra" placeholder="참고항목" style="display: none;">
+						</div>
+						
+						<textarea th:if="${member.address != null and member.address != ''}" th:text="${member.address}"
+						 id="addr1" name="addr1"  placeholder="주소" disabled="" class="Textarea__Component-sc-13mc99-0 lnCWmr"></textarea>
+						<textarea th:if="${member.address == null or member.address == ''}"
+						 id="addr1" name="addr1"  placeholder="주소" disabled="" class="Textarea__Component-sc-13mc99-0 lnCWmr"></textarea>
+						 
+						<textarea th:if="${member.detailAddress != null and member.detailAddress != ''}" th:text="${member.detailAddress}"
+						id="addr2" name="addr2" placeholder="상세주소를 입력해 주세요." class="Textarea__Component-sc-13mc99-0 lnCWmr"></textarea>
+						<textarea th:if="${member.detailAddress == null or member.detailAddress == ''}" 
+						id="addr2" name="addr2" placeholder="상세주소를 입력해 주세요." class="Textarea__Component-sc-13mc99-0 lnCWmr"></textarea>
+						
+					</div>
+					<div class="DeliverySectionstyle__DeliveryMessageFormInput-sc-1z0zu9r-3 hIjTPD">
+						<p>배송메세지 (선택)</p>
+						<div class="styles__CustomDropdown-ik22cy-0 lcwRcP">
+							<select id="delivery_memo" name="delivery_memo">
+								<option value="">배송메세지를 선택해 주세요.</option>
+								<option value="부재시 문앞에 놓아주세요.">부재시 문앞에 놓아주세요.</option>
+								<option value="부재시 전화 또는 문자주세요.">부재시 전화 또는 문자주세요.</option>
+								<option value="부재시 경비실에 맡겨주세요.">부재시 경비실에 맡겨주세요.</option>
+								<option value="배송시 연락주세요.">배송시 연락주세요.</option>
+								<option value="택배함에 넣어주세요.">택배함에 넣어주세요.</option>
+								<option value="직접입력">직접입력</option>
+							</select>
+						</div>
+						<textarea id="custom_memo" class="Textarea__Component-sc-13mc99-0 lnCWmr customMemo" name="custom_memo" style="display: none; "></textarea>
+					</div>
+					</div>
+					</div>
+				</section>
+				<section class="CheckoutProductsSectionstyle__Section-ervfp1-0 hwurrN">
+					<header id="item_hide">
+						<p>주문상품<span></span>[[${orderList.size()}]]개</p>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 18">
+							<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+						</svg>
+					</header>
+					<div class="dLBPEv" id="item_info">
+						
+					
+				<table class="table_basic cart_table n-cart-table">
+					<colgroup>
+						<col width="6%">
+						<col width="25%">
+						<col width="10%">
+						<col width="10%">
+						<col width="8%">
+						<col width="10%">
+						
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">NO.
+							
+							<th scope="col">상품명</th>
+							<th scope="col">판매가</th>
+							<th scope="col">할인금액</th>
+							<th scope="col">수량</th>
+							<th scope="col">주문금액</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+					<th:block th:if="${orderList != null}" th:each="item , status:${orderList}"> 	
+					<tr class="cart-group">
+							<td colspan="9" class="cart_cont">
+								<table class="table_basic cart_table">
+									<colgroup>
+										<col width="6%">
+										<col width="25%">
+										<col width="10%">
+										<col width="10%">
+										<col width="8%">
+										<col width="10%">
+										
+									</colgroup>
+									<tbody>
+									<tr class="cart_list_no" >
+										<td>[[${status.index+1}]]</td>
+										<td>
+											<div class="connect_img">
+												<a class="img-block" th:href="'/item/' + ${item.id}">
+                                                    <img th:src="${item.imgUrl}" th:alt="${item.itemNm}">
+												</a>																																					
+											</div>
+											<div class="article_info connect_info">
+												<p class="list_info">
+													<a th:href="'/item/' + ${item.id}" class="itemNm">[[${item.itemNm}]]</a>
+												</p>
+											</div>
+										</td>
+										<td class="td_price">
+											<div class="td_price_wrap ori_price_so" >
+											[[${#numbers.formatInteger(item.price * item.count , 0, 'COMMA')}]]원
+										</div>
+										</td>
+                                        <td class="sale_price_so">
+  										  [[${#numbers.formatInteger((item.price * item.sale / 100) * item.count, 0, 'COMMA')}]]원
+										</td>
+										<td class="count"  th:attr="data-item-count=${item.count}, data-item-itemId=${item.id} , data-item-salePrice=${(item.price * item.sale / 100) * item.count},
+																	data-item-orderPrice=${(item.price - (item.price * item.sale / 100)) * item.count}">
+											[[${item.count}]]개
+										</td>
+										<td class="total_price_so" >
+											[[${#numbers.formatInteger((item.price - (item.price * item.sale / 100)) * item.count , 0, 'COMMA')}]]원
+										</td>
+								
+									</tr>
+							</tbody>
+								</table>
+							</td>
+						</tr>
+						</th:block>
+						
+				</tbody>
+				</table>
+				</div>
+				
+				</section>
+				<section class="CouponPointSectionstyle__Section-mz653z-0 gdTDIm">
+				<header id="point_hide">
+					<p>포인트</p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 19 18"><path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path></svg>
+				</header>	
+				<div class="CouponPointSectionstyle__Content-mz653z-1 jYlXQI" id="point_info" >
+		  <div class="Pointstyle__Layout-sc-16p7q45-0 fibZsH">
+			  <p>보유포인트<span class="p_s"></span><span class="p_s_s" id="point_total">[[${#numbers.formatInteger(member.point, 0, 'COMMA')}]]</span>&nbsp;P</p>
+			  <div>
+				  <div class="Input__FormInputDiv-sc-1wi5lks-0 eGzxxp wrapper">
+				  <input type="text" id="point" name="point" class="Input-sc-1wi5lks-1 iuJjeO" value=0  onkeyup="updateFinalPay()" onblur="validatePoint()">
+				  <button type="button" onclick="pointTotalButton()">모두 사용</button>
+				  </div>
+				  <div  class="point_error">* 포인트는 1,000P이상 사용가능합니다</div>
+			  </div>
+			  </div>
+		</div>
+				</section>
+		<section class="AmountSummarySectionstyle__Section-sc-1gqkb5l-0 joJzei">
+			<header><p>결제금액</p><strong id="final_price">[[${#numbers.formatInteger(finalCount , 0, 'COMMA')}]]<span class="pay_won">원</span></strong></header>
+			<div class="AmountSummarySectionstyle__Content-sc-1gqkb5l-1 jIXpaz">
+				<p>총 상품금액</p><p id="total_price">[[${#numbers.formatInteger(totalCount , 0, 'COMMA')}]]<span class="pay_won">원</span></p>
+				<p>총 배송비</p><p id="delevery_price">[[${#numbers.formatInteger(deleveryCount , 0, 'COMMA')}]]<span class="pay_won">원</span></p>
+				<p>할인금액</p><p id="sale_price">[[${#numbers.formatInteger(saleCount , 0, 'COMMA')}]]<span class="pay_won">원</span></p>
+				<p>포인트사용</p><p id="use_point">0<span class="pay_won">원</span></p>
+				</div>
+			
+		</section>
+		<section class="PrivacyPolicystyle__Section-sc-14bhukc-0 MHeSI">
+			<label class="Checkbox__Component-sc-1jb0vbg-0 jgFZGX checkbox">
+				<input type="checkbox" id="final_check">
+				<span class="checkmark"></span>
+				<span class="text">(필수) 결제 진행 필수사항을 확인했으며, 이에 동의합니다.</span>
+				</label>
+			<div>
+			<div class="detail">
+				<div class="content_custom">
+					<div>
+						<a href="#" target="_blank" rel="noreferrer">이용약관</a>
+					</div>
+					<div>
+						<a href="#" target="_blank" rel="noreferrer">개인정보 수집 및 이용</a>
+					</div>
+					<div>제 3자 정보 제공
+						<div class="companies">
+							<p><span>제공받는자</span><span>이젠스토어</span></p>
+							<p><span>목적</span><span>상품 주문확인 및 배송업무</span></p>
+							<p><span>항목</span><span>수취인이름, 휴대전화 번호, 이메일, 배송지주소</span></p>
+							<p><span>보유 기간</span><span>목적달성 후 파기</span></p>
+							<p><span>거부 권리</span><span>제3자(판매자)에게 개인정보 제공을 거부하실 수 있으나, 이 경우 서비스 이용이 제한될 수 있습니다.</span>
+							</p>
+						</div>
+					</div>
+					</div>
+					</div>
+				</div>
+			</section>
+		<div class="n-btn-group n-btn-order">
+					<button type="button" class="n-btn btn-lg btn-accent click_disable_pay" id="btn-order" onclick="finalOrder()">약관에 동의해주세요</button>
+				</div>	
+		
+		</div>
+		
+	</div>
+	
+	<input type="hidden" th:value="${orderNumber}" id="orderNumber">
+	<input type="hidden" th:value="${member.email}" id="email">
+	
+</div>
+
+
+<th:block layout:fragment="script">
+	<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+	<script th:src="@{//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js}"></script> 
+
+	
+	<script th:inline="javascript">
+
+var isPaymentSuccessful = false;
+
+window.addEventListener('beforeunload', function (e) {
+    if (!isPaymentSuccessful) {
+        var message = '정말 이 페이지를 떠나시겠습니까?';
+        e.returnValue = message; 
+        return message; 
+    }
+});
+
+
+
+		
+		
+const finalCheck = document.getElementById('final_check');
+const btnOrder = document.getElementById('btn-order');
+
+// 체크박스의 상태 변경을 감지
+finalCheck.addEventListener('change', function() {
+  if (this.checked) {
+    // 체크박스가 체크된 경우
+    btnOrder.classList.remove('click_disable_pay');
+    btnOrder.innerText = '주문하기';
+  } else {
+    // 체크박스가 체크되지 않은 경우
+    btnOrder.classList.add('click_disable_pay');
+    btnOrder.innerText = '약관에 동의해주세요';
+  }
+});
+	
+	function validatePoint() {
+    var point = parseInt(document.getElementById("point").value.replace(/,/g, ""));
+
+    if (point > 0 && point < 1000) {
+        alert("포인트는 1,000P 이상 사용 가능합니다.");
+        document.getElementById("point").value = "0";
+        updateFinalPay(); // 이 함수 호출로 final_pay 값을 다시 원래대로 만듭니다.
+    }
+}
+		
+var originalFinalPay = document.getElementById("final_price").textContent.replace("원", "").replace(/,/g, "");
+
+function updateFinalPay() {
+    // point의 값을 가져온다. 콤마를 제거한다.
+    var point = document.getElementById("point").value.replace(/,/g, "");
+
+    // point 값이 비어있다면 원래의 값으로 설정
+    if (point === "") {
+        point = 0;
+    }
+
+    // 원래 final_pay 값에서 point 값을 빼서 새로운 final_pay 값을 계산한다.
+    var newFinalPay = parseInt(originalFinalPay) - parseInt(point);
+
+    // 새로운 final_pay 값을 콤마를 찍어서 설정한다.
+    var formattedNewFinalPay = newFinalPay.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    document.getElementById("final_price").innerHTML = formattedNewFinalPay + '<span class="pay_won">원</span>';
+
+    // point 값도 콤마를 찍어서 업데이트한다.
+    document.getElementById("point").value = parseInt(point).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    // point_order 값을 업데이트한다.
+    var pointOrder = document.getElementById("use_point");
+    var formattedPoint = parseInt(point).toLocaleString();
+    pointOrder.innerHTML = formattedPoint + '<span class="pay_won">원</span>';
+}
+
+
+
+		
+		document.getElementById('member_hide').onclick = function() {
+  var memberInfo = document.getElementById('member_info');
+  memberInfo.style.display = (memberInfo.style.display === 'none') ? 'block' : 'none';
+};
+		document.getElementById('delivery_hide').onclick = function() {
+  var memberInfo = document.getElementById('delivery_info');
+  memberInfo.style.display = (memberInfo.style.display === 'none') ? 'block' : 'none';
+};
+		document.getElementById('item_hide').onclick = function() {
+  var memberInfo = document.getElementById('item_info');
+  memberInfo.style.display = (memberInfo.style.display === 'none') ? 'block' : 'none';
+};
+		document.getElementById('point_hide').onclick = function() {
+  var memberInfo = document.getElementById('point_info');
+  memberInfo.style.display = (memberInfo.style.display === 'none') ? 'block' : 'none';
+};
+
+document.getElementById('delivery_memo').addEventListener('change', function() {
+  var customMemo = document.getElementById('custom_memo');
+  if (this.value === '직접입력') {
+    customMemo.style.display = 'block';
+  } else {
+    customMemo.style.display = 'none';
+  }
+});
+
+$(document).ready(function() {
+  $('#delivery_check').change(function() {
+    if ($(this).prop('checked')) {
+      $('#taker_name').val($('#buyer_name').val());
+      $('#tell').val($('#buyer_tel').val());
+      $('#postcode').val($('#postcode_member').val());
+      $('#addr1').val($('#addr1_member').val());
+      $('#addr2').val($('#addr2_member').val());
+    } else {
+      $('#taker_name').val('');
+      $('#tell').val('');
+      $('#postcode').val('');
+      $('#addr1').val('');
+      $('#addr2').val('');
+    }
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  var pointElement = document.getElementById('point');
+  
+  if(pointElement) {
+    pointElement.addEventListener('input', function(e) {
+      var inputValue = e.target.value;
+      var onlyDigits = inputValue.replace(/[^0-9]/g, '');
+      if(inputValue !== onlyDigits) {
+        e.target.value = onlyDigits;
+      }
+    });
+  }
+});
+
+function pointTotalButton() {
+  var pointTotalElement = document.getElementById('point_total');
+  var pointElement = document.getElementById('point');
+
+  // 콤마 제거
+  var pointTotalValue = pointTotalElement.innerText.replace(/,/g, '');
+
+  pointElement.value = parseInt(pointTotalValue).toLocaleString('ko-KR'); // 콤마 찍기
+  updateFinalPay();
+}
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  var tellElement = document.getElementById('tell');
+
+  if(tellElement) {
+    tellElement.addEventListener('input', function(e) {
+      var inputValue = e.target.value;
+      var onlyDigits = inputValue.replace(/[^0-9]/g, ''); // 숫자 외의 모든 문자를 제거
+      if (inputValue !== onlyDigits) {
+        e.target.value = onlyDigits;
+      }
+    });
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  var pointElement = document.getElementById('point');
+  var min = 0;
+  var max = [[${member.point}]];
+
+  if(pointElement) {
+    pointElement.addEventListener('input', function(e) {
+      var inputValue = e.target.value;
+
+      // 값이 비어있을 경우 0으로 설정
+      if (inputValue === "") {
+        e.target.value = 0;
+        return;
+      }
+
+      var onlyDigits = inputValue.replace(/[^0-9]/g, '');
+      if (inputValue !== onlyDigits) {
+        e.target.value = onlyDigits;
+      }
+
+      if (parseInt(e.target.value) < min) {
+        e.target.value = min;
+      } else if (parseInt(e.target.value) > max) {
+        e.target.value = max;
+      }
+    });
+  }
+});
+
+
+
+     function sample6_execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                    // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                    // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                    var addr = ''; // 주소 변수
+                    var extraAddr = ''; // 참고항목 변수
+
+                    //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                    if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                        addr = data.roadAddress;
+                    } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                        addr = data.jibunAddress;
+                    }
+
+                    // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                    if(data.userSelectedType === 'R'){
+                        // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                        // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                        if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                            extraAddr += data.bname;
+                        }
+                        // 건물명이 있고, 공동주택일 경우 추가한다.
+                        if(data.buildingName !== '' && data.apartment === 'Y'){
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                        if(extraAddr !== ''){
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                        // 조합된 참고항목을 해당 필드에 넣는다.
+                        document.getElementById("add_extra").value = extraAddr;
+                    
+                    } else {
+                        document.getElementById("add_extra").value = '';
+                    }
+
+                    // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                    document.getElementById('postcode').value = data.zonecode;
+                    document.getElementById("addr1").value = addr;
+                    // 커서를 상세주소 필드로 이동한다.
+                    document.getElementById("addr2").focus();
+                }
+            }).open();
+        }
+		
+
+
+
+
+
+
+const deliveryMemoSelect = document.getElementById("delivery_memo");
+const customMemoInput = document.getElementById("custom_memo");
+
+// 초기값 설정
+let selectedMemo = (deliveryMemoSelect.value === "" || customMemoInput.value === "") ? "배송메시지가 없습니다." : (deliveryMemoSelect.value === "직접입력" ? customMemoInput.value : deliveryMemoSelect.value);
+
+deliveryMemoSelect.addEventListener("change", function() {
+  if (this.value === "직접입력") {
+    selectedMemo = customMemoInput.value !== "" ? customMemoInput.value : "배송메시지가 없습니다.";
+  } else {
+    selectedMemo = this.value !== "" ? this.value : "배송메시지가 없습니다.";
+  }
+});
+
+customMemoInput.addEventListener("input", function() {
+  if (deliveryMemoSelect.value === "직접입력") {
+    selectedMemo = this.value !== "" ? this.value : "배송메시지가 없습니다.";
+  }
+});
+
+function finalOrder() {
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");	
+	
+	
+  const finalPriceElement = document.getElementById('final_price');
+  const totalPriceElement = document.getElementById('total_price');
+  const deleveryPriceElement = document.getElementById('delevery_price');
+  const salePriceElement = document.getElementById('sale_price');
+  const usePointElement = document.getElementById('use_point');	
+  
+  var order_email = $('#email').val();
+  var order_buyerName = $('#buyer_name').val();
+  var order_takerName = $('#taker_name').val();
+  var order_tell = $('#tell').val();
+  if (order_tell) {
+    order_tell = order_tell.replace(/-/g, '');
+  }
+  var order_address = $("#addr1").val();
+  var order_detailAddress = $("#addr2").val();
+  var order_postCode = $('#postcode').val();
+  var order_orderNumber = $('#orderNumber').val();
+  
+ var finalPrice = parseInt(finalPriceElement.textContent.replace(/,/g, '').replace('원', ''), 10);
+ var totalPrice = parseInt(totalPriceElement.textContent.replace(/,/g, '').replace('원', ''), 10);
+ var deleveryPrice = parseInt(deleveryPriceElement.textContent.replace(/,/g, '').replace('원', ''), 10);
+ var salePrice = parseInt(salePriceElement.textContent.replace(/,/g, '').replace('원', ''), 10);
+ var usePoint = parseInt(usePointElement.textContent.replace(/,/g, '').replace('원', ''), 10);
+ 
+
+  
+  var order_itemNm;
+  
+  
+  
+  
+  var buyerName = document.getElementById('buyer_name'); // 주문자 정보
+  var takerName = document.getElementById('taker_name'); // 받는분 정보
+  var tel = document.getElementById('tell'); // 받는분 번호
+  var addr1 = document.getElementById('addr1'); // 배송지 주소
+  var addr2 = document.getElementById('addr2'); // 배송지 상세주소
+  var add = addr1  + " " + addr2;
+  var postCode =  document.getElementById('postcode');
+
+  
+  let itemNames = document.querySelectorAll('.itemNm'); 
+
+ if (itemNames.length === 1) {
+  order_itemNm = itemNames[0].textContent;
+} else if (itemNames.length > 1) {
+  let firstItemName = itemNames[0].textContent;
+  let remainingItemCount = itemNames.length - 1;
+
+  if (firstItemName.length >= 6) {
+    firstItemName = firstItemName.substring(0, 6) + "...";
+  }
+
+  order_itemNm = `${firstItemName} 외 ${remainingItemCount}건`;
+}
+  
+  
+  
+  
+  
+  	
+  // 더 보여줘야 할 섹션 ID 선택
+  var memberInfo = document.getElementById('member_info');
+  var deliveryInfo = document.getElementById('delivery_info');
+
+  // 배열로 묶기
+  var elements = [buyerName, takerName, addr1, tel, addr2];
+
+  var firstEmptyElement = null; 
+
+  elements.forEach(function(element) {
+
+    if (element && element.value === '') {
+      // 값이 비어 있으면 테두리 색과 두께 변경
+      element.classList.add("custom-focus");
+      element.style.borderColor = 'RGB(244, 74, 93)';
+      element.style.borderWidth = '1px';
+  
+      // 첫 번째 빈 요소 저장
+      if (firstEmptyElement === null) {
+        firstEmptyElement = element;
+      }
+
+      if (element.id === 'buyer_name' && memberInfo.style.display === 'none') {
+        memberInfo.style.display = 'block';
+      } else if (['taker_name', 'tell', 'addr1', 'addr2'].includes(element.id) && deliveryInfo.style.display === 'none') {
+        deliveryInfo.style.display = 'block';
+      }
+    } else if (element) {
+	  element.classList.remove("custom-focus");	
+      element.style.borderColor = 'rgb(189, 189, 189)';
+      element.style.borderWidth = '1px';
+    }
+  });
+
+  if (firstEmptyElement !== null) {
+     firstEmptyElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	  return;
+  }
+  
+  		if(!order_email || !order_buyerName || !order_takerName || !order_tell || !order_postCode ||
+   		!order_address || !order_detailAddress || !order_orderNumber || totalPrice === null || 
+ 		 deleveryPrice === null || salePrice === null || usePoint === null || finalPrice === null || !selectedMemo) {
+ 		 alert(" 주문시 필요한 양식을 모두 작성해주세요");
+ 		 return;
+		}
+  
+  		
+ 		const formDataCk = new FormData();
+		const countElements = document.querySelectorAll('.count');
+		const itemIds = [];
+		const counts = [];
+		const itemOrderPrices = [];
+		const itemSalePrices = [];
+		
+		countElements.forEach((element) => {
+  		const itemId = element.getAttribute('data-item-itemid');
+  		const count = element.getAttribute('data-item-count');
+  		const itemOrderPrice = element.getAttribute('data-item-orderprice');
+  		const itemSalePrice = element.getAttribute('data-item-saleprice');
+  		itemIds.push(itemId);
+  		counts.push(count);
+  		itemOrderPrices.push(itemOrderPrice);
+  		itemSalePrices.push(itemSalePrice);
+		});
+		
+		
+
+		itemIds.forEach((itemId, index) => {
+  		formDataCk.append(`itemIds[${index}]`, itemId);
+  		formDataCk.append(`counts[${index}]`, counts[index]);
+  		formDataCk.append(`itemOrderPrices[${index}]`, itemOrderPrices[index]);
+		formDataCk.append(`itemSalePrices[${index}]`, itemSalePrices[index]);
+		});
+		
+		      formDataCk.append("orderNumber", order_orderNumber);
+              formDataCk.append("buyerEmail", order_email);
+              formDataCk.append("buyerName", order_buyerName);
+              formDataCk.append("takerName", order_takerName);
+              formDataCk.append("takeTell", order_tell);
+              formDataCk.append("postCode", order_postCode);
+              formDataCk.append("address", order_address);
+              formDataCk.append("detailAddress", order_detailAddress);
+              formDataCk.append("deliveryMemo", selectedMemo);
+              formDataCk.append("totalPrice", totalPrice);
+              formDataCk.append("deleveryPrice", deleveryPrice);
+              formDataCk.append("salePrice", salePrice);
+              formDataCk.append("usePoint", usePoint);
+              formDataCk.append("finalPrice", finalPrice);	
+		
+    	 fetch('/order/itemCheck', {
+   			 method: 'POST',
+    		 body: formDataCk,
+    		 headers: {
+        		'X-CSRF-TOKEN': token, 
+        		'X-CSRF-HEADER': header
+    	}
+	})
+	.then(response => {
+    	if (response.ok) {
+			
+	IMP.init('imp15664672');
+    IMP.request_pay({
+    pg : 'html5_inicis',
+    pay_method : 'card',
+    merchant_uid: order_orderNumber, 
+    name : order_itemNm,
+    amount : 100, //테스트환경이라 최소금액 100원  
+    buyer_email : order_email,
+    buyer_name : order_buyerName,
+    buyer_tel : order_tell,
+    buyer_addr : order_address,
+    buyer_postcode : order_postCode
+}, function(rsp) {
+    if ( rsp.success ) {
+			console.log(rsp.imp_uid)
+	
+			  const formData = new FormData();
+			  
+		    itemIds.forEach((itemId, index) => {
+  			formData.append(`itemIds[${index}]`, itemId);
+  			formData.append(`counts[${index}]`, counts[index]);
+  			formData.append(`itemOrderPrices[${index}]`, itemOrderPrices[index]);
+			formData.append(`itemSalePrices[${index}]`, itemSalePrices[index]);
+		   });
+              formData.append("orderNumber", order_orderNumber);
+              formData.append("buyerEmail", order_email);
+              formData.append("buyerName", order_buyerName);
+              formData.append("takerName", order_takerName);
+              formData.append("takeTell", order_tell);
+              formData.append("postCode", order_postCode);
+              formData.append("address", order_address);
+              formData.append("detailAddress", order_detailAddress);
+              formData.append("deliveryMemo", selectedMemo);
+              formData.append("totalPrice", totalPrice);
+              formData.append("deleveryPrice", deleveryPrice);
+              formData.append("salePrice", salePrice);
+              formData.append("usePoint", usePoint);
+              formData.append("finalPrice", finalPrice);
+              formData.append("imp_uid", rsp.imp_uid);
+			
+			
+			
+// 결제 성공후 paycheck 페이지 이동
+ 	fetch('/order/payCheck', {
+   			 method: 'POST',
+    		 body: formData,
+    		 headers: {
+        		'X-CSRF-TOKEN': token, 
+        		'X-CSRF-HEADER': header
+    	}
+	})
+	.then(response => {
+    	if (response.status === 200) { //OK
+        	return response.text();
+        	
+        	
+    	} else if (response.status === 409) { // CONFLICT
+        	return response.text().then(error => {
+            alert(error);
+            
+        });
+        
+        
+    	} else if (response.status === 400) { // BAD_REQUEST
+    		return response.text().then(error => {
+     		 alert(error);
+     		 
+   		 });
+   	 
+   		 
+  		}else {
+        	return response.text().then(error => Promise.reject(error));
+    	}
+    	
+	})
+	.then(orderNumber => {
+    if (orderNumber) { 
+		isPaymentSuccessful = true;
+        location.href = `/order/thank/${orderNumber}`; // 결제완료 페이지 이동
+    }
+	})
+	.catch(error => {
+    	alert(error);
+	});
+
+
+// 아임포트 에러시
+   		} else {
+        	var msg = '결제에 실패하였습니다.';
+       		 msg += '에러내용 : ' + rsp.error_msg;
+        	alert(msg);
+    	}
+	});
+
+
+// 결제전 체크 에러시
+    	} else {
+        	return response.text().then(error => Promise.reject(error));
+    	}
+	})
+	.catch(error => {
+    	alert(error);
+	});
+  
+  
+
+  
+}
+
+		
+		
+		
+	</script>
+	
+	</th:block>
+
+
+</html>

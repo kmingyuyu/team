@@ -1,116 +1,81 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout1}">
+<html>
 
 <head>
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-
-<title>DataTables | Gentelella</title>
-
-
-</head>
-
-<th:block layout:fragment="css">
-	<!-- Bootstrap -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Yoga Studio Template">  <meta name="keywords" content="Yoga, unica, creative, html">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Yummy</title>
+	
+		<!-- 폰트어썸-->
+    <script src="https://kit.fontawesome.com/27cfb375b2.js" crossorigin="anonymous"></script>
+    
+    <!-- Google Font -->
+    <link th:href="@{https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+	<link th:href="@{https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css}"rel="stylesheet" />
+    <!-- Css Styles -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/nice-select.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/slicknav.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/style_custom.css}" type="text/css">
 	<link href="cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-	<link href="/css/bootstrap.min.css" rel="stylesheet">
-	<!-- Font Awesome -->
-	<link href="/css/font-awesome.min.css" rel="stylesheet">
-	<!-- NProgress -->
 	<link href="/css/nprogress.css" rel="stylesheet">
-	<!-- iCheck -->
 	<link href="/css/green.css" rel="stylesheet">
-
-
-
-	<!-- Custom Theme Style -->
 	<link href="/css/custom.min.css" rel="stylesheet">
+
+
+
 	<style>
 .hd {
 	display: none;
 }
-</style>
-</th:block>
 
-<div layout:fragment="content" class="content">
+* {
+	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto' !important;
+}
+</style>
+
+</head>
+<body>
 	<div class="nav-md">
 		<div class="container body">
 			<div class="main_container">
 				<div class="col-md-3 left_col">
 					<div class="left_col scroll-view">
 						<div class="navbar nav_title" style="border: 0;">
-							<a href="index.html" class="site_title"><i class="fa fa-paw"></i>
-								<span>관리자 페이지</span></a>
+							<a href="/" class="site_title_custom">
+								<span>메인 페이지</span></a>
 						</div>
 
-						<div class="clearfix"></div>
-
-						<!-- menu profile quick info -->
-						<div class="profile clearfix">
-
-							<div class="profile_info">
-								<span>Welcome</span>
-								<h2>관리자</h2>
-							</div>
-						</div>
-						<!-- /menu profile quick info -->
-
-						<br />
-
-						<!-- sidebar menu -->
 						<div id="sidebar-menu"
 							class="main_menu_side hidden-print main_menu">
 							<div class="menu_section">
-								<h3>General</h3>
 								<ul class="nav side-menu">
-									<li><a><i class="fa fa-home"></i> Home <span
-											class="fa fa-chevron-down"></span></a>
+									<li><a>회원</a>
 										<ul class="nav child_menu">
-											<li><a href="/">Home</a></li>
-
+											<li><a href="/admin/memberMng"> - 회원관리</a></li>
 										</ul></li>
-									<!-- <li><a><i class="fa fa-edit"></i> Forms <span
-											class="fa fa-chevron-down"></span></a>
+									<li><a>상품</a>
 										<ul class="nav child_menu">
-											<li><a href="form.html">General Form</a></li>
-											<li><a href="form_advanced.html">Advanced Components</a></li>
-											<li><a href="form_validation.html">Form Validation</a></li>
-											<li><a href="form_wizards.html">Form Wizard</a></li>
-											<li><a href="form_upload.html">Form Upload</a></li>
-											<li><a href="form_buttons.html">Form Buttons</a></li>
-										</ul></li> -->
-									<!-- <li><a><i class="fa fa-desktop"></i> UI Elements <span
-											class="fa fa-chevron-down"></span></a>
-										<ul class="nav child_menu">
-											<li><a href="general_elements.html">General Elements</a></li>
-											<li><a href="media_gallery.html">Media Gallery</a></li>
-											<li><a href="typography.html">Typography</a></li>
-											<li><a href="icons.html">Icons</a></li>
-											<li><a href="glyphicons.html">Glyphicons</a></li>
-											<li><a href="widgets.html">Widgets</a></li>
-											<li><a href="invoice.html">Invoice</a></li>
-											<li><a href="inbox.html">Inbox</a></li>
-											<li><a href="calendar.html">Calendar</a></li>
-										</ul></li> -->
-									<li><a><i class="fa fa-table"></i> 회원관리 <span
-											class="fa fa-chevron-down"></span></a>
-										<ul class="nav child_menu">
-											<li><a href="/admin/memberMng">회원관리</a></li>
+											<li><a href="/admin/itemMng"> - 상품관리</a></li>
+											<li><a href="/admin/orderMng"> - 주문관리</a></li>
 										</ul></li>
-									<li><a><i class="fa fa-table"></i> 레시피 관리 <span
-											class="fa fa-chevron-down"></span></a>
+									<li><a>레시피</a>
 										<ul class="nav child_menu">
-											<li><a href="/admin/recipeMng">레시피 관리</a></li>
+											<li><a href="/admin/recipeMng"> - 레시피 관리</a></li>
 										</ul></li>
-									<li><a><i class="fa fa-table"></i> 댓글 관리 <span
-											class="fa fa-chevron-down"></span></a>
+									<li><a>댓글 관리</a>
 										<ul class="nav child_menu">
-											<li><a href="/admin/commentMng">댓글 관리</a></li>
+											<li><a href="/admin/commentMng"> - 댓글 관리</a></li>
 										</ul></li>
-									<li><a><i class="fa fa-table"></i> 문의사항 관리 <span
-											class="fa fa-chevron-down"></span></a>
+									<li><a>문의사항</a>
 										<ul class="nav child_menu">
 											<li><a href="/admin/qaMng">문의사항 관리</a></li>
 										</ul></li>
@@ -119,7 +84,6 @@
 
 
 						</div>
-						<!-- /sidebar menu -->
 
 
 					</div>
@@ -127,50 +91,27 @@
 
 
 
-				<!-- page content -->
 				<div class="right_col" role="main">
 					<div class="">
-						<div class="page-title">
-							<div class="title_left">
-								<h3>회원관리</h3>
-							</div>
+						<div class="page-title_custom">
+								<h3>회원 관리</h3>
 							<form action="#" class="filter-search"
 								th:object="${mngRecipeSearchDto}">
-								<div class="title_right">
-									<div
-										class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-										<div class="input-group">
-											<select th:field="*{searchBy}" class="form-control">
+										<div class="input_group_coustom">
+											<select th:field="*{searchBy}" class="form_select form-control">
 												<option value="nickname">닉네임</option>
 												<option value="email">이메일</option>
-											</select> <input type="text" class="form-control"
-												th:field="*{searchQuery}" placeholder="Search member">
+											</select> <input type="text" class="form-control form_search"
+												th:field="*{searchQuery}" placeholder="검색어를 입력 해주세요">
 											<span class="input-group-btn">
-												<button id="searchBtn" class="btn btn-secondary"
-													type="submit">Go!</button>
+												<button id="searchBtn" class="form_search_bt"
+													type="submit">조회</button>
 											</span>
 										</div>
-									</div>
-								</div>
 							</form>
 						</div>
 
-						<div class="clearfix"></div>
-
-						<div class="row">
-							<div class="col-md-12 col-sm-12 ">
 								<div class="x_panel">
-									<div class="x_title">
-
-										<ul class="nav navbar-right panel_toolbox">
-											<li><a class="collapse-link"><i
-													class="fa fa-chevron-up"></i></a></li>
-
-
-											</li>
-										</ul>
-										<div class="clearfix"></div>
-									</div>
 									<div class="x_content">
 										<div class="row">
 											<div class="col-sm-12">
@@ -183,9 +124,9 @@
 															<tr>
 																<th>No</th>
 																<th>닉네임</th>
-																<th>아이디</th>
-																<th>레시피 등록수</th>
-																<th>작성한 댓글수</th>
+																<th>이메일</th>
+																<th>연락처</th>
+																<th>주소</th>
 																<th>가입 날짜</th>
 																<th>삭제</th>
 															</tr>
@@ -196,19 +137,20 @@
 															<tbody>
 																<tr>
 																	<td th:text="${member.id}"></td>
-																	<td th:text="${member.nickname}"><a href=""> </a></td>
+																	<td th:text="${member.nickname}"></td>
 																	<td th:text="${member.email}"></td>
-																	<td th:text="${member.allRecipeCount}"></td>
-																	<td th:text="${member.allCommentCount}"></td>
+																	<td th:text="${member.phoneNumber}"></td>
+																	<td th:if="${member.address == null or member.address == ''}"> - </td>
+																	<td th:if="${member.address != null and member.address != ''}">([[${member.postCode}]]) [[${member.address}]] [[${member.detailAddress}]]</td>
 																	<td th:text="${member.formattedRegTime}"></td>
 
 
 
 																	<td>
 																		<form id="delete_form" action="" th:method="delete">
-																			<button type="button" class="update_bt"
-																				th:value="${member.id}"
-																				onclick="deleteMember(this.value)">삭제하기</button>
+																		<button th:value="${member.id}"
+																		 class="plain-btn btn"
+																		 onclick="deleteMember(this.value)">회원탈퇴</button>
 																			<input type="hidden" th:name="${_csrf.parameterName}"
 																				th:value="${_csrf.token}">
 																		</form>
@@ -223,16 +165,10 @@
 										</div>
 									</div>
 								</div>
-							</div>
 
 
-						</div>
-						<div class="row">
-							<div class="col-sm-5">
-								<div class="dataTables_info" id="datatable_info" role="status"
-									aria-live="polite">Showing 1 to 10 of 57 entries</div>
-							</div>
-							<div class="col-sm-7">
+						<div>
+							<div>
 								<input class="dd" th:value="${members.totalPages}"
 									style="display: none">
 
@@ -265,35 +201,16 @@
 						</div>
 					</div>
 				</div>
-				<!-- /page content -->
-
-				<!-- footer content -->
-				<footer>
-					<div class="pull-right">
-						Gentelella - Bootstrap Admin Template by <a
-							href="https://colorlib.com">Colorlib</a>
-					</div>
-					<div class="clearfix"></div>
-				</footer>
-				<!-- /footer content -->
 			</div>
 		</div>
 
 	</div>
-</div>
-<th:block layout:fragment="script">
-	<!-- jQuery -->
+	<script th:src="@{/js/bootstrap.min.js}"></script>
 	<script src="/js/jquery.min.js"></script>
-	<!-- Bootstrap -->
 	<script src="/js/bootstrap.bundle.min.js"></script>
-	<!-- FastClick -->
 	<script src="/js/fastclick.js"></script>
-	<!-- NProgress -->
 	<script src="/js/nprogress.js"></script>
-	<!-- iCheck -->
 	<script src="/js/icheck.min.js"></script>
-
-	<!-- Custom Theme Scripts -->
 	<script src="/js/custom.min.js"></script>
 
 	<script th:inline="javascript">
@@ -353,5 +270,5 @@
 			});
 		}
 	</script>
-</th:block>
+	<body>
 </html>

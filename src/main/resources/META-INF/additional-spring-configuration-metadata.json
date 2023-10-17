@@ -1,0 +1,22 @@
+{"properties": [
+  {
+    "name": "spring.mvc.hiddenmethod.filter.enable",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.mvc.hiddenmethod.filter.enable'"
+  },
+  {
+    "name": "iamPortapiKey",
+    "type": "java.lang.String",
+    "description": "A description for 'iamPortapiKey'"
+  },
+  {
+    "name": "iamPortApiSecret",
+    "type": "java.lang.String",
+    "description": "A description for 'iamPortApiSecret'"
+  },
+  {
+    "name": "kakaoApiKey",
+    "type": "java.lang.String",
+    "description": "A description for 'kakaoApiKey'"
+  }
+]}

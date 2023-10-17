@@ -1,0 +1,100 @@
+@charset "UTF-8";
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+* {
+    font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" ,'Roboto';
+    color: #000;
+    margin: 0;
+    padding: 0;
+}
+
+.error-network-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 770px;
+    margin: 0;
+    padding-top: 30px;
+    padding-bottom: constant(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom);
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-align: center;
+}
+
+.error-network-logo {
+    height: 65px;
+    background: url(/img/izen_logo.svg) no-repeat 50% 50%;
+    background-size: auto 65px;
+    overflow: hidden;
+    text-indent: -9999px;
+}
+
+.error-network-text {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    min-width: 308px;
+    padding: 0 30px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.error-network-text:before {
+    content: "";
+    display: inline-block;
+    width: 90px;
+    height: 90px;
+    background: url(/img/error_icon.png) no-repeat 50% 50%;
+    background-size: 66px 62px;
+}
+
+.error-network-text > strong {
+    display: block;
+    margin: 20px 0 16px 0;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 38px;
+}
+
+.error-network-text > p {
+    color: #777;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.error-network-text > .btn {
+    display: block;
+    width: 130px;
+    height: 50px;
+    margin: 40px auto 12px;
+    background-color: #A0BF6B;
+    color: #fff;
+    font-size: 14px;
+    line-height: 50px;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+}
+
+.error-network-text > .link {
+    display: block;
+    width: 130px;
+    height: 50px;
+    margin: 0 auto;
+    background-color: #f1f1f1;
+    color: #6b6b6b;
+    font-size: 14px;
+    line-height: 50px;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+}

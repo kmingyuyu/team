@@ -1,0 +1,47 @@
+	<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	
+	<div th:fragment="myPageMemberInfo" class="myPageMemberInfo">
+	<div class="container_custom my_box">	
+	<div>
+		<section class="common-mypage__sc-5trtbg-0 hNGEpQ">
+			<div class="common-mypage__sc-5trtbg-3 JsGLX">
+				<div class="common-mypage__sc-wme82i-0 dgkdMB" th:style="'background-image: url(' + ${member.imgUrl}  + ');'"></div>
+				<div class="common-mypage__sc-1loaj4c-0 dZrJws">
+					<div class="common-mypage__sc-1loaj4c-1 hvkAAt">
+						<strong>[[${member.nickname}]]</strong>
+					</div>
+					<div class="common-mypage__sc-1loaj4c-1 mingis">
+						<p th:if="${member.introduce != null}">[[${member.introduce}]]</p>
+						<p th:if="${member.introduce == null}">자기소개가 없습니다.</p>
+					</div>
+					<div class="common-mypage__sc-1loaj4c-2 gqpLyi">
+					<span>가입일 : <span th:text="'&nbsp;' +  ${T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd').format(member.regTime)}"></span></span>
+					</div>
+				</div>
+				<div class="line_my"></div>
+				<div class="common-mypage__sc-1m1vyak-0 fJZyji">
+					<a href="#">
+						<p>팔로우 &gt;</p>
+						<strong>[[${#numbers.formatInteger(follower , 0, 'COMMA')}]]</strong>
+					</a>
+					<a href="#">
+						<p>팔로잉 &gt;</p>
+						<strong>[[${#numbers.formatInteger(following , 0, 'COMMA')}]]</strong>
+					</a>
+					<a href="#">
+						<p>찜 &gt;</p>
+						<strong>1</strong>
+					</a>
+					<a href="#">
+						<p>포인트 &gt;</p>
+						<strong>[[${#numbers.formatInteger(member.point , 0, 'COMMA')}]]</strong>
+					</a>
+					</div>
+					</div>
+					</section>
+	</div>
+	</div>	
+	</div>
+</html>

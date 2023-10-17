@@ -23,35 +23,36 @@ public class MngMemberDto {
 
 	private String email;
 
-	private String password;
-
 	private String phoneNumber;
-
-	private Long allCommentCount;
-
-	private Long allRecipeCount;
-
-	private String commentContent;
+	
+	private String postCode;
+	
+	private String address;
+	
+	private String detailAddress;
+	
+	private String provider;
 
 	private LocalDateTime regTime; // 등록날짜
-
+	
 	private String formattedRegTime; // 보기 좋은 형식으로 변환된 등록날짜
 
 	@QueryProjection
-	public MngMemberDto(Long id, String nickname, String email, String password, String phoneNumber, Long allCommentCount,
-			Long allRecipeCount, LocalDateTime regTime) {
+	public MngMemberDto(Long id, String nickname, String email,  String phoneNumber , String postCode
+			,String address , String detailAddress , String provider ,  LocalDateTime regTime) {
 		this.id = id;
 		this.nickname = nickname;
 		this.email = email;
-		this.password = password;
 		this.phoneNumber = phoneNumber;
-		this.allCommentCount = allCommentCount;
-		this.allRecipeCount = allRecipeCount;
+		this.postCode = postCode;
+		this.address = address;
+		this.detailAddress = detailAddress;
+		this.provider = provider;
 
 		// 등록날짜를 보기 좋은 형식으로 변환하여 formattedRegTime에 저장
 		if (regTime != null) {
 			this.regTime = regTime;
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 			this.formattedRegTime = regTime.format(formatter);
 		}
 
