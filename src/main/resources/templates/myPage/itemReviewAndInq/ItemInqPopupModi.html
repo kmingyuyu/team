@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>이젠 맛있게</title>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+<link rel="stylesheet" type="text/css" href="/css/itemInqPopup.css" />
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var errorMessage = /*[[${errorMessage}]]*/ 'default'; 
+
+    if (errorMessage && errorMessage !== 'default') {
+        alert(errorMessage);
+        window.close();
+    }
+    
+    var loginNo = /*[[${loginNo}]]*/ 'default'; 
+
+    if (loginNo && loginNo !== 'default') {
+        window.opener.location.reload();
+        window.close();
+    }
+    /*]]>*/
+</script>
+
+</head>
+
+<body>
+	<div class="site-wrap">
+	<section class="n-qa-write-pop">
+		<header>
+			<h2>상품문의 수정</h2>
+		</header>
+		<form name="qa_write_form" id="qa_write_form">
+			<div class="qa-product">
+				<div class="qa-product-img">
+					<img th:src="${itemImg.imgUrl}" th:alt="${item.itemNm}">
+				</div>
+				<div class="qa-product-info">
+					<p class="qa-info-name">[[${item.itemNm}]]</p>
+				</div>
+
+			</div>
+			<table class="qa-write-table">
+				<tbody>
+					<tr>
+						<th>문의유형</th>
+						<td class="qa-type-area">
+						 <input type="radio" id="itemInqEnum_1" name="itemInqEnum" class="n-radio" value="1" th:checked="${itemInq.ItemInqEnum.toString() == '배송문의'}"> 
+						 <label for="itemInqEnum_1">배송</label>
+						 <input type="radio" id="itemInqEnum_2" name="itemInqEnum" class="n-radio" value="2" th:checked="${itemInq.ItemInqEnum.toString() == '재입고문의'}"> 
+						 <label for="itemInqEnum_2">재입고</label> 
+						 <input type="radio" id="itemInqEnum_3" name="itemInqEnum" class="n-radio" value="3" th:checked="${itemInq.ItemInqEnum.toString() == '상품상세문의'}"> 
+						 <label for="itemInqEnum_3">상품상세문의</label>
+						 <input type="radio" id="itemInqEnum_4" name="itemInqEnum" class="n-radio" value="4" th:checked="${itemInq.ItemInqEnum.toString() == '기타문의'}"> 
+						 <label for="itemInqEnum_4">기타</label>
+						 </td>
+					</tr>
+					<tr>
+						<th>제목</th>
+						<td class="qa-title-area">
+						<input type="text" name="title" id="title" class="tit n-input" maxlength="15" placeholder="15자 이내로 입력 해주세요." th:value="${itemInq.title}"> 
+						<input type="checkbox" name="itemInqBoardEnum" id="itemInqBoardEnum" class="n-check" th:checked="${itemInq.itemInqBoardEnum.toString() == '비밀글'}" >
+						<label for="itemInqBoardEnum">비밀글</label>
+						</td>
+					</tr>
+					<tr>
+						<th>내용</th>
+						<td class="qa-subject-area">
+						<textarea name="content" id="content"
+						rows="10" cols="45" placeholder="문의 내용을 입력해주세요." th:utext="${#strings.replace(itemInq.content, '\n', '&#10;')}"></textarea>
+					
+							</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+		<ul class="n-info-txt">
+        	<li>상품문의는 배송, 재입고, 상세내용 등 상품에 대하여 담당자에게 문의하는 게시판입니다.</li>
+        	<li class="str-custom">욕설, 비방, 거래 글, 분쟁 유발, 명예훼손, 허위사실 유포, 타 쇼핑몰 언급,광고성 등의 부적절한 게시글은 금지합니다.</li>
+        	<li class="str-custom">주문번호, 연락처, 계좌번호 등의 개인 정보 관련 내용은 공개되지 않도록 비밀글로 문의해 주시기 바랍니다.</li>
+        	<li>공개된 글은 비밀글로 전환될 수 있으며, 개인 정보 노출로 인한 피해는 이젠 스토어가 책임지지 않습니다.</li>
+        
+    	</ul>
+    	<div class="dbtiv">
+				<a class="n-btn btn-lighter" onclick="inqCancel()">나가기</a>
+				<a class="i-btn btn-lighter" onclick="inqModiOk(this)" th:attr="data-inq-id=${itemInq.id}">문의 수정</a>
+			</div>
+	</section>
+	</div>
+	
+	
+</body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/js/popup/itemInqPopup.js}"></script>
+</html>

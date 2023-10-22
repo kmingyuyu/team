@@ -1,4 +1,4 @@
-package com.recipe.dto;
+package com.recipe.myPage.dto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -15,5 +15,7 @@ public interface ItemReviewRepository extends JpaRepository<ItemReview, Long> , 
 	 
 	 Long countByItemReviewStatusAndMemberId(ItemReviewStatus itemReviewStatus,Long memberId);
 	 
+	 Long countByMemberId(Long memberId);
+	 
 	 
 }

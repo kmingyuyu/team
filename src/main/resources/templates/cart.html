@@ -54,7 +54,10 @@
 						<tr>
 							<th scope="col">전체<strong th:if="${cartList.size() == 0}"></strong><strong th:if="${cartList.size() != 0}">[[${cartList.size()}]]개</strong>
 							</th>
-							<th scope="col" style="cursor:pointer"><input type="checkbox" class="chk_all" id="chk_all" th:checked="true" title="전체 상품 선택"></th>
+							<th scope="col">
+								<input type="checkbox" class="chk_all" id="chk_all" th:checked="true" title="전체 상품 선택">
+								<label for="chk_all"  class="checkmark chk_m"></label>
+							</th>
 							<th scope="col">상품명</th>
 							<th scope="col">판매가</th>
 							<th scope="col">할인금액</th>
@@ -87,14 +90,17 @@
 									<tr class="cart_list_no" th:attr="data-cart-status=${cart.itemSellStatus}">
 										<td>[[${status.index+1}]]</td>
 										<td th:if="${cart.itemSellStatus.toString} == 'SELL'">
-											<input type="checkbox" class="checked_cart" th:value="${cart.cartId}" 
+											<input type="checkbox" class="checked_cart" th:value="${cart.cartId}" th:id="'checkbox-' + ${status.index}"
 											 th:attr="data-cart-id=${cart.cartId}, data-cart-status=${cart.itemSellStatus} , data-item-id=${cart.itemId} ,
 											 data-item-nm=${cart.itemNm} , data-item-price=${cart.price} , data-item-url=${cart.imgUrl} , data-item-sale=${cart.sale}"  th:checked="true"  title="상품 선택">
+											 <label th:for="'checkbox-' + ${status.index}"  class="checkmark"></label>
 										</td>
 										<td th:if="${cart.itemSellStatus.toString} == 'SOLD_OUT'">
-											<input type="checkbox" class="checked_cart" th:value="${cart.cartId}"
+											<input type="checkbox" class="checked_cart" th:value="${cart.cartId}" th:id="'checkbox-' + ${status.index}"
 											th:attr="data-cart-id=${cart.cartId}, data-cart-status=${cart.itemSellStatus} , data-item-id=${cart.itemId} ,
-											 data-item-nm=${cart.itemNm} , data-item-price=${cart.price} , data-item-url=${cart.imgUrl} , data-item-sale=${cart.sale}"  th:checked="false"  title="상품 선택">
+											 data-item-nm=${cart.itemNm} , data-item-price=${cart.price} , data-item-url=${cart.imgUrl} , data-item-sale=${cart.sale}"
+											   th:checked="false"  title="상품 선택">
+											 <label th:for="'checkbox-' + ${status.index}"  class="checkmark"></label>
 										</td>
 										<td>
 											<div class="connect_img">

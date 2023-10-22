@@ -1,7 +1,6 @@
 package com.recipe.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,28 +9,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.recipe.constant.PointEnum;
 import com.recipe.dto.ItemOrderDto;
 import com.recipe.dto.OrderDto;
-import com.recipe.dto.OrderHistoryDto;
 import com.recipe.dto.OrderPayDto;
 import com.recipe.entity.BuyInfo;
-import com.recipe.entity.Item;
-import com.recipe.entity.ItemImg;
 import com.recipe.entity.Member;
 import com.recipe.entity.Order;
-import com.recipe.entity.OrderItem;
-import com.recipe.entity.Point;
 import com.recipe.exception.CustomException;
 import com.recipe.exception.FindNotException;
-import com.recipe.service.CartService;
+import com.recipe.myPage.dto.OrderHistoryDto;
 import com.recipe.service.IamPortService;
 import com.recipe.service.MemberService;
 import com.recipe.service.OrderService;
@@ -50,7 +42,6 @@ public class OrderController {
 
 	private final IamPortService iamPortService;
 
-	private final CartService cartService;
 
 //	장바구니 -> 주문페이지 이동시 데이터 세션에 저장
 	@PostMapping(value = "/order/cart")
@@ -71,7 +62,7 @@ public class OrderController {
 			orderService.orderCheck(orderList);
 				
 			session.setAttribute("orderList", orderList);
-
+			
 		} catch (Exception e) {
 			
 			return new ResponseEntity<>("주문 페이지 이동이 실패 하였습니다. "+e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -182,7 +173,7 @@ public class OrderController {
 			orderService.itemCheck(orderPayDto, memberId);
 			
 //			order객체를 생성해 주문한 회원정보/상품리스트정보/주문정보/결제정보를 저장한다.
-			orderService.orderSave(orderPayDto,memberId);
+			orderService.orderSave(orderPayDto,memberId,session);
 
 //			CustomException 에러발생시 자동환불처리
 		} catch (CustomException e) {
@@ -208,7 +199,7 @@ public class OrderController {
 				session.removeAttribute("cartList");
 				session.removeAttribute("orderList");
 
-				orderService.orderCartDelete(cartList);
+				orderService.orderCartDelete(cartList , session);
 			}
 
 		} catch (CustomException e) {

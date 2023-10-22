@@ -2,11 +2,14 @@ package com.recipe.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import com.recipe.dto.MemberMainDto;
 import com.recipe.entity.Member;
+import com.recipe.myPage.dto.FollowHistoryDto;
 
 
 public interface MemberRepository extends JpaRepository<Member, Long> , MemberRepositoryCustom  {
@@ -47,8 +50,38 @@ public interface MemberRepository extends JpaRepository<Member, Long> , MemberRe
 	List<MemberMainDto> getMemberBestList();
 	
 	
+	@Query(value = "SELECT "
+			+ " m.nickname nickname , "
+			+ " m.introduce introduce , "
+			+ " m.img_url imgUrl , "
+			+ " (CASE WHEN f2.member_id IS NOT NULL THEN 'true' ELSE 'false' END) followOk "
+            + " FROM member m "
+            + " JOIN follow f ON m.member_id = f.member_id "
+            + " LEFT JOIN follow f2 ON m.member_id = f2.to_member AND f.to_member = f2.member_id"
+            + " WHERE f.to_member = :memberId "
+            + " AND m.nickname like CONCAT('%', :searchQuery, '%') "
+            + " ORDER BY f.reg_time DESC", nativeQuery = true)
+	Page<FollowHistoryDto> findByMyFollowerList(
+			@Param("memberId") Long memberId,
+			@Param("searchQuery") String searchQuery, 
+			Pageable pageable);
 	
 	
+	@Query(value = "SELECT "
+			+ " m.nickname nickname , "
+			+ " m.introduce introduce , "
+			+ " m.img_url imgUrl , "
+			+ " f.follow_id followId "
+			 + " FROM member m "
+			+ " JOIN follow f ON m.member_id = f.to_member "
+			+ " WHERE f.member_id = :memberId "
+			+ " AND m.nickname like CONCAT('%', :searchQuery, '%') "
+			+ " ORDER BY f.reg_time DESC", nativeQuery = true)
+	Page<FollowHistoryDto> findByMyFollowingList(
+			@Param("memberId") Long memberId,
+			@Param("searchQuery") String searchQuery, 
+			Pageable pageable);
+
 	
 	
 }

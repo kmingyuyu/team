@@ -1,4 +1,4 @@
-package com.recipe.dto;
+package com.recipe.myPage.order.dto;
 
 import java.time.LocalDateTime;
 

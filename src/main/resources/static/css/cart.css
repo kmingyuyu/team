@@ -249,7 +249,7 @@ table, th, td {
     font-size: 12px;
 }
 
-.table_basic th:nth-child(2) .chk_all{
+.chk_m {
 	margin-top: 5px;
 }
 
@@ -504,7 +504,7 @@ table, th, td {
 }
 
 .goods_qty span .down {
-    background: url(//recipe1.ezmember.co.kr/img/store/icon_count_m.png) center center no-repeat;
+    background: url(/img/icon/icon_count_minus.png) center center no-repeat;
     background-size: 14px;
     display: inline-block;
     border: none;
@@ -512,7 +512,6 @@ table, th, td {
 }
 
 .goods_qty .text {
-	font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif";
     padding: 0px 5px 2px;
     width: 38px;
     outline: none;
@@ -528,7 +527,7 @@ table, th, td {
 }
 
 .goods_qty span .up {
-    background: url(//recipe1.ezmember.co.kr/img/store/icon_count_p.png) center center no-repeat;
+    background: url(/img/icon/icon_count_plus.png) center center no-repeat;
     background-size: 14px;
     display: inline-block;
     border: none;
@@ -551,7 +550,6 @@ table, th, td {
 	border-top: none;
     padding-bottom: 319px;
     padding-top: 210px;
-    font-family: "Noto Sans KR", Helvetica, "Helvetica Neue", Arial, "sans-serif" , 'Roboto';
     color: #7b7b7b;
     align-items: center;
      background: white; 
@@ -559,4 +557,71 @@ table, th, td {
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+
+.checkmark {
+	margin-bottom: 0;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-color: white; 
+    border: 1px solid #A5A5A5;
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+}
+
+.checkmark::after {
+    content: "";
+    position: absolute;
+    display: none; 
+}
+
+.checked_cart:checked + .checkmark {
+	border: 1px solid #A0BF6B;
+    background-color: #A0BF6B;
+}
+
+.checked_cart:checked + .checkmark::after {
+    display: block;
+    left: 4px;
+    top: 0px;
+    width: 5px;
+    height: 9px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.chk_all:checked + .checkmark {
+	border: 1px solid #A0BF6B;
+    background-color: #A0BF6B;
+}
+
+.chk_all:checked + .checkmark::after {
+    display: block;
+    left: 4px;
+    top: 0px;
+    width: 5px;
+    height: 9px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checked_cart {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;  
+    height: 0;
+    width: 0;
+}
+
+.chk_all {
+	position: absolute;
+    opacity: 0;
+    cursor: pointer;  
+    height: 0;
+    width: 0;
 }

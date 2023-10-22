@@ -11,8 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.recipe.constant.OrderStatus;
-import com.recipe.dto.OrderHistoryDto;
 import com.recipe.entity.Order;
+import com.recipe.myPage.dto.OrderHistoryDto;
 
 public interface OrderRepository extends JpaRepository<Order, Long> , OrderRepositoryCustom {
 	
@@ -35,6 +35,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> , OrderRepos
 		 		+ " (CASE WHEN ir.order_item_id IS NOT NULL THEN 'true' ELSE 'false' END) reviewOk  "
 		 		+ " FROM orders o\r\n"
 		 		+ " JOIN order_item oi ON o.order_id = oi.order_id \r\n"
+		 		+ " JOIN member m ON m.member_id =  :memberId \r\n"
 		 		+ " LEFT JOIN delivery d ON o.order_number = d.order_number \r\n"
 		 		+ " JOIN item i ON oi.item_id = i.item_id \r\n"
 		 		+ " JOIN item_img img ON i.item_id = img.item_id "

@@ -2,6 +2,8 @@ package com.recipe.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,5 +30,11 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
  	Long countFromMember(Long fromMember);
 	
 	Follow findByMemberIdAndToMember(Long memberId, Long id);
-
+	
+	
+	
+	
+	
+	
+	
 }

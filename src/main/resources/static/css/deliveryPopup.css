@@ -94,6 +94,7 @@ body {
 }
 
 .cart-header {
+	background: #F7F7F7;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 }

@@ -49,7 +49,7 @@ html, body, h1, h2, h3, h4, h5, h6, ol, ul, div, li, dl, dt, dd, form, iframe, p
 
 .n-qa-write-pop .qa-product {
     position: relative;
-    padding: 5px 0 5px 90px;
+    padding: 0 0 5px 90px;
     min-height: 96px;
     margin-bottom: 10px;
      border-bottom: 1px solid rgb(241, 241, 241);
@@ -61,7 +61,7 @@ html, body, h1, h2, h3, h4, h5, h6, ol, ul, div, li, dl, dt, dd, form, iframe, p
     left: 0;
     top: 0;
     width: 80px;
-    height: 96px;
+    height: 80px;
 }
 
 .n-qa-write-pop .qa-product .qa-product-img img {
@@ -79,7 +79,9 @@ img {
 }
 
 .n-qa-write-pop .qa-product .qa-product-info {
-    padding-top: 17px;
+    align-items: center;
+    height: 80px;
+    display: flex;
 }
 
 .qa-info-name{
@@ -306,18 +308,16 @@ textarea:focus {
 	position: relative;
 	cursor: pointer;
 	width: 180px;
-    height: 180px;
+    height: auto;
     left: 0;
     top: 0;
 }
 
 .img-cl {
 	vertical-align: middle;
-	position: absolute;
     left: 0;
     top: 50%;
     width: 100%;
-    transform: translateY(-50%);
     background-position: center;
 }
 
@@ -404,7 +404,7 @@ ul, li {
 
 .n-info-txt {
     line-height: 1.5;
-    font-size: 12px;
+    font-size: 13px;
     padding-top: 20px;
 }
 

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<th:block layout:fragment="css">
+	<link rel="stylesheet" th:href="@{/css/myPage.css}" type="text/css" />
+</th:block>
+
+<div layout:fragment="content" class="layout">
+	<div th:insert="fragments/myPageMemberInfo::myPageMemberInfo"></div>
+	
+	<section class="container_custom spad d-flex">
+		<div class="side_bx">
+			<div th:insert="fragments/myPageSideBar::myPageSideBar"></div>
+		</div>
+		<div class="content_bx po_ab align_min">
+		<div class="right_contents">
+			<span class="cart_sp">나의 팔로우</span>
+			<div class="page-sorting order font-mss">
+				<a href="/">home</a>
+				<span><i class="ic-14-line-arrow-right"></i></span>
+				<span class="current-page">마이페이지(나의 팔로우)</span>
+			</div>
+		</div>
+		<section class="dLBPEv">
+			<ul class="state">
+				<input type="hidden" id="data" th:value="${myPageSerchDto.data}">
+					<li th:classappend="${myPageSerchDto.data != 'following'} ? 'is-active'"><a onclick="goList('follower','follow')">팔로워 [[${session.follower}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == 'following'} ? 'is-active'"><a onclick="goList('following','follow')">팔로잉 [[${session.following}]]</a></li>
+			</ul>
+			<div class="folow-box">
+                    <button type="button" class="btn_follow_check" onclick="dynamicSearch('follow')"><em>조회</em></button>
+					<input type="text" class="inp_nm_follow" placeholder="찾으시는 회원님을 입력해주세요" th:value="${myPageSerchDto.searchQuery}">
+            	</div>
+            <div class="follow_container" th:if="${!followList.isEmpty}">
+			<th:block th:each="member , status:${followList}">
+            <div class="follow_wrap">
+				<div class="follow_member_wrap">
+					<div class="review-profile">
+                    <a href="#" class="review-profile__link">
+                        <img th:src="${member.imgUrl}" alt="프로필 이미지" class="review-profile__image">
+                    </a>
+                    <div class="review-profile__text-wrap">
+                        <div class="review-profile__information">
+                            <p class="review-profile__introduce">[[${member.introduce}]]</p>
+                        </div>
+                        <div class="review-profile__text">
+                            <p class="review-profile__name">[[${member.nickname}]]</p>
+                        </div>
+                    </div>
+                </div>
+				</div>
+				<div class="follow_status_wrap">
+					<button onclick="followDelete(this)" class="plain-btn btn" th:attr="data-nickname=${member.nickname} , data-follow=${member.followId}" th:if="${myPageSerchDto.data == 'following'}">팔로우 취소</button>
+					<button onclick="followReg(this)" class="plain-btn btn" th:attr="data-nickname=${member.nickname}" th:if="${myPageSerchDto.data != 'following' and member.followOk == false}">팔로우 등록</button>
+					<p th:if="${myPageSerchDto.data != 'following' and member.followOk == true}" class="follow-ok">서로 팔로우 중입니다.</p>
+				</div>
+			</div>
+			</th:block>
+			</div>
+			<div th:if="${!followList.isEmpty}" class="style__PagingWrapper-b83qno-6 bYnXQa" 
+							th:with="start=${(followList.number/maxPage)*maxPage + 1}
+			    ,end=(${(followList.totalPages == 0) ? 1 : (start + (maxPage - 1) < followList.totalPages ? start + (maxPage - 1) : followList.totalPages)})">
+
+							<button class="style__PagePrevButton-b83qno-8 loxVUo"
+								th:classappend="${followList.first}?'bt_hd'"
+								th:onclick="'javascript:followPage(' + ${followList.number - 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+									<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+								</svg>
+							</button>
+							<ul>
+								<a offset="0" class="style__PageNumber-b83qno-7"
+									th:each="page: ${#numbers.sequence(start, end)}"
+									th:classappend="${followList.number eq page-1}?'hIVTuk':'iBHoeR'"
+									th:onclick="'javascript:followPage(' + ${page - 1} +')'"> <span>[[${page}]]</span>
+								</a>
+							</ul>
+							<button class="style__PageNextButton-b83qno-9 gCfLmH"
+								th:classappend="${followList.last}?'bt_hd'"
+								th:onclick="'javascript:followPage(' + ${followList.number + 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+							        <path stroke="#000"
+										d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+					            </svg>
+							</button>
+					</div>
+					<div class="null_box bt-follow" th:if="${followList.isEmpty and myPageSerchDto.data != 'following'}">팔로워 목록이 없습니다.</div>
+					<div class="null_box bt-follow" th:if="${followList.isEmpty and myPageSerchDto.data == 'following'}">팔로잉 목록이 없습니다.</div>
+		</section>
+			
+		</div>
+	</section>
+	
+</div>
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/myPage/global/global.js}"></script>
+	<script th:src="@{/js/myPage/MemberMng/myFollow.js}"></script>
+</th:block>
+
+
+</html>

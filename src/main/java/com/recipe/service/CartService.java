@@ -1,38 +1,31 @@
 package com.recipe.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.recipe.constant.ImgMainOk;
 import com.recipe.constant.ItemSellStatus;
 import com.recipe.dto.CartDto;
-import com.recipe.dto.ItemOrderDto;
-import com.recipe.dto.OrderDto;
 import com.recipe.entity.Cart;
 import com.recipe.entity.Item;
-import com.recipe.entity.ItemImg;
 import com.recipe.entity.Member;
 import com.recipe.exception.CustomException;
 import com.recipe.exception.FindNotException;
 import com.recipe.repository.CartRepository;
-import com.recipe.repository.ItemImgRepository;
 import com.recipe.repository.ItemRepository;
 import com.recipe.repository.MemberRepository;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class CartService {
 	
 	private final CartRepository cartRepository ;
@@ -40,10 +33,9 @@ public class CartService {
 	private final MemberRepository memberRepository;
 	
 	private final ItemRepository itemRepository;
-	
-	private final Logger log = LoggerFactory.getLogger(CartService.class);
 
 //	장바구니 정보불러오기
+	@Transactional(readOnly =  true)
 	public List<CartDto> getCartList(HttpSession session) {
 		
 		Long id = (Long) session.getAttribute("memberId");
@@ -56,15 +48,22 @@ public class CartService {
 
 
 //	장바구니 개별 버튼삭제
-	public void cartDeleteButton(@RequestBody Map<String, Object> requestBody) throws FindNotException {
+	public void cartDeleteButton(Map<String, Object> requestBody , HttpSession session) throws CustomException {
+		
 		try {
 			Long id = Long.parseLong(requestBody.get("cartId").toString());
 			
+			Long cartCount = (Long) session.getAttribute("cartCount");
+			
 			Cart cart = cartRepository.findById(id)
-					.orElseThrow(() -> new FindNotException("장바구니 삭제 중 오류가 발생했습니다. 삭제 실패하였습니다."));
+					.orElseThrow(() -> new CustomException("사유: 장바구니 조회 실패."));
 			
 			cartRepository.delete(cart);
-		} catch (Exception e) {
+			cartCount--;
+			
+			session.setAttribute("cartCount", cartCount);
+			
+		} catch (CustomException e) {
 			log.error("cartDeleteButton-error", e);
 			throw e;
 		}
@@ -73,20 +72,26 @@ public class CartService {
 	}
 
 //	장바구니 체크박스 선택삭제
-	public void cartDeleteCheckBox(@RequestBody List<Object> requestBody) throws FindNotException {
+	@Transactional
+	public void cartDeleteCheckBox(List<Object> requestBody , HttpSession session) throws CustomException {
 		
 		try {
+			
+			Long cartCount = (Long) session.getAttribute("cartCount");;
 			
 			for (int i = 0; i < requestBody.size(); i++) {
 				Long id = Long.parseLong(requestBody.get(i).toString());
 				
 				Cart cart = cartRepository.findById(id)
-						.orElseThrow(() -> new FindNotException("장바구니 삭제 중 오류가 발생했습니다. 삭제 실패하였습니다."));
+						.orElseThrow(() -> new CustomException("사유: 장바구니 조회 실패."));
 				
 				cartRepository.delete(cart);
+				cartCount--;
 			}
 			
-		} catch (Exception e) {
+			session.setAttribute("cartCount", cartCount);
+			
+		} catch (CustomException e) {
 			log.error("cartDeleteCheckBox-error", e);
 			throw e;
 		}
@@ -94,27 +99,34 @@ public class CartService {
 	}
 
 //	장바구니 품절 선택삭제
-	public void cartDeleteSoldoutCheckBox(@RequestBody List<Object> requestBody) throws FindNotException{
+	@Transactional
+	public void cartDeleteSoldoutCheckBox(List<Object> requestBody , HttpSession session) throws CustomException{
 
 		try {
+			Long cartCount = (Long) session.getAttribute("cartCount");
+			
 			for (int i = 0; i < requestBody.size(); i++) {
 				
 				Long id = Long.parseLong(requestBody.get(i).toString());
 				
 				Cart cart = cartRepository.findById(id)
-						.orElseThrow(() -> new FindNotException("장바구니 삭제 중 오류가 발생했습니다. 삭제 실패하였습니다."));
+						.orElseThrow(() -> new CustomException("사유: 장바구니 조회 실패."));
 				
 				Item item = itemRepository.findById(cart.getItem().getId())
-						.orElseThrow(() -> new FindNotException("장바구니 삭제 중 오류가 발생했습니다. 삭제 실패하였습니다."));
+						.orElseThrow(() -> new CustomException("사유: 상품 조회 실패."));
 				
 				if (ItemSellStatus.SELL.equals(item.getItemSellStatus())) {
-					throw new FindNotException("장바구니 삭제 중 오류가 발생했습니다. 삭제 실패하였습니다.");
+					throw new CustomException("사유: 상품 상태 오류.");
 				}
 				
 				cartRepository.delete(cart);
+				cartCount--;
 			}
 			
-		} catch (Exception e) {
+			
+			session.setAttribute("cartCount", cartCount);
+			
+		} catch (CustomException e) {
 			log.error("cartDeleteSoldoutCheckBox-error", e);
 			throw e;
 		}
@@ -122,24 +134,24 @@ public class CartService {
 	}
 
 //	장바구니 수량 개별 버튼변경
-	public void cartCountUpdateButton(@RequestBody Map<String, Object> requestBody) throws FindNotException , CustomException {
+	@Transactional
+	public void cartCountUpdateButton(Map<String, Object> requestBody) throws FindNotException , CustomException {
 
 		Long cartId = Long.parseLong(requestBody.get("cartId").toString());
 		int count = Integer.parseInt(requestBody.get("count").toString());
 		
 		try {
 			Cart cart = cartRepository.findById(cartId)
-					.orElseThrow(() -> new FindNotException("장바구니 수량변경 중 오류가 발생했습니다. 수량변경에 실패하였습니다."));
+					.orElseThrow(() -> new FindNotException("사유: 장바구니 조회 실패."));
 			
 			Item item = itemRepository.findById(cart.getItem().getId())
-					.orElseThrow(() -> new FindNotException("장바구니 수량변경 중 오류가 발생했습니다. 수량변경에 실패하였습니다."));
+					.orElseThrow(() -> new FindNotException("사유: 상품 조회 실패."));
 			
 			if (item.getStockNumber() < count) {
-				throw new CustomException("상품재고보다 변경수량이 많습니다.");
+				throw new CustomException("사유: 상품 재고 부족");
 			} 
 			
 			cart.setCount(count);
-			cartRepository.save(cart);
 			
 		} catch (FindNotException e) {
 			log.error("cartCountUpdateButton-error", e);
@@ -151,33 +163,43 @@ public class CartService {
 	}
 
 //	장바구니 등록
-	public Long cartReg(@RequestBody Map<String, Object> requestBody, HttpSession session) {
+	public Long cartReg(Map<String, Object> requestBody, HttpSession session) throws CustomException , FindNotException {
 
 		Long id = (Long) session.getAttribute("memberId");
+		
+		Long cartCount = (Long) session.getAttribute("cartCount");
 
 		Long itemId = Long.parseLong(requestBody.get("id").toString());
 		int count = Integer.parseInt(requestBody.get("count").toString());
-
-		Optional<Member> memberOptional = memberRepository.findById(id);
-		Member member = memberOptional.get();
-
-		Optional<Item> itemOptional = itemRepository.findById(itemId);
-		Item item = itemOptional.get();
-
-		Cart cartCheck = cartRepository.findByMemberIdAndItemIdAndCount(id, itemId, count);
-
-		if (cartCheck != null) {
-			return null;
-		} else {
-			Cart cart = new Cart();
-			cart.setMember(member);
-			cart.setItem(item);
-			cart.setCount(count);
-			cartRepository.save(cart);
-
-			Long cartCount = cartRepository.countByMemberId(id);
-
-			return cartCount;
+		
+		try {
+			Member member = memberRepository.findById(id)
+					.orElseThrow(() -> new CustomException("사유: 회원 조회 실패"));
+			
+			Item item = itemRepository.findById(itemId)
+					.orElseThrow(() -> new CustomException("사유: 상품 조회 실패"));
+			
+			Cart cartCheck = cartRepository.findByMemberIdAndItemIdAndCount(id, itemId, count);
+			
+			if (cartCheck != null) {
+				throw new FindNotException("장바구니에 있는 상품입니다.");
+				
+			} else {
+				
+				Cart cart = Cart.createCart(member, item, count);
+				cartRepository.save(cart);
+				cartCount++;
+			}
+			
+			session.setAttribute("cartCount", cartCount);
+			
+		} catch (CustomException e) {
+			log.error("cartReg-error",e);
+			throw e;
+			
 		}
+		
+		
+		return cartCount;
 	}
 }

@@ -6,6 +6,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import com.recipe.constant.AnswerOk;
 import com.recipe.constant.ItemInqBoardEnum;
 import com.recipe.constant.ItemInqEnum;
+import com.recipe.entity.ItemInqAnwser;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @Setter
 public class ItemInqDto {
 	
-	private Long id;
+	private Long inqId;
 	
 	private String title;
 	
@@ -32,17 +33,13 @@ public class ItemInqDto {
 	
 	private String nickname;
 	
-	private Long answerId;
-	
-	private String answerContent;
-	
-	private LocalDateTime answerRegTime;
+	private ItemInqAnwser itemInqAnwser;
 	
 	@QueryProjection
-	public ItemInqDto(Long id, String title , String content , ItemInqBoardEnum itemInqBoardEnum , 
-			ItemInqEnum itemInqEnum , AnswerOk answerOk , LocalDateTime regTime , String email , String nickname ,
-			Long answerId ,String answerContent , LocalDateTime answerRegTime ) {
-		this.id = id;
+	public ItemInqDto(Long inqId,Long itemId, String title , String content , ItemInqBoardEnum itemInqBoardEnum , 
+			ItemInqEnum itemInqEnum , AnswerOk answerOk , LocalDateTime regTime , String email , String nickname) {
+		
+		this.inqId = inqId;
 		this.title = title;
 		this.content = content;
 		this.itemInqBoardEnum = itemInqBoardEnum;
@@ -51,9 +48,5 @@ public class ItemInqDto {
 		this.regTime = regTime;
 		this.email = email;
 		this.nickname = nickname;
-		this.answerId = answerId;
-		this.answerContent = answerContent;
-		this.answerRegTime = answerRegTime;
 	}
-	
 }

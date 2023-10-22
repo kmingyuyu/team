@@ -2,18 +2,6 @@
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
 
-	function checkLogin() {
-		
-	var loginOkValue = document.getElementById('loginOk').value;
-	var loginOk = (loginOkValue === 'true');
-	
-    if (!loginOk) {
-        location.href = '/members/login';
-        return false;
-    }
-    
-    return true;
-}
 
 function orderPage(page) {
 	
@@ -33,16 +21,15 @@ function orderPage(page) {
 		
 function deliveryPopup(button) {
 	
-	if (!checkLogin()) return;
  	
  	var invoiceNumber = button.getAttribute("data-invoiceNumber");
  	
     var _width = '780';
-    var _height = '680';
+    var _height = '700';
     var _left = Math.ceil(( window.screen.width - _width )/2);
     var _top = Math.ceil(( window.screen.height - _height )/2); 
     
- 	var url =  "/myPage/order/delivery_popup/" + invoiceNumber;
+ 	var url =  "/myPage/order/deliveryPopup/" + invoiceNumber;
  
     window.open(url, 'deliveryPopupWindow', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top );
  	
@@ -50,7 +37,6 @@ function deliveryPopup(button) {
 
 function itemReviewPopupReg(button) {
 	
-	if (!checkLogin()) return;
 	
 	var orderItemId = button.getAttribute("data-orderItemId");
 	
@@ -59,7 +45,7 @@ function itemReviewPopupReg(button) {
     var _left = Math.ceil(( window.screen.width - _width )/2);
     var _top = Math.ceil(( window.screen.height - _height )/2); 
     
- 	var url =  "/myPage/order/itemReview_popup_reg/" + orderItemId;
+ 	var url =  "/myPage/order/itemReviewPopupReg/" + orderItemId;
  
     window.open(url, 'itemReviewPopupWindow', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top );
  	

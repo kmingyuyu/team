@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.recipe.dto.MyPageDto;
-import com.recipe.dto.MyPageSerchDto;
 import com.recipe.entity.Member;
 import com.recipe.entity.Recipe;
+import com.recipe.myPage.dto.MyPageSerchDto;
 import com.recipe.repository.BookMarkRepository;
 import com.recipe.repository.FollowRepository;
 import com.recipe.repository.MemberRepository;
@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-public class MypageController {
+public class MyPageController {
 
 	private final MyPageService myPageService;
 	
@@ -86,20 +86,8 @@ public class MypageController {
 	
 	
 	
-//	마이페이지 보여주기 (나의 상품 문의)
-	@GetMapping(value = {"/myPage/item_inq" , "/myPage/item_inq/{page}" })
-	public String myPageItemReview(@PathVariable("page") Optional<Integer> page ,HttpSession session, Model model , MyPageSerchDto myPageSerchDto) {
-		
-		
-		
-		
-		return "myPage/itemReviewAndInq/myItemReview";
-	}
 	
 	
-	
-	
-
 
 	// 프로필 보여주기
 	@GetMapping(value = "/profile/{nickname}")

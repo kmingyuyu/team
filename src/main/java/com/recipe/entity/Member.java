@@ -112,6 +112,7 @@ public class Member extends BaseEntity  implements Serializable {
 		Member member = new Member();
 
 		String password = passwordEncoder.encode(memberDto.getPassword());
+		
 		// 기본정보
 		member.setNickname(memberDto.getNickname());
 		member.setEmail(memberDto.getEmail());
@@ -119,12 +120,20 @@ public class Member extends BaseEntity  implements Serializable {
 		member.setPassword(password);
 
 		// 주소
-		member.setPostCode(memberDto.getPostCode());
-		member.setAddress(memberDto.getAddress());
-		member.setDetailAddress(memberDto.getDetailAddress());
+		if(memberDto.getPostCode() != null && !memberDto.getPostCode().isEmpty() &&
+		   memberDto.getAddress() != null && !memberDto.getAddress().isEmpty() && 
+		   memberDto.getDetailAddress() != null && !memberDto.getDetailAddress().isEmpty()) {
+		    member.setPostCode(memberDto.getPostCode());
+		    member.setAddress(memberDto.getAddress());
+		    member.setDetailAddress(memberDto.getDetailAddress());
+		}
+
+		// 자기소개
+		if (memberDto.getIntroduce() != null && !memberDto.getIntroduce().isEmpty()) {
+		    member.setIntroduce(memberDto.getIntroduce()); // 수정된 부분
+		}
 
 		// 자기소개, 프로필 이미지 등등
-		member.setIntroduce(memberDto.getIntroduce());
 		member.setImgUrl(memberDto.getImgUrl());
 		member.setOriImgName(memberDto.getOriImgName());
 		member.setImgName(memberDto.getImgName());
@@ -154,16 +163,25 @@ public class Member extends BaseEntity  implements Serializable {
 		member.setProvider(socialMemberDto.getProvider()); // 구글인지 카카오인지 구별값
 		member.setProviderId(socialMemberDto.getProviderId()); // 소셜 기본id값
 
-		// 자기소개, 프로필 이미지 등등
-		member.setIntroduce(socialMemberDto.getIntroduce());
+		// 프로필 이미지 
 		member.setImgUrl(socialMemberDto.getImgUrl());
 		member.setOriImgName(socialMemberDto.getOriImgName());
 		member.setImgName(socialMemberDto.getImgName());
 
+		
 		// 주소
-		member.setPostCode(socialMemberDto.getPostCode());
-		member.setAddress(socialMemberDto.getAddress());
-		member.setDetailAddress(socialMemberDto.getDetailAddress());
+		if(socialMemberDto.getPostCode() != null && !socialMemberDto.getPostCode().isEmpty() &&
+		   socialMemberDto.getAddress() != null && !socialMemberDto.getAddress().isEmpty() && 
+		   socialMemberDto.getDetailAddress() != null && !socialMemberDto.getDetailAddress().isEmpty()) {
+		    member.setPostCode(socialMemberDto.getPostCode());
+		    member.setAddress(socialMemberDto.getAddress());
+		    member.setDetailAddress(socialMemberDto.getDetailAddress());
+		}
+
+		// 자기소개
+		if (socialMemberDto.getIntroduce() != null && !socialMemberDto.getIntroduce().isEmpty()) {
+		    member.setIntroduce(socialMemberDto.getIntroduce()); // 수정된 부분
+		}
 
 		// 약관동의
 		member.setServiceOk(ServiceOk.Y);

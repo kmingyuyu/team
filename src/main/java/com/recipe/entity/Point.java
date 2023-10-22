@@ -43,26 +43,14 @@ public class Point extends BaseTimeEntity {
 	@JoinColumn(name="member_id")
 	private Member member;
 	
-	public static Point createPlusPoint (Member member , int point, String pointInfo , String pointDetailInfo) {
-		
-		Point pointEntity = new Point() ;
-		
-		pointEntity.setMember(member);
-		pointEntity.setPoint(point);
-		pointEntity.setPointEnum(PointEnum.PLUS);
-		pointEntity.setPointInfo(pointInfo);
-		pointEntity.setPointDetailInfo(pointDetailInfo);
-		
-		return pointEntity;
-	}
 	
-	public static Point createMinusPoint (Member member , int point, String pointInfo , String pointDetailInfo) {
+	public static Point createPoint (Member member , int point, PointEnum pointEnum , String pointInfo , String pointDetailInfo) {
 		
 		Point pointEntity = new Point() ;
 		
 		pointEntity.setMember(member);
 		pointEntity.setPoint(point);
-		pointEntity.setPointEnum(PointEnum.MINUS);
+		pointEntity.setPointEnum(pointEnum);
 		pointEntity.setPointInfo(pointInfo);
 		pointEntity.setPointDetailInfo(pointDetailInfo);
 		

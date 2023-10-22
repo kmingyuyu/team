@@ -1,4 +1,4 @@
-package com.recipe.controller;
+package com.recipe.myPage.itemReview.controller;
 
 import java.util.Map;
 import java.util.Optional;
@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.recipe.dto.ItemReviewHistoryDto;
-import com.recipe.dto.MyPageSerchDto;
 import com.recipe.exception.CustomException;
+import com.recipe.myPage.dto.ItemReviewHistoryDto;
+import com.recipe.myPage.dto.MyPageSerchDto;
 import com.recipe.service.CountService;
 import com.recipe.service.GlobalService;
 import com.recipe.service.MyPageItemReviewService;
@@ -40,8 +40,8 @@ public class MyPageItemReviewController {
 	private final GlobalService globalService;
 	
 // 	마이페이지 보여주기 (나의 상품 리뷰)
-	@GetMapping(value = {"/myPage/item_review" , "/myPage/item_review/{page}" })
-	public String myPageItemInq(@PathVariable("page") Optional<Integer> page ,HttpSession session, Model model , MyPageSerchDto myPageSerchDto) {
+	@GetMapping(value = {"/myPage/itemReview" , "/myPage/itemReview/{page}" })
+	public String myPageItemReview(@PathVariable("page") Optional<Integer> page ,HttpSession session, Model model , MyPageSerchDto myPageSerchDto) {
 		
 		Long memberId = (Long) session.getAttribute("memberId");
 		
@@ -55,20 +55,17 @@ public class MyPageItemReviewController {
 		model.addAttribute("myPageSerchDto", myPageSerchDto);
 		model.addAttribute("countMap", countMap);
 		model.addAttribute("maxPage", 5); 
-		model.addAttribute("loginOk", globalService.isAuthenticated()); 
 		
 		return "myPage/itemReviewAndInq/myItemReview";
 	}
 	
-//	마이 페이지 주문내역 삭제 (주문내역 - > 주문 상세내역)
-	@DeleteMapping("/myPage/item_review/itemReviewDelete")
-	public @ResponseBody ResponseEntity<String> itemReviewDelete(@RequestBody Map<String, Object> requestBody,HttpSession session) {
+//	마이 페이지 주문상품 리뷰 삭제 (나의 상품 리뷰)
+	@DeleteMapping("/myPage/itemReview/itemReviewDelete")
+	public @ResponseBody ResponseEntity<String> itemReviewDelete(@RequestBody Map<String, Object> requestBody, HttpSession session) {
 		
 		try {
 			
-			Long memberId = (Long) session.getAttribute("memberId");
-			
-			myPageItemReviewService.itemReviewDelete(requestBody, memberId);
+			myPageItemReviewService.itemReviewDelete(requestBody,  session);
 			
 		} catch (Exception e) {
 			return new ResponseEntity<>("후기 삭제에 실패 하였습니다. 잠시후에 다시 시도해주세요.\n"+e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -78,8 +75,12 @@ public class MyPageItemReviewController {
 	}
 	
 // 	마이페이지 보여주기 (나의 상품 리뷰-> 수정(팝업))
-	@GetMapping("/myPage/item_review/itemReview_popup_modi/{itemReviewId}")
+	@GetMapping("/myPage/itemReview/itemReviewPopupModi/{itemReviewId}")
 	public String itemReviewPopupModi(@PathVariable("itemReviewId") Long itemReviewId ,HttpSession session , Model model ) {
+		
+		if(!globalService.isAuthenticated()){
+			model.addAttribute("loginNo");
+		}
 		
 		Long memberId = (Long) session.getAttribute("memberId");
 		
@@ -93,15 +94,15 @@ public class MyPageItemReviewController {
 			model.addAttribute("itemReviewImgList" , itemReviewMap.get("itemReviewImgList"));
 			
 		} catch (CustomException e) {
-			model.addAttribute("errorMessage" , "후기수정이 불가합니다. 잠시후에 시도해주세요.\n" + e.getMessage());
+			model.addAttribute("errorMessage" , "후기 수정이 불가합니다. 잠시후에 시도해주세요.\n" + e.getMessage());
 			
 		}
 		
 		return "myPage/itemReviewAndInq/itemReviewPopupModi";
 	}
 	
-//	마이페이지 주문상품 리뷰수정 (주문내역 - > 상품 리뷰(팝업))
-	@PostMapping("/myPage/item_review/itemReview_popup_modi/modiOk")
+//	마이페이지 주문상품 리뷰수정 (나의 상품 리뷰 - > 상품 리뷰(팝업))
+	@PostMapping("/myPage/itemReview/itemReviewPopupModi/modiOk")
 	public @ResponseBody ResponseEntity<String> orderItemReviewModi(
 			HttpSession session ,
 			@RequestParam("itemReviewId") Long itemReviewId,
@@ -115,11 +116,8 @@ public class MyPageItemReviewController {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
-		Long memberId = (Long) session.getAttribute("memberId");
-		
-		
 		try {
-			myPageItemReviewService.orderItemReviewModi(files, oriImgDeleteNames, oriImgNames, star, content, itemReviewId, memberId);
+			myPageItemReviewService.orderItemReviewModi(files, oriImgDeleteNames, oriImgNames, star, content, itemReviewId, session);
 			
 		} catch (Exception e) {
 			return new ResponseEntity<>("후기 수정에 실패 하였습니다. 잠시후에 다시 시도해주세요.\n"+e.getMessage(), HttpStatus.BAD_REQUEST);

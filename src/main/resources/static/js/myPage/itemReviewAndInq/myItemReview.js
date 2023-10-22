@@ -3,32 +3,18 @@
 var token = $("meta[name='_csrf']").attr("content");
 var header = $("meta[name='_csrf_header']").attr("content");
 
-function checkLogin() {
-		
-	var loginOkValue = document.getElementById('loginOk').value;
-	var loginOk = (loginOkValue === 'true');
-	
-    if (!loginOk) {
-        location.href = '/members/login';
-        return false;
-    }
-    
-    return true;
-}
-
-
-
 function itemReivewPage(page) {
 	
 	var data = document.getElementById('data').value;
     var startTime = document.querySelector('.st_date').value;
     var endTime = document.querySelector('.end_date').value;
-    
+    var searchQuery = document.querySelector('.inp_nm').value;
 	
-	location.href = '/myPage/item_review/' + page 
+	location.href = '/myPage/itemReview/' + page 
 					+ '?data=' + data 
 					+ '&startTime=' + startTime
-					+ '&endTime=' + endTime;
+					+ '&endTime=' + endTime
+					+ '&searchQuery=' + searchQuery;
 }
 
 
@@ -82,8 +68,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function itemReviewModi(button){
 	
-		if (!checkLogin()) return;
-	
 	var itemReviewId = button.getAttribute("data-review-id");
 	
     var _width = '640';
@@ -91,7 +75,7 @@ function itemReviewModi(button){
     var _left = Math.ceil(( window.screen.width - _width )/2);
     var _top = Math.ceil(( window.screen.height - _height )/2); 
     
- 	var url =  "/myPage/item_review/itemReview_popup_modi/" + itemReviewId;
+ 	var url =  "/myPage/itemReview/itemReviewPopupModi/" + itemReviewId;
  
     window.open(url, 'itemReviewPopupModiWindow', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top );
 	
@@ -104,7 +88,7 @@ function itemReviewDelete(button){
 			
 		var itemReviewId = button.getAttribute("data-review-id");
 			
-			var url = '/myPage/item_review/itemReviewDelete'
+			var url = '/myPage/itemReview/itemReviewDelete'
 			
 			paramData = {itemReviewId : itemReviewId};
 			

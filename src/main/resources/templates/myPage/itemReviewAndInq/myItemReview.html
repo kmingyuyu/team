@@ -18,7 +18,6 @@
 			<div th:insert="fragments/myPageSideBar::myPageSideBar"></div>
 		</div>
 		<div class="content_bx po_ab align_min">
-			<input type="hidden" th:value="${loginOk}" id="loginOk">
 		<div class="right_contents">
 			<span class="cart_sp">나의 상품 후기</span>
 			<div class="page-sorting order font-mss">
@@ -31,8 +30,9 @@
 			<div class="dLBPEv">
 				<ul class="state">
 				<input type="hidden" id="data" th:value="${myPageSerchDto.data}">
-					<li th:classappend="${myPageSerchDto.data == '일반'} ? 'is-active'"><a onclick="goList('일반','item_review')">일반후기 [[${countMap['일반']}]]</a></li>
-					<li th:classappend="${myPageSerchDto.data == '포토'} ? 'is-active'"><a onclick="goList('포토','item_review')">포토후기 [[${countMap['포토']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == ''} ? 'is-active'"><a onclick="goList('','itemReview')">전체 [[${countMap['전체']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == '일반'} ? 'is-active'"><a onclick="goList('일반','itemReview')">일반후기 [[${countMap['일반']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == '포토'} ? 'is-active'"><a onclick="goList('포토','itemReview')">포토후기 [[${countMap['포토']}]]</a></li>
 				</ul>
 				<ul class="n-info-txt">
                 <li>상품 후기는 일반 후기시 500포인트, 포토 후기시 1000포인트 지급 됩니다.</li>
@@ -55,7 +55,10 @@
                         <span class="ml-1 mr-1"> ~ </span>  
                         <input type="date" class="anniversary js_datepicker end_date" th:value="${myPageSerchDto.endTime}">
                     </div>
-                    <button type="button" class="btn_date_check ml-1" onclick="dynamicSearch('item_review')"><em>조회</em></button>
+                     <div>
+						<input type="text"  class="inp_nm" placeholder="상품명을 입력해주세요" th:value="${myPageSerchDto.searchQuery}">
+					</div>
+                    <button type="button" class="btn_date_check" onclick="dynamicSearch('itemReview')"><em>조회</em></button>
             	</div>
             	<table class="table_basic cart_table n-cart-table">
 					<colgroup>
@@ -81,19 +84,19 @@
 									<tr class="cart_list_no">
 										<td class="item_info">
 											<div class="connect_img">
-												<a class="img-block" href="/item/1">
+												<a class="img-block" th:href="'/item/' + ${review.itemId}" >
                                                     <img th:src="${review.imgUrl}" th:alt="${review.itemNm}">
 												</a>																																					
 											</div>
 											<div class="article_info connect_info">
 												<p class="list_info">
-													<a href="/item/1" class="itemNm">[[${review.itemNm}]]</a>
+													<a th:href="'/item/' + ${review.itemId}" class="itemNm">[[${review.itemNm}]]</a>
 												</p>
 											</div>
 										</td>
 										<td class="review_info">
                 							<div class="review-reg">
-                            					[[${T(java.time.format.DateTimeFormatter).ofPattern('yyyy.MM.dd hh:mm').format(review.regTime)}]]
+                            					[[${T(java.time.format.DateTimeFormatter).ofPattern('yyyy.MM.dd').format(review.regTime)}]]
                             					<p>
 													<span onclick="itemReviewModi(this)" th:attr="data-review-id=${review.itemReviewId}">수정</span>
 													<span onclick="itemReviewDelete(this)" th:attr="data-review-id=${review.itemReviewId}">삭제</span>
@@ -123,17 +126,16 @@
 											</div>
                        						<th:block th:if="${review.itemReviewAnswer != null}">
 											<div class="review-answer-bt">
-												<p>답변 닫기</p>
+												<p>답변 열기</p>
 											</div>
-											<div class="review-answer">
+											<div class="review-answer" style="display: none;">
 												<p class="answer_info">
 													<span class="answer_adname">이젠스토어 관리자 </span>
 													<span class="answer_date">[[${T(java.time.format.DateTimeFormatter).ofPattern('yyyy.MM.dd hh:mm').format(review.itemReviewAnswer.regTime)}]]</span>
 												</p>
 												<p class="answer_content">
-												<span>안녕하세요. 이젠 스토어 고객센터입니다.<br></span>
+												<span>안녕하세요. 이젠스토어 관리자 입니다.<br></span>
 												<span th:utext="${#strings.replace(review.itemReviewAnswer.content, '\n', '<br>')}"></span>
-												<span>이용해주셔서 항상 감사합니다.</span>
 												</p>
 											</div>
 											   </th:block>
@@ -188,7 +190,7 @@
 
 <th:block layout:fragment="script">
 	<script th:src="@{/js/myPage/global/global.js}"></script>
-	<script th:src="@{/js/myPage/global/date.js}"></script>
+	<script th:src="@{/js/myPage/global/dateAndSearch.js}"></script>
 	<script th:src="@{/js/myPage/itemReviewAndInq/myItemReview.js}"></script>
 </th:block>
 

@@ -35,4 +35,17 @@ public class Cart extends BaseTimeEntity {
 	@JoinColumn(name = "item_id")
 	private Item item;
 	
+	
+	public static Cart createCart(Member member,Item item,int count) {
+		
+		Cart cart = new Cart();
+		
+		cart.setMember(member);
+		cart.setItem(item);
+		cart.setCount(count);
+		
+		
+		return cart;
+	}
+	
 }

@@ -147,11 +147,6 @@ public class MemberController {
 			return "member/newMemberForm";
 		}
 
-		// 자기소개 기본값 넣기
-		if (memberDto.getIntroduce() == null || memberDto.getIntroduce().isEmpty()) {
-			memberDto.setIntroduce("자기소개가 없습니다.");
-		}
-
 		// 에러처리
 		if (bindingResult.hasErrors()) {
 			return "member/newMemberForm";
@@ -159,51 +154,51 @@ public class MemberController {
 
 		String imgName = profileImgFile.getOriginalFilename();
 		String imgUrl = "";
+		String email = memberDto.getEmail();
 
 		// 프로필 사진처리
 		if (!StringUtils.isEmpty(imgName)) {
 			try {
 				// 프로필 이미지 파일을 저장
-				String nickname = memberDto.getNickname();
-				Path path = Paths.get("C:/yummy/member/" + nickname);
+				Path path = Paths.get("C:/yummy/member/" + email);
 				if (!Files.exists(path)) {
 					Files.createDirectories(path);
 				}
-				Path path1 = Paths.get("C:/yummy/member/" + nickname + "/profile");
+				Path path1 = Paths.get("C:/yummy/member/" + email + "/profile");
 				if (!Files.exists(path1)) {
 					Files.createDirectories(path1);
 				}
-				Path path2 = Paths.get("C:/yummy/member/" + nickname + "/recipe");
+				Path path2 = Paths.get("C:/yummy/member/" + email + "/recipe");
 				if (!Files.exists(path2)) {
 					Files.createDirectories(path2);
 				}
-				Path path3 = Paths.get("C:/yummy/member/" + nickname + "/recipe/ingre");
+				Path path3 = Paths.get("C:/yummy/member/" + email + "/recipe/ingre");
 				if (!Files.exists(path3)) {
 					Files.createDirectories(path3);
 				}
 				
-				Path path4 = Paths.get("C:/yummy/member/" + nickname + "/review");
+				Path path4 = Paths.get("C:/yummy/member/" + email + "/review");
 				if (!Files.exists(path4)) {
 					Files.createDirectories(path4);
 				}
 				
-				Path path5 = Paths.get("C:/yummy/member/" + nickname + "/review/order");
+				Path path5 = Paths.get("C:/yummy/member/" + email + "/review/order");
 				if (!Files.exists(path5)) {
 					Files.createDirectories(path5);
 				}
 				
-				Path path6 = Paths.get("C:/yummy/member/" + nickname + "/review/recipe");
+				Path path6 = Paths.get("C:/yummy/member/" + email + "/review/recipe");
 				if (!Files.exists(path6)) {
 					Files.createDirectories(path6);
 				}
 				
 				StringBuilder sb = new StringBuilder();
-				sb.append(profileImgLocation + "/" + nickname + "/profile");
+				sb.append(profileImgLocation + "/" + email + "/profile");
 				String result = sb.toString();
 				
 				String savedImgName = fileService.profileImgFile(result, imgName,
 						profileImgFile.getBytes());
-				imgUrl = "/img/member/" + nickname + "/profile/" + savedImgName;
+				imgUrl = "/img/member/" + email + "/profile/" + savedImgName;
 
 				memberDto.setOriImgName(imgName);
 				memberDto.setImgName(savedImgName);
@@ -211,7 +206,7 @@ public class MemberController {
 				// 멤버생성 DB에저장
 				Member member = Member.createMember(memberDto, passwordEncoder);
 				
-				Point point = Point.createPlusPoint(member, 5000, "회원가입 완료",null);
+				Point point = Point.createPoint(member, 5000, PointEnum.PLUS ,"회원가입 완료",null);
 				
 				memberService.saveMember(member);
 				pointRepository.save(point);
@@ -229,20 +224,19 @@ public class MemberController {
 
 			// imgName이 비어있거나 null일 때 처리 고양이 이미지 추가
 			try {
-				String nickname = memberDto.getNickname();
-				Path path = Paths.get("C:/yummy/member/" + nickname);
+				Path path = Paths.get("C:/yummy/member/" + email);
 				if (!Files.exists(path)) {
 					Files.createDirectories(path);
 				}
-				Path path1 = Paths.get("C:/yummy/member/" + nickname + "/profile");
+				Path path1 = Paths.get("C:/yummy/member/" + email + "/profile");
 				if (!Files.exists(path1)) {
 					Files.createDirectories(path1);
 				}
-				Path path2 = Paths.get("C:/yummy/member/" + nickname + "/recipe");
+				Path path2 = Paths.get("C:/yummy/member/" + email + "/recipe");
 				if (!Files.exists(path2)) {
 					Files.createDirectories(path2);
 				}
-				Path path3 = Paths.get("C:/yummy/member/" + nickname + "/recipe/ingre");
+				Path path3 = Paths.get("C:/yummy/member/" + email + "/recipe/ingre");
 				if (!Files.exists(path3)) {
 					Files.createDirectories(path3);
 				}
@@ -264,7 +258,7 @@ public class MemberController {
 			// 멤버생성 DB에저장
 			Member member = Member.createMember(memberDto, passwordEncoder);
 			
-			Point point = Point.createPlusPoint(member, 5000, "회원가입 완료",null);
+			Point point = Point.createPoint(member, 5000, PointEnum.PLUS ,"회원가입 완료",null);
 			
 			memberService.saveMember(member);
 			pointRepository.save(point);
@@ -280,11 +274,6 @@ public class MemberController {
 	public String snsMemberForm(@RequestParam("snsProfileImgFile") MultipartFile snsProfileImgFile,
 			@Valid SocialMemberDto socialMemberDto, BindingResult bindingResult, Model model) {
 
-		// 자기소개 기본값 넣기
-		if (socialMemberDto.getIntroduce() == null || socialMemberDto.getIntroduce().isEmpty()) {
-			socialMemberDto.setIntroduce("자기소개가 없습니다.");
-		}
-
 		// 에러처리
 		if (bindingResult.hasErrors()) {
 			return "member/snsMemberForm";
@@ -292,36 +281,36 @@ public class MemberController {
 
 		String imgName = snsProfileImgFile.getOriginalFilename();
 		String imgUrl = "";
+		String email = socialMemberDto.getEmail();
 
 		// 프로필 사진처리
 		if (!StringUtils.isEmpty(imgName)) {
 			try {
 				
-				String nickname = socialMemberDto.getNickname();
-				Path path = Paths.get("C:/yummy/member/" + nickname);
+				Path path = Paths.get("C:/yummy/member/" + email);
 				if (!Files.exists(path)) {
 					Files.createDirectories(path);
 				}
-				Path path1 = Paths.get("C:/yummy/member/" + nickname + "/profile");
+				Path path1 = Paths.get("C:/yummy/member/" + email + "/profile");
 				if (!Files.exists(path1)) {
 					Files.createDirectories(path1);
 				}
-				Path path2 = Paths.get("C:/yummy/member/" + nickname + "/recipe");
+				Path path2 = Paths.get("C:/yummy/member/" + email + "/recipe");
 				if (!Files.exists(path2)) {
 					Files.createDirectories(path2);
 				}
-				Path path3 = Paths.get("C:/yummy/member/" + nickname + "/recipe/ingre");
+				Path path3 = Paths.get("C:/yummy/member/" + email + "/recipe/ingre");
 				if (!Files.exists(path3)) {
 					Files.createDirectories(path3);
 				}
 				StringBuilder sb = new StringBuilder();
-				sb.append(profileImgLocation + "/" + nickname + "/profile");
+				sb.append(profileImgLocation + "/" + email + "/profile");
 				String result = sb.toString();
 				
 				// 프로필 이미지 파일을 저장
 				String savedImgName = fileService.profileImgFile(result, imgName,
 						snsProfileImgFile.getBytes());
-				imgUrl = "/img/member/" + nickname + "/profile/" + savedImgName;
+				imgUrl = "/img/member/" + email + "/profile/" + savedImgName;
 
 				socialMemberDto.setOriImgName(imgName);
 				socialMemberDto.setImgName(savedImgName);
@@ -330,7 +319,7 @@ public class MemberController {
 				// 멤버생성 DB에저장
 				Member member = Member.createSnsMember(socialMemberDto);
 				
-				Point point = Point.createPlusPoint(member, 5000, "회원가입 완료",null);
+				Point point = Point.createPoint(member, 5000,PointEnum.PLUS ,"회원가입 완료",null);
 				
 				memberService.saveMember(member);
 				pointRepository.save(point);
@@ -346,20 +335,19 @@ public class MemberController {
 		} else {
 			try {
 				
-				String nickname = socialMemberDto.getNickname();
-				Path path = Paths.get("C:/yummy/member/" + nickname);
+				Path path = Paths.get("C:/yummy/member/" + email);
 				if (!Files.exists(path)) {
 					Files.createDirectories(path);
 				}
-				Path path1 = Paths.get("C:/yummy/member/" + nickname + "/profile");
+				Path path1 = Paths.get("C:/yummy/member/" + email + "/profile");
 				if (!Files.exists(path1)) {
 					Files.createDirectories(path1);
 				}
-				Path path2 = Paths.get("C:/yummy/member/" + nickname + "/recipe");
+				Path path2 = Paths.get("C:/yummy/member/" + email + "/recipe");
 				if (!Files.exists(path2)) {
 					Files.createDirectories(path2);
 				}
-				Path path3 = Paths.get("C:/yummy/member/" + nickname + "/recipe/ingre");
+				Path path3 = Paths.get("C:/yummy/member/" + email + "/recipe/ingre");
 				if (!Files.exists(path3)) {
 					Files.createDirectories(path3);
 				}
@@ -382,7 +370,7 @@ public class MemberController {
 			// 멤버생성 DB에저장
 			Member member = Member.createSnsMember(socialMemberDto);
 			
-			Point point = Point.createPlusPoint(member, 5000, "회원가입 완료",null);
+			Point point = Point.createPoint(member, 5000, PointEnum.PLUS ,"회원가입 완료",null);
 			
 			memberService.saveMember(member);
 			pointRepository.save(point);
@@ -430,7 +418,6 @@ public class MemberController {
 		
 
 		String ramdomps = randomPassword.getRamdomPassword(12); // 임시 비밀번호 12자리생성
-		System.out.println("ramdomps===" + ramdomps);
 
 		// 임시 비밀번호를 DB에 저장해서 바꿈 => 임시 비밀번호로 저장해야 로그인성공
 		String password = randomPassword.updatePassword(ramdomps, email, passwordEncoder);

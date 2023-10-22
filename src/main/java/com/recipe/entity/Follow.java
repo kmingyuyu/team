@@ -31,4 +31,16 @@ public class Follow extends BaseTimeEntity {
 	
 	private Long toMember;
 	
+	public static Follow createFollow(Member member,Long toMember) {
+		
+		Follow follow = new Follow();
+		
+		follow.setMember(member);
+		follow.setToMember(toMember);
+		
+		return follow;
+		
+		
+	}
+	
 }

@@ -11,6 +11,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.FileVisitResult;
 import java.nio.file.SimpleFileVisitor;
@@ -18,7 +19,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 
 @Service
-@Log
+@Slf4j
 public class FileService {
 	
 	
@@ -65,27 +66,50 @@ public class FileService {
 		return savedFileName;
 	}
 	
-	public String uploadFileImg(String uploadPath, String originalFileName,byte[] fileData) throws IOException {
-		
-//		해당경로에 폴더여부 확인 / 없으면 폴더생성
-		Path folder = Paths.get(uploadPath);
-		if (!Files.exists(folder)) {
-			Files.createDirectories(folder);
-		}
-		
-		UUID uuid = UUID.randomUUID();
-		
-		String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-		
-		String savedFileName = uuid.toString() + extension; 
-		
-		String fileUploadFullUrl = uploadPath + "/" + savedFileName;
-		
-		FileOutputStream fos = new FileOutputStream(fileUploadFullUrl);
-		fos.write(fileData);
-		fos.close();
-		
-		return savedFileName;
+	public String uploadFileImg(String uploadPath, String originalFileName, byte[] fileData) throws IOException {
+	    
+	    // 해당 경로에 폴더 여부 확인 / 없으면 폴더 생성
+	    Path folder = Paths.get(uploadPath);
+	    if (!Files.exists(folder)) {
+	        Files.createDirectories(folder);
+	    }
+	    
+	    UUID uuid = UUID.randomUUID();
+	    
+	    String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+	    
+	    String savedFileName = uuid.toString() + extension; 
+	    
+	    String fileUploadFullUrl = uploadPath + "/" + savedFileName;
+	    
+	    try (FileOutputStream fos = new FileOutputStream(fileUploadFullUrl)) {
+	        fos.write(fileData);
+	        
+	    } catch (IOException e) {
+	        throw new IOException("사유: 이미지 저장 실패");
+	        
+	    }
+	    
+	    return savedFileName;
+	}
+	
+//	해당 경로 폴더안에 해당이미지 삭제
+	public void deleteFileImg(String uploadPath , String imgName) throws IOException {
+	    File file = new File(uploadPath, imgName);
+	    
+	    try {
+	    	if (file.exists()) {
+	    			if (!file.delete()) {
+	    				throw new IOException("사유: 이미지 삭제 실패");
+	    			}
+	    	} else {
+	    		throw new IOException("사유: 이미지 삭제 실패(경로 탐색 실패)");
+	    	}
+			
+		}  catch (IOException e) {
+	        throw e;
+	        
+	    }
 	}
 	
 	
@@ -128,14 +152,11 @@ public class FileService {
 	
 	
 	public void deleteProfileFile(String filePath) throws Exception {
-		// filePath -> C://shop/item/ASDFA42FA3F.jpg
 		File deleteFile = new File(filePath);
 		
 		if(deleteFile.exists()) { //해당경로에 파일이 있으면
 			deleteFile.delete();
-			log.info("파일을 삭제하였습니다"); //로그 기록을 저장
 		} else {
-			log.info("파일이 존재하지 않습니다");
 		}
 	}
 }

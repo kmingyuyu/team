@@ -13,8 +13,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.recipe.constant.ImgMainOk;
-import com.recipe.dto.MyPageSerchDto;
-import com.recipe.dto.ItemReviewHistoryDto;
 import com.recipe.entity.ItemReviewAnswer;
 import com.recipe.entity.ItemReviewImg;
 import com.recipe.entity.QItem;
@@ -22,6 +20,8 @@ import com.recipe.entity.QItemImg;
 import com.recipe.entity.QItemReview;
 import com.recipe.entity.QItemReviewAnswer;
 import com.recipe.entity.QItemReviewImg;
+import com.recipe.myPage.dto.ItemReviewHistoryDto;
+import com.recipe.myPage.dto.MyPageSerchDto;
 
 import jakarta.persistence.EntityManager;
 
@@ -46,7 +46,8 @@ public class ItemReviewRepositoryImpl implements ItemReviewRepositoryCustom {
 	    
 	    BooleanExpression conditions = ir.member.id.eq(memberId)
 	        .and(ir.regTime.between(startDateTime, endDateTime))
-	        .and(ir.itemReviewStatus.stringValue().toLowerCase().like("%" + myPageSerchDto.getData().toLowerCase() + "%"));
+	        .and(ir.itemReviewStatus.stringValue().toLowerCase().like("%" + myPageSerchDto.getData().toLowerCase() + "%"))
+	        .and(i.itemNm.like("%" + myPageSerchDto.getSearchQuery() + "%"));
 
 	    return conditions; // 조건 반환
 	}

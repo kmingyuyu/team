@@ -40,9 +40,12 @@ import com.recipe.dto.ItemInqDto;
 import com.recipe.dto.ItemReviewDto;
 import com.recipe.dto.ItemReviewImgDto;
 import com.recipe.dto.ItemSearchDto;
+import com.recipe.exception.CustomException;
 import com.recipe.oauth.PrincipalDetails;
+import com.recipe.service.GlobalService;
 import com.recipe.service.ItemService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -50,6 +53,8 @@ import lombok.RequiredArgsConstructor;
 public class ItemController {
 
 	private final ItemService itemService;
+	
+	private final GlobalService globalService;
 
 //	상품페이지
 	@RequestMapping(value = { "item/total", "item/total/{page}" }, method = { RequestMethod.GET, RequestMethod.POST })
@@ -127,12 +132,21 @@ public class ItemController {
 
 //	상품문의 등록
 	@PostMapping(value = "/inqReq")
-	public @ResponseBody ResponseEntity inqReq(@RequestBody Map<String, Object> requestBody,
-			@AuthenticationPrincipal Object principal) {
-
-		String email = email(principal);
-
-		itemService.itemInqReg(requestBody, email);
+	public @ResponseBody ResponseEntity<String> inqReq(@RequestBody Map<String, Object> requestBody, HttpSession session) {
+		
+		if(!globalService.isAuthenticated()) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+		
+		try {
+			Long memberId = (Long) session.getAttribute("memberId");
+			
+			itemService.itemInqReg(requestBody, memberId);
+			
+		} catch (CustomException e) {
+			return new ResponseEntity<>("문의글 등록에 실패 하였습니다. 잠시후에 시도해주세요.\n" + e.getMessage(), HttpStatus.BAD_REQUEST);
+			
+		}
 
 		return new ResponseEntity<>("문의 접수 되었습니다", HttpStatus.OK);
 	}
@@ -186,16 +200,25 @@ public class ItemController {
 
 //	문의 답변 등록
 	@PostMapping(value = "/InqAnswerReg")
-	public @ResponseBody ResponseEntity inqAnswerReg(@RequestBody Map<String, Object> requestBody,
-			@AuthenticationPrincipal Object principal) {
-
-		String email = email(principal);
-
-		if (!isAdmin(principal)) {
-			return new ResponseEntity<>("권한이 없습니다. 관리자 아이디로 로그인해주세요.", HttpStatus.FORBIDDEN);
+	public @ResponseBody ResponseEntity<String> inqAnswerReg(@RequestBody Map<String, Object> requestBody, HttpSession session) {
+		
+		Object adminCheck = session.getAttribute("role");
+		
+		if (adminCheck == null || !"ADMIN".equals(adminCheck.toString())) {
+		    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
-
-		itemService.itemInqAnswerReg(requestBody, email);
+		
+		
+		  Long memberId = (Long) session.getAttribute("memberId");
+		  
+		  try {
+			itemService.itemInqAnswerReg(requestBody, memberId);
+			
+		} catch (CustomException e) {
+			return new ResponseEntity<>("문의글 답변 등록에 실패 하였습니다. 잠시후에 시도해주세요.\n" + e.getMessage(), HttpStatus.BAD_REQUEST);
+			
+		}
+		 
 
 		return new ResponseEntity<>("답변 등록 되었습니다.", HttpStatus.OK);
 

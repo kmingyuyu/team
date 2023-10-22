@@ -17,9 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.recipe.constant.CancelStatus;
 import com.recipe.constant.ImgMainOk;
 import com.recipe.constant.OrderStatus;
-import com.recipe.dto.ItemReviewHistoryDto;
-import com.recipe.dto.MyPageSerchDto;
-import com.recipe.dto.OrderHistoryDto;
+import com.recipe.constant.PointEnum;
 import com.recipe.entity.CancelInfo;
 import com.recipe.entity.Item;
 import com.recipe.entity.ItemImg;
@@ -31,6 +29,8 @@ import com.recipe.entity.OrderItem;
 import com.recipe.entity.Point;
 import com.recipe.exception.CustomException;
 import com.recipe.exception.FindNotException;
+import com.recipe.myPage.dto.MyPageSerchDto;
+import com.recipe.myPage.dto.OrderHistoryDto;
 import com.recipe.repository.ItemImgRepository;
 import com.recipe.repository.ItemReviewImgRepository;
 import com.recipe.repository.ItemReviewRepository;
@@ -39,6 +39,7 @@ import com.recipe.repository.OrderItemRepository;
 import com.recipe.repository.OrderRepository;
 import com.recipe.repository.PointRepository;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -104,8 +105,10 @@ public class MyPageOrderService {
 	
 //	주문상품 주문취소(myPage/order)
 	@Transactional
-	public void orderCancel(@RequestBody Map<String, Object> requestBody, Long memberId) throws CustomException {
-
+	public void orderCancel(@RequestBody Map<String, Object> requestBody, HttpSession session) throws CustomException {
+			
+		Long memberId = (Long) session.getAttribute("memberId");
+		
 		try {
 			Long orderItemId = Long.parseLong(requestBody.get("orderItemId").toString());
 
@@ -126,7 +129,12 @@ public class MyPageOrderService {
 			int cancelDeliveryPrice = 0;
 
 			int otherPrice = 0;
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("주문번호: ");
+			sb.append(order.getOrderNumber());
 
+			
 //			하나의 order에서 상품종류가 1개일때
 //			cancel객체 생성안되어 있으므로 생성
 //			아임포트 결제취소 
@@ -140,10 +148,14 @@ public class MyPageOrderService {
 
 				orderItem.setOrderStatus(OrderStatus.환불완료);
 				order.setCancelInfo(cancelInfo);
-
-				member.plusPoint(order.getUsePoint());
-				Point point = Point.createPlusPoint(member, order.getUsePoint(), "주문 취소", null);
-				pointRepository.save(point);
+				
+				if(order.getUsePoint() !=0) {
+					member.plusPoint(order.getUsePoint());
+					session.setAttribute("point", member.getPoint());
+					
+					Point point = Point.createPoint(member, order.getUsePoint(), PointEnum.PLUS , "배송전 취소", sb.toString());
+					pointRepository.save(point);
+				}
 
 			}
 
@@ -210,9 +222,14 @@ public class MyPageOrderService {
 					cancelInfo.setCancelStatus(CancelStatus.전체취소);
 					cancelInfo.setCancelPoint(order.getUsePoint());
 					orderItem.setOrderStatus(OrderStatus.환불완료);
-					member.plusPoint(order.getUsePoint());
-					Point point = Point.createPlusPoint(member, order.getUsePoint(), "주문 취소", null);
-					pointRepository.save(point);
+					
+					if(order.getUsePoint() !=0) {
+						member.plusPoint(order.getUsePoint());
+						session.setAttribute("point", member.getPoint());
+						
+						Point point = Point.createPoint(member, order.getUsePoint(), PointEnum.PLUS , "배송전 취소", sb.toString());
+						pointRepository.save(point);
+					}
 
 				}
 
@@ -243,10 +260,6 @@ public class MyPageOrderService {
 
 			ItemReview itemReview = itemReviewRepository.findByOrderItemId(orderItemId);
 
-			if (orderItem.getOrder().getMember().getId() != memberId) {
-				throw new CustomException("사유: 주문자회원과 접속회원 불일치");
-			}
-
 			if (!OrderStatus.구매확정.equals(orderItem.getOrderStatus())) {
 				throw new CustomException("사유: 주문상품 구매확정 상태X");
 			}
@@ -274,11 +287,13 @@ public class MyPageOrderService {
 	
 //	주문상품 리뷰작성 팝업창 리뷰 등록(myPage/order/itemReview_popup_reg)
 	@Transactional
-	public void orderItemReviewReg(MultipartFile[] files, double star, String content, Long orderItemId, Long memberId)
+	public void orderItemReviewReg(MultipartFile[] files, double star, String content, Long orderItemId , HttpSession session)
 			throws IOException, CustomException {
 
 		int p;
-
+		
+		Long memberId = (Long) session.getAttribute("memberId");
+		
 		try {
 
 			OrderItem orderItem = orderItemRepository.findById(orderItemId)
@@ -301,8 +316,6 @@ public class MyPageOrderService {
 			p = files == null ? 500 : 1000;
 			String info = files == null ? "일반후기 등록" : "포토후기 등록";
 
-			member.plusPoint(p);
-
 			ItemReview itemReview = ItemReview.createItemReview(member, item, orderItem, content, star, files);
 
 			itemReviewRepository.save(itemReview);
@@ -313,16 +326,20 @@ public class MyPageOrderService {
 
 //		이미지 파일이 있다면 이미지파일 itemReivewImg 생성
 			if (files != null) {
+				
+				if(files.length > 8) {
+					throw new CustomException("사유: 이미지 등록 갯수 제한");
+				}
 
-				String nickname = member.getNickname();
+				String email = member.getEmail();
 
-				String result = "C:/yummy/member/" + nickname + "/review/order/" + orderNumber + "/" + itemNm;
+				String result = "C:/yummy/member/" + email + "/review/order/" + orderNumber + "/" + itemNm;
 
 				for (MultipartFile file : files) {
 					if (!file.isEmpty()) {
 						String oriImgName = file.getOriginalFilename();
 						String imgName = fileService.uploadFileImg(result, oriImgName, file.getBytes());
-						String imgUrl = "/img/member/" + nickname + "/review/order/" + orderNumber + "/" + itemNm + "/"
+						String imgUrl = "/img/member/" + email + "/review/order/" + orderNumber + "/" + itemNm + "/"
 								+ imgName;
 
 						ItemReviewImg itemReviewImg = ItemReviewImg.createItemReviewImg(imgUrl, imgName, oriImgName,
@@ -333,12 +350,17 @@ public class MyPageOrderService {
 			}
 
 			StringBuilder sb = new StringBuilder();
-			sb.append("주문번호:");
+			sb.append("주문번호: ");
 			sb.append(orderNumber);
 			sb.append(",");
+			sb.append("상품명: ");
 			sb.append(itemNm);
-
-			Point point = Point.createPlusPoint(member, p, info, sb.toString());
+			
+			member.plusPoint(p);
+			
+			session.setAttribute("point", member.getPoint());
+			
+			Point point = Point.createPoint(member, p, PointEnum.PLUS , info, sb.toString());
 			pointRepository.save(point);
 
 		} catch (IOException e) {

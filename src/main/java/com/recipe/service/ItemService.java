@@ -43,10 +43,12 @@ import com.recipe.repository.ItemReviewRepository;
 import com.recipe.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ItemService {
 	
 	private final MemberRepository memberRepository;
@@ -64,8 +66,6 @@ public class ItemService {
 	private final ItemInqAnswerRepository itemInqAnswerRepository; 
 	
 	private final ItemImgRepository itemImgRepository;
-	
-	private final Logger log = LoggerFactory.getLogger(OrderService.class);
 	
 	
 	public Item findItem(Long id) {
@@ -161,76 +161,76 @@ public class ItemService {
 	}
 
 //	문의글 등록
-	public void itemInqReg(Map<String, Object> requestBody , String email) {
+	public void itemInqReg(Map<String, Object> requestBody , Long memberId) throws CustomException {
 		
-		Long id = Long.parseLong(requestBody.get("id").toString());
+		Long itemId = Long.parseLong(requestBody.get("id").toString());
 		String title = requestBody.get("title").toString();
 		String content = requestBody.get("content").toString();
 		int itemInqBoardEnum = Integer.parseInt(requestBody.get("itemInqBoardEnum").toString());
 		int itemInqEnum = Integer.parseInt(requestBody.get("itemInqEnum").toString());
-		Member member = memberRepository.findByEmail(email);
 		
-		Optional<Item> itemOp = itemRepository.findById(id);
-		Item item = itemOp.get();
-		
-		ItemInq itemInq = new ItemInq();
-		itemInq.setMember(member);
-		itemInq.setItem(item);
-		itemInq.setTitle(title);
-		itemInq.setContent(content);
-		
-		System.out.println("itemInqBoardEnum num ::" + itemInqBoardEnum);
-		System.out.println("itemInqEnum num ::" + itemInqEnum);
-		
-		switch (itemInqBoardEnum) {
-		case 1:
-			itemInq.setItemInqBoardEnum(ItemInqBoardEnum.공개글);
-			break;
-		case 2:
-			itemInq.setItemInqBoardEnum(ItemInqBoardEnum.비밀글);
-			break;
+		if(itemInqBoardEnum == 0 || itemInqBoardEnum > 3) {
+			new CustomException("사유: 문의글 상태 선택 오류");
 		}
 		
-		switch (itemInqEnum) {
-		case 1:
-			itemInq.setItemInqEnum(ItemInqEnum.배송문의);
-			break;
-		case 2:
-			itemInq.setItemInqEnum(ItemInqEnum.재입고문의);
-			break;
-		case 3:
-			itemInq.setItemInqEnum(ItemInqEnum.상품상세문의);
-			break;
-		case 4:
-			itemInq.setItemInqEnum(ItemInqEnum.기타문의);
-			break;
+		if(itemInqEnum == 0 || itemInqEnum > 5) {
+			new CustomException("사유: 문의유형 선택 오류");
+		}
+		
+		if(title == null || title.length() > 15) {
+			throw new CustomException("사유: 문의 제목 오류");
+		}
+		
+		String contentCheck = content.replaceAll("\\s", "");
+		if(content == null || contentCheck.length() > 350) {
+			throw new CustomException("사유: 문의 내용 오류");
 		}
 		
 		
-		itemInqRepository.save(itemInq);
+		try {
+			Member member = memberRepository.findById(memberId)
+					.orElseThrow(() -> new CustomException("사유: 접속회원 조회 실패"));
+			
+			Item item = itemRepository.findById(itemId)
+					.orElseThrow(() -> new CustomException("사유: 상품정보 조회 실패"));
+			
+			ItemInq itemInq = ItemInq.createItemInq(member, item, title, content, itemInqBoardEnum, itemInqEnum);
+			
+			itemInqRepository.save(itemInq);
+			
+		} catch (CustomException e) {
+			log.error("itemInqReg-error" ,e);
+			throw e;
+			
+		}
+		
 	}
 	
 	
 //	문의 답변 등록
-	public void itemInqAnswerReg(Map<String, Object> requestBody,String email) {
+	@Transactional
+	public void itemInqAnswerReg(Map<String, Object> requestBody , Long memberId) throws CustomException{
 		
-		Long id = Long.parseLong(requestBody.get("id").toString());
+		Long itemInqId = Long.parseLong(requestBody.get("id").toString());
 		String content = requestBody.get("content").toString();
 		
-		Member member = memberRepository.findByEmail(email);
-		
-		Optional<ItemInq> itemInqOp = itemInqRepository.findById(id);
-		ItemInq itemInq = itemInqOp.get();
-		
-		itemInq.setAnswerOk(AnswerOk.답변완료);
-		itemInqRepository.save(itemInq);
-		
-		ItemInqAnwser itemInqAnwser = new ItemInqAnwser();
-		itemInqAnwser.setMember(member);
-		itemInqAnwser.setItemInq(itemInq);
-		itemInqAnwser.setContent(content);
-		
-		itemInqAnswerRepository.save(itemInqAnwser);
+		try {
+			
+			Member member = memberRepository.findById(memberId)
+					.orElseThrow(() -> new CustomException("사유: 접속회원 조회 실패"));
+			
+			ItemInq itemInq = itemInqRepository.findById(itemInqId)
+					.orElseThrow(() -> new CustomException("사유: 문의글 조회 조회 실패"));
+			
+			ItemInqAnwser itemInqAnwser = ItemInqAnwser.createItemInqAnwser(member, itemInq, content);
+			
+			itemInq.setAnswerOk(AnswerOk.답변완료);
+			itemInq.setItemInqAnwser(itemInqAnwser);
+			
+		} catch (CustomException e) {
+			log.error("itemInqAnswerReg-error" ,e);
+			throw e;
+		}
 
 	}
 	

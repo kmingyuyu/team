@@ -13,6 +13,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.recipe.constant.AnswerOk;
 import com.recipe.constant.CategoryEnum;
 import com.recipe.constant.ImgMainOk;
 import com.recipe.constant.ItemCategoryEnum;
@@ -25,6 +26,7 @@ import com.recipe.dto.ItemReviewAnswerDto;
 import com.recipe.dto.ItemReviewDto;
 import com.recipe.dto.ItemSearchDto;
 import com.recipe.dto.OrderDto;
+import com.recipe.entity.ItemInqAnwser;
 import com.recipe.entity.ItemReviewAnswer;
 import com.recipe.entity.ItemReviewImg;
 import com.recipe.entity.QBookMark;
@@ -280,7 +282,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom  {
 				.select(
 						Projections.constructor(
 								ItemInqDto.class,
-								ii.id,
+								ii.id.as("inqId"),
 								ii.title,
 								ii.content,
 								ii.itemInqBoardEnum,
@@ -288,24 +290,33 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom  {
 								ii.answerOk,
 								ii.regTime,
 								m.email,
-								m.nickname,
-								iia.id.as("answerId"),
-								iia.content.as("answerContent"),
-								iia.regTime.as("answerRegTime")
+								m.nickname
 								))
 				.from(ii)
 				.join(m).on(ii.member.id.eq(m.id))
-				.leftJoin(iia).on(QItemInq.itemInq.id.eq(iia.itemInq.id))
 				.where(ii.item.id.eq(itemId))
 				.offset(pageable.getOffset())
 			    .limit(pageable.getPageSize())
 				.fetch();
 		
+		
+		for(ItemInqDto dto : content) {
+			if(AnswerOk.답변완료.equals(dto.getAnswerOk())) {
+				ItemInqAnwser itemInqAnwser = queryFactory
+	    				.select(iia)
+	    				.from(iia)
+	    				.where(iia.itemInq.id.eq(dto.getInqId()))
+	    				.fetchOne();
+				
+				dto.setItemInqAnwser(itemInqAnwser);
+			}
+		}
+		
+		
 		Long total = queryFactory
 			 	.select(Wildcard.count)
 			 	.from(ii)
 			 	.join(m).on(ii.member.id.eq(m.id))
-				.leftJoin(iia).on(QItemInq.itemInq.id.eq(iia.itemInq.id))
 				.where(ii.item.id.eq(itemId))
 				.fetchOne();
 	

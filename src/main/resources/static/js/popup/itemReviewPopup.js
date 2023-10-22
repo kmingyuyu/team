@@ -37,6 +37,14 @@ $(document).ready(function() {
        				 alert("같은 이미지가 등록되어 있습니다.");
        				 return;
     			}
+    			
+    			if(oriImages.length + selectedImages.length >= 8){
+					alert("이미지 파일은 최대 8장까지 등록 가능합니다.");
+				 	return; 
+				}
+    			
+    			
+    			
 			}
             
             
@@ -52,9 +60,16 @@ $(document).ready(function() {
             }
             
             if (file.size > 2 * 1024 * 1024) {  
-                alert("이미지파일은 2MB 이하만 가능합니다.");
+                alert("이미지 파일은 2MB 이하만 가능합니다.");
                 return;  
             }
+            
+            if(selectedImages.length >= 8) {
+				alert("이미지 파일은 최대 8장까지 등록 가능합니다.");
+				 return; 
+			}
+			
+			
 
             var reader = new FileReader();
             reader.onload = function(e) {
@@ -165,7 +180,7 @@ function reviewReg(){
         formData.append("imgFiles", selectedImages[i].file);
     }
     
-			var url = '/myPage/order/itemReview_popup_reg/regOk'
+			var url = '/myPage/order/itemReviewPopupReg/regOk'
 			
 			if (confirm('후기 등록 하시겠습니까?')){
 				
@@ -228,9 +243,7 @@ function reviewModi(){
     alert("리뷰 내용은 350자 이하로 작성 해주세요.");
     return; 
 	}
-	
-	
-	
+ 	
     formData.append("star", starValue);
     formData.append("itemReviewId", itemReviewValue);
     formData.append("content", contentValue);
@@ -251,7 +264,7 @@ function reviewModi(){
    		 formData.append("oriImgDeleteNames", imagesToDelete[i]);
 	}
     
-			var url = '/myPage/item_review/itemReview_popup_modi/modiOk'
+			var url = '/myPage/itemReview/itemReviewPopupModi/modiOk'
 			
 			var text='후기 수정 하시겠습니까?'
 			

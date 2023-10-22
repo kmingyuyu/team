@@ -13,21 +13,25 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.recipe.constant.ImgMainOk;
 import com.recipe.constant.ItemReviewStatus;
-import com.recipe.dto.ItemReviewHistoryDto;
-import com.recipe.dto.MyPageSerchDto;
+import com.recipe.constant.PointEnum;
 import com.recipe.entity.Item;
 import com.recipe.entity.ItemImg;
 import com.recipe.entity.ItemReview;
 import com.recipe.entity.ItemReviewImg;
 import com.recipe.entity.Member;
+import com.recipe.entity.Order;
+import com.recipe.entity.OrderItem;
 import com.recipe.entity.Point;
 import com.recipe.exception.CustomException;
+import com.recipe.myPage.dto.ItemReviewHistoryDto;
+import com.recipe.myPage.dto.MyPageSerchDto;
 import com.recipe.repository.ItemImgRepository;
 import com.recipe.repository.ItemReviewImgRepository;
 import com.recipe.repository.ItemReviewRepository;
 import com.recipe.repository.MemberRepository;
 import com.recipe.repository.PointRepository;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,7 +66,9 @@ public class MyPageItemReviewService {
 	
 //	나의상품리뷰 리뷰 삭제(myPage/item_review)
 	@Transactional
-	public void itemReviewDelete(Map<String, Object> requestBody , Long memberId) throws CustomException, IOException {
+	public void itemReviewDelete(Map<String, Object> requestBody , HttpSession session) throws CustomException, IOException {
+		
+		Long memberId = (Long) session.getAttribute("memberId");
 		
 		Long itemReviewId = Long.parseLong(requestBody.get("itemReviewId").toString());
 		
@@ -79,34 +85,45 @@ public class MyPageItemReviewService {
 
 			String itemNm = itemReview.getItem().getItemNm();
 
-			String nickname = member.getNickname();
+			String email = member.getEmail();
 			
-			String highPath = "C:/yummy/member/" + nickname + "/review/order/" + orderNumber;
-			
-			String path = "C:/yummy/member/" + nickname + "/review/order/" + orderNumber + "/" + itemNm;
-			
-			fileService.deleteFolder(path,highPath);
-			
-			List<ItemReviewImg> itemReviewImgList = itemReviewImgRepository.findByItemReviewId(itemReviewId);
+			if(ItemReviewStatus.포토.equals(itemReview.getItemReviewStatus())) {
+				
+				List<ItemReviewImg> itemReviewImgList = itemReviewImgRepository.findByItemReviewId(itemReviewId);
+				
+				if(itemReviewImgList == null) {
+					new CustomException("사유: 등록된 이미지 조회 실패");
+					
+				} else {
+					for(ItemReviewImg itemReviewImg : itemReviewImgList) {
+						itemReviewImgRepository.delete(itemReviewImg);
+					}
+				}
+				
+				String highPath = "C:/yummy/member/" + email + "/review/order/" + orderNumber;
+				
+				String path = "C:/yummy/member/" + email + "/review/order/" + orderNumber + "/" + itemNm;
+				
+				fileService.deleteFolder(path,highPath);
+			}
 			
 			int p = ItemReviewStatus.일반.equals(itemReview.getItemReviewStatus()) ? 500 : 1000;
+			String info = "후기 삭제";
+			PointEnum pointEnum = PointEnum.EXPIRE;
 			
 			StringBuilder sb = new StringBuilder();
-			sb.append("주문번호:");
+			sb.append("주문번호: ");
 			sb.append(orderNumber);
 			sb.append(",");
+			sb.append("상품명: ");
 			sb.append(itemNm);
 			
-			Point point = Point.createMinusPoint(member, p, "후기 삭제", sb.toString());
+			Point point = Point.createPoint(member, p, pointEnum , info, sb.toString());
 			pointRepository.save(point);
 			
 			member.minusPoint(p);
-			
-			if(itemReviewImgList != null) {
-				for(ItemReviewImg itemReviewImg : itemReviewImgList) {
-					itemReviewImgRepository.delete(itemReviewImg);
-				}
-			}
+			session.setAttribute("point", member.getPoint());
+		
 			itemReviewRepository.delete(itemReview);
 			
 		} catch (IOException e) {
@@ -121,7 +138,7 @@ public class MyPageItemReviewService {
 	}
 	
 	
-//	나의상품후기 리뷰수정 팝업창 주문상품정보 가져오기(myPage/itemReview_popup_modi)
+//	나의상품후기 리뷰수정 팝업창 주문상품정보 가져오기(myPage/item_review/itemReview_popup_modi)
 	public Map<String, Object> findByMyItemReview(Long itemReviewId, Long memberId) throws CustomException {
 
 		Map<String, Object> itemReviewMap = new HashMap<>();
@@ -129,7 +146,7 @@ public class MyPageItemReviewService {
 		try {
 
 			ItemReview itemReview = itemReviewRepository.findById(itemReviewId)
-					.orElseThrow(() -> new CustomException("사유: 리뷰 조회 실패"));
+					.orElseThrow(() -> new CustomException("사유: 후기 조회 실패"));
 
 			Item item = itemReview.getItem();
 
@@ -143,9 +160,6 @@ public class MyPageItemReviewService {
 				throw new CustomException("사유: 상품 이미지 조회 실패");
 			}
 
-			if (itemReview.getMember().getId() != memberId) {
-				throw new CustomException("사유: 접속 회원과 리뷰작성 회원 불일치");
-			}
 
 			itemReviewMap.put("itemReview", itemReview);
 			itemReviewMap.put("item", item);
@@ -168,10 +182,9 @@ public class MyPageItemReviewService {
 //	주문상품 리뷰작성 팝업창 리뷰 수정(myPage/itemReview_popup_modi)
 	@Transactional
 	public void orderItemReviewModi(MultipartFile[] files, String[] oriImgDeleteNames, String[] oriImgNames,
-			double star, String content, Long itemReviewId, Long memberId) throws IOException, CustomException {
+			double star, String content, Long itemReviewId, HttpSession session) throws IOException, CustomException {
 
-		int p = 500;
-		String info;
+		Long memberId = (Long) session.getAttribute("memberId");
 
 		try {
 			ItemReview itemReview = itemReviewRepository.findById(itemReviewId)
@@ -188,6 +201,8 @@ public class MyPageItemReviewService {
 			if (content == null || contentCheck.length() > 350) {
 				throw new CustomException("사유: 리뷰내용 오류");
 			}
+			
+			
 
 			itemReview.setRating(star);
 			itemReview.setContent(content);
@@ -196,12 +211,17 @@ public class MyPageItemReviewService {
 
 			String itemNm = itemReview.getItem().getItemNm();
 			
+			String email = member.getEmail();
+			
+			String result = "C:/yummy/member/" + email + "/review/order/" + orderNumber + "/" + itemNm;
 
 			if (oriImgDeleteNames != null) {
 
 				for (String imgOriName : oriImgDeleteNames) {
 					ItemReviewImg itemReviewImg = itemReviewImgRepository.findByImgOriNameAndItemReviewId(imgOriName,itemReview.getId());
 					itemReviewImgRepository.delete(itemReviewImg);
+					
+					fileService.deleteFileImg(result, itemReviewImg.getImgName());
 				}
 
 			}
@@ -209,15 +229,11 @@ public class MyPageItemReviewService {
 //이미지 파일이 있다면 이미지파일 itemReivewImg 생성
 			if (files != null) {
 
-				String nickname = member.getNickname();
-
-				String result = "C:/yummy/member/" + nickname + "/review/order/" + orderNumber + "/" + itemNm;
-
 				for (MultipartFile file : files) {
 					if (!file.isEmpty()) {
 						String oriImgName = file.getOriginalFilename();
 						String imgName = fileService.uploadFileImg(result, oriImgName, file.getBytes());
-						String imgUrl = "/img/member/" + nickname + "/review/order/" + orderNumber + "/" + itemNm + "/"
+						String imgUrl = "/img/member/" + email + "/review/order/" + orderNumber + "/" + itemNm + "/"
 								+ imgName;
 
 						ItemReviewImg itemReviewImg = ItemReviewImg.createItemReviewImg(imgUrl, imgName, oriImgName,
@@ -228,49 +244,58 @@ public class MyPageItemReviewService {
 			}
 
 			StringBuilder sb = new StringBuilder();
-			sb.append("주문번호:");
+			sb.append("주문번호: ");
 			sb.append(orderNumber);
 			sb.append(",");
+			sb.append("상품명: ");
 			sb.append(itemNm);
 			
-			if (ItemReviewStatus.일반.equals(itemReview.getItemReviewStatus())) {
-				if(files != null) {
+			int p = 500;
+			String info;
+			
+			int totalImageCount = (files != null ? files.length : 0) + (oriImgNames != null ? oriImgNames.length : 0);
+			
+			if (ItemReviewStatus.일반.equals(itemReview.getItemReviewStatus()) && totalImageCount > 0) {
 					
-					info = "일반후기 -> 포토후기";
 					member.plusPoint(p);
+					
 					itemReview.setItemReviewStatus(ItemReviewStatus.포토);
 					
-					Point point = Point.createPlusPoint(member, p, info, sb.toString());
+					info = "일반후기 -> 포토후기 ";
+					Point point = Point.createPoint(member, p, PointEnum.PLUS , info, sb.toString());
 					pointRepository.save(point);
-					
-				}
 			}
 			
 			else if(ItemReviewStatus.포토.equals(itemReview.getItemReviewStatus())) {
-				if(files == null && oriImgNames == null) {
+				
+				 if (totalImageCount > 8) {
+				        throw new CustomException("사유: 이미지 등록 갯수 제한");
+				    }
+				
+				if(totalImageCount == 0) {
 					
-					info = "포토후기 -> 일반후기";
 					member.minusPoint(p);
 					itemReview.setItemReviewStatus(ItemReviewStatus.일반);
 					
-					Point point = Point.createMinusPoint(member, p, info, sb.toString());
+					info = "포토후기 -> 일반후기";
+					Point point = Point.createPoint(member, p, PointEnum.EXPIRE , info, sb.toString());
 					pointRepository.save(point);
 					
 				}
 				
 			}
+			
+			session.setAttribute("point", member.getPoint());
 
-		} catch (IOException e) {
-			log.error("orderItemReviewModi -> uploadFileImg-error", e);
-			throw new IOException("사유: 이미지 저장 오류");
-
-		} catch (CustomException e) {
+		}  catch (CustomException e) {
 			log.error("orderItemReviewModi-error", e);
 			throw e;
 
 		}
 
 	}
+	
+
 	
 
 }

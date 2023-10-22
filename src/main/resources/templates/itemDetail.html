@@ -34,49 +34,6 @@
 					<div class="info_sub">[[${item.itemSubNm}]]</div>
 
 
-
-				<div id="lySns" class="layer_area" style="display: none">
-					<div class="ly_wrap sns_layer">
-						<div class="ly_cont">
-							<div class="sns_list">
-								<div class="ly_share_noti" style="display: none">
-									<span>수익금 적립 불가 상품입니다.</span>
-								</div>
-								<ul>
-									<li><a href="javascript:;" id="shareKakaoLinkBtn"
-										data-sns="kakaolink"><img
-											src="//recipe1.ezmember.co.kr/img/img_share_k.png"
-											alt="카카오톡 공유"><br> <span>카카오톡</span></a></li>
-									<li><a href="javascript:;" id="shareFacebookBtn"
-										data-width="750" data-height="300" data-sns="facebook"
-										class="btn-social-popup"><img
-											src="//recipe1.ezmember.co.kr/img/img_share_f.png"
-											alt="페이스북 공유"><br> <span>페이스북</span></a></li>
-									<li><a href="javascript:;" id="shareTwitterBtn"
-										data-width="500" data-height="250" data-sns="twitter"
-										class="btn-social-popup"><img
-											src="//recipe1.ezmember.co.kr/img/img_share_t.png"
-											alt="트위터 공유"><br> <span>트위터</span></a></li>
-									<li><a href="javascript:;" id="shareKakaoStoryBtn"
-										data-sns="kakaostory"><img
-											src="//recipe1.ezmember.co.kr/img/img_share_ks.png"
-											alt="카카오스토리 공유"><br> <span>카카오스토리</span></a></li>
-									<li><a href="javascript:;" id="shareCopyBtn" data-sns=""
-										class="gd_clipboard" data-clipboard-text="" title="상품주소"><img
-											src="//recipe1.ezmember.co.kr/img/img_share_l.png" alt="링크복사"><br>
-											<span>링크복사</span></a></li>
-								</ul>
-							</div>
-						</div>
-						<a href="#lySns" class="ly_close"><img
-							src="http://recipe1.ezmember.co.kr/img/mobile/2022/icon_close2.png"
-							alt="닫기" width="26px"></a>
-					</div>
-				</div>
-
-
-
-
 				<div class="sub_info">[[${item.itemNm}]]</div>
 				<div class="price_box">
 					<th:block th:if="${item.sale != 0}">
@@ -110,14 +67,6 @@
                         <p class="review_count_1">[[${item.ratingAvg}]]  <span class="reting_line">&nbsp;/&nbsp;</span> 
                          <a class="review_count_2" onclick="clickTab('review');">리뷰 <th:block th:if="${itemReviewList.getTotalElements() != 0}"> [[${itemReviewList.getTotalElements()}]]개 </th:block>  보기</a>  </p>
                 </div>
-					<div class="price_box_info_btn">
-						<div style="position: relative; display: inline-block;">
-							<a href="javascript:;" class="info_btn_share"><img
-								src="//recipe1.ezmember.co.kr/img/mobile/icon_share10.png"
-								alt="공유"></a>
-						</div>
-					</div>
-
 					<div class="info_delivery_area">
 						<dl class="info_delivery">
 							<dt>
@@ -436,7 +385,7 @@
 						</tr>
 					</tbody>
 					<th:block th:each="inq , status:${itemInqList}">
-					<tbody class="inq-row" data-inq-id="${inq.id}">
+					<tbody class="inq-row" data-inq-id="${inq.inqId}">
 						<tr class="no_hover">
 							<td>1</td>
 							<td>[[${inq.answerOk}]]</td>
@@ -447,15 +396,15 @@
 							</th:block>
 							
 							<th:block th:if="${(inq.itemInqBoardEnum.toString() == '비밀글') and isAdmin == false and inq.email == email}">
-							<td th:attr="data-inq-id=${inq.id}" onclick="info(this)" id="info">[[${inq.title}]] <span class="secret_board"> ( 현재 비밀글 상태입니다 ) </span></td>
+							<td th:attr="data-inq-id=${inq.inqId}" onclick="info(this)" id="info">[[${inq.title}]] <span class="secret_board"> ( 현재 비밀글 상태입니다 ) </span></td>
 							</th:block>
 							
 							<th:block th:if="${(inq.itemInqBoardEnum.toString() == '비밀글') and isAdmin == true }">
-							<td th:attr="data-inq-id=${inq.id}" onclick="info(this)" id="info">[[${inq.title}]]</td>
+							<td th:attr="data-inq-id=${inq.inqId}" onclick="info(this)" id="info">[[${inq.title}]]</td>
 							</th:block>
 							
 							<th:block th:if="${inq.itemInqBoardEnum.toString()} == '공개글' ">
-							<td th:attr="data-inq-id=${inq.id}" onclick="info(this)" id="info">[[${inq.title}]]</td>
+							<td th:attr="data-inq-id=${inq.inqId}" onclick="info(this)" id="info">[[${inq.title}]]</td>
 							</th:block>
 							
 							<td class="member-id-box_my" th:if="${inq.email == email}">나의 게시글</td>
@@ -470,7 +419,7 @@
 								<th:block th:if="${inq.AnswerOk.toString()} == '답변대기' ">
 								<span class="answer_reg_choice" 
 								sec:authorize="hasAnyAuthority('ROLE_ADMIN')"
-								th:attr="data-inq-id=${inq.id}" onclick="inqAnwerBoxOpen(this)">답변 등록&nbsp;▼</span> 
+								th:attr="data-inq-id=${inq.inqId}" onclick="inqAnwerBoxOpen(this)">답변 등록&nbsp;▼</span> 
 								</th:block>	
 								</p> 
 							</td>
@@ -482,23 +431,23 @@
 							style="display: none">
 							<td class="feedback_comment" colspan="5">
 								<p>
-									안녕하세요 고객님, <br> [[${inq.answerContent}]] <br> 감사합니다.
+									안녕하세요 고객님, <br> [[${inq.itemInqAnwser.content}]] <br> 감사합니다.
 									<br><br>
 									<span class="admin_ch " 
 									sec:authorize="hasAnyAuthority('ROLE_ADMIN')"
-									onclick="inqAnswerUpdate(this)" th:attr="data-inq-id=${inq.id}">수정</span>
+									onclick="inqAnswerUpdate(this)" th:attr="data-inq-id=${inq.inqId}">수정</span>
 									<span class="admin_ch ml-1 " 
 									sec:authorize="hasAnyAuthority('ROLE_ADMIN')"
-									onclick="inqOk(this , 'delete')" th:attr="data-inq-answerId=${inq.answerId}">삭제</span>
+									onclick="inqOk(this , 'delete')" th:attr="data-inq-answerId=${inq.itemInqAnwser.id}">삭제</span>
 								</p>
 							</td>
-							<td class="feedback_writer" th:text="${#temporals.format(inq.answerRegTime, 'yyyy.MM.dd')}"></td>
+							<td class="feedback_writer" th:text="${#temporals.format(inq.itemInqAnwser.regTime, 'yyyy.MM.dd')}"></td>
 						</tr>
 						<tr> <!---->
 							<td class="inq_answer_layout" colspan="6" style="display: none;">
-							<textarea class="inq_answer_reg_box inq_answer_update_content" placeholder="답변을 입력해주세요" > [[${inq.answerContent}]]</textarea>
-							<div class="comment_area_btn plain-btn btn active" onclick="inqOk(this , 'update')" th:attr="data-inq-answerId=${inq.answerId}">답변수정</div>
-							<div class="update_x" onclick="inqAnswerUpdateCancle(this)" th:attr="data-inq-id=${inq.id}">x</div>
+							<textarea class="inq_answer_reg_box inq_answer_update_content" placeholder="답변을 입력해주세요" > [[${inq.itemInqAnwser.content}]]</textarea>
+							<div class="comment_area_btn plain-btn btn active" onclick="inqOk(this , 'update')" th:attr="data-inq-answerId=${inq.itemInqAnwser.id}">답변수정</div>
+							<div class="update_x" onclick="inqAnswerUpdateCancle(this)" th:attr="data-inq-id=${inq.inqId}">x</div>
 							 </td>
 						</tr>
 							
@@ -507,7 +456,7 @@
 						<tr>
 							<td class="inq_answer_layout" colspan="6" style="display: none;">
 							<textarea class="inq_answer_reg_box inq_answer_reg_content" placeholder="답변을 입력해주세요"></textarea>
-							<div class="comment_area_btn plain-btn btn active" onclick="inqOk(this , 'reg')" th:attr="data-inq-id=${inq.id}">답변등록</div>
+							<div class="comment_area_btn plain-btn btn active" onclick="inqOk(this , 'reg')" th:attr="data-inq-id=${inq.inqId}">답변등록</div>
 							 </td>
 						</tr>
 						</th:block>
@@ -881,27 +830,53 @@ function ezhld_detail_more() {
 			
 			//등록
 			if (choice == 'reg') { 
+				
 			Id = $(button).attr("data-inq-id");
-			content = $(button).closest(".inq-row").find(".inq_answer_reg_content").val();
+			var originalContent = $(button).closest(".inq-row").find(".inq_answer_reg_content").val().trim();
+			content = originalContent.replace(/\n/g, '\\n');
+			
+			if (originalContent === '') {
+       			 alert("답변 내용을 입력해주세요");
+      			  return; // 함수 종료
+   				 }
+   				 
+   			if(originalContent.length > 350){
+				   alert("답변 내용은 350자 이내로 작성 해주세요.");
+      			  return; // 함수 종료
+			   }	
+			    
 			url = "/InqAnswerReg";	
+			
 			paramData = {id : Id, content : content};
+			
 			text = '답변 등록 하시겠습니까?';
-			if (content.trim() === '') {
-       			 alert("답변 내용을 입력해주세요");
-      			  return; // 함수 종료
-   				 }
+   			
+   			
 			}
+			
 			//수정
-				if (choice == 'update') { 
+				if (choice == 'update') {
+					 
 			Id = $(button).attr("data-inq-answerId");
-			content = $(button).closest(".inq-row").find(".inq_answer_update_content").val();
-			url = "/InqAnswerUpdate";	
-			paramData = {id : Id, content : content};
-			text = '답변 수정 하시겠습니까?';
-			if (content.trim() === '') {
+			var originalContent = $(button).closest(".inq-row").find(".inq_answer_update_content").val().trim();
+			content = originalContent.replace(/\n/g, '\\n');
+			
+				if (originalContent === '') {
        			 alert("답변 내용을 입력해주세요");
       			  return; // 함수 종료
    				 }
+   				 
+   			if(originalContent.length > 350){
+				   alert("답변 내용은 350자 이내로 작성 해주세요.");
+      			  return; // 함수 종료
+			   }	
+			
+			url = "/InqAnswerUpdate";	
+			
+			paramData = {id : Id, content : content};
+			
+			text = '답변 수정 하시겠습니까?';
+			
 			}
 			//삭제
 				if (choice == 'delete') { 
@@ -927,17 +902,16 @@ function ezhld_detail_more() {
 						},
 						dataType : "text",
 						cache : false,
-						success : function(result, status, jqXHR) {
+						success : function(_, _, jqXHR) {
 							 alert(jqXHR.responseText);
 							 window.location.reload(true); 
 							
 						},
-						error : function(jqXHR, status, error) {
-							if (jqXHR.status == '401') {
+						error : function(jqXHR) {
+							if (jqXHR.status == '403') {
 								alert('관리자로그인 후 이용해주세요.');
-								//	location.href = '/';
+								location.href = '/members/login';
 							} else {
-								//에러메세지 출력(ResponseEntity에서 받아온 값을 출력해준다)
 								alert(jqXHR.responseText);
 							}
 						}
@@ -1174,9 +1148,14 @@ function inqAnwerBoxOpen(button){
 			
 			var itemId = $("#itemId").val();
 			
+			  var _width = '640';
+    		  var _height = '860';
+    		  var _left = Math.ceil(( window.screen.width - _width )/2);
+   			  var _top = Math.ceil(( window.screen.height - _height )/2); 
+			
 			url =  "/popup/" + itemId;
 			
-		    window.open( url , "popupWindow", "width=620, height=860, left=100, top=50"); 
+		    window.open( url , "itemInqWindow", 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top ); 
 		}
 		
 			function cartReg(){
@@ -1234,16 +1213,23 @@ function inqAnwerBoxOpen(button){
 							},
 						error : function(jqXHR, status, error) {
 							if (jqXHR.status == '403') {
-								alert('잘못된 접근입니다.  로그인 후 이용해주세요.');
+								alert('잘못된 접근입니다. 로그인 후 이용해주세요.');
 								location.href="/members/login"
-							} else {
-								  $('#add_cart_toast div').text('장바구니에 있는 상품입니다.');
+								
+							} else if(jqXHR.status == '409'){
+								 $('#add_cart_toast div').text(jqXHR.responseText);
 																
 								  $('#add_cart_toast').stop().fadeIn(200, function() {
     						      setTimeout(function() {
       							  $('#add_cart_toast').stop().fadeOut(200);
     							  }, 2500);
    								 });
+   								 
+							}else if(jqXHR.status == '400') {
+								alert(jqXHR.responseText);
+								
+							} else {
+								alert(jqXHR.responseText);
 							}
 						}
 					})

@@ -12,6 +12,25 @@
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 	<link th:href="@{https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css}"rel="stylesheet" />
+	
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var errorMessage = /*[[${errorMessage}]]*/ 'default'; 
+
+    if (errorMessage && errorMessage !== 'default') {
+        alert(errorMessage);
+        window.close();
+    }
+    
+    var loginNo = /*[[${loginNo}]]*/ 'default'; 
+
+    if (loginNo && loginNo !== 'default') {
+        window.opener.location.reload();
+        window.close();
+    }
+    /*]]>*/
+</script>
+	
 </head>
 <body>
 	<div class="container">
@@ -21,9 +40,8 @@
 		<header class="h2_header">
 			<h2>배송조회</h2>
 		</header>
-		<input type="hidden" id="loginOk" th:value="${loginOk}">
 		<div class="search_form pb-3">
-					<input id="delivery_search" type="text" class="form-control form_search" placeholder="송장번호를 입력 해주세요" >
+					<input id="delivery_search" type="text" class="form-control form_search" placeholder="송장번호를 입력 해주세요" th:value="${invoiceNumber}"  >
 					<button class="form_search_bt" onclick="dynamicSearch()">조회</button>
 		</div>
 		<th:block th:if="${delivery != null}">
@@ -146,6 +164,6 @@
 	</div>
 	</div>
 	
-	<script th:src="@{/js/myPage/order/deliveryPopup.js}"></script>
+	<script th:src="@{/js/popup/deliveryPopup.js}"></script>
 </body>
 </html>

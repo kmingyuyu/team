@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<th:block layout:fragment="css">
+	<link rel="stylesheet" th:href="@{/css/myPage.css}" type="text/css" />
+</th:block>
+
+<div layout:fragment="content" class="layout">
+	<div th:insert="fragments/myPageMemberInfo::myPageMemberInfo"></div>
+	
+	<section class="container_custom spad d-flex">
+		<div class="side_bx">
+			<div th:insert="fragments/myPageSideBar::myPageSideBar"></div>
+		</div>
+		<div class="content_bx po_ab align_min">
+		<div class="right_contents">
+			<span class="cart_sp">포인트</span>
+			<div class="page-sorting order font-mss">
+				<a href="/">home</a>
+				<span><i class="ic-14-line-arrow-right"></i></span>
+				<span class="current-page">마이페이지(포인트)</span>
+			</div>
+		</div>
+		<section class="dLBPEv">
+			<ul class="state">
+				<input type="hidden" id="data" th:value="${myPageSerchDto.data}">
+					<li th:classappend="${myPageSerchDto.data == ''} ? 'is-active'"><a onclick="goList('','point')">전체 [[${countMap['전체']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == 'PLUS'} ? 'is-active'"><a onclick="goList('PLUS','point')">적립 [[${countMap['적립']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == 'MINUS'} ? 'is-active'"><a onclick="goList('MINUS','point')">사용 [[${countMap['사용']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == 'EXPIRE'} ? 'is-active'"><a onclick="goList('EXPIRE','point')">차감 [[${countMap['차감']}]]</a></li>
+				</ul>
+				<ul class="final-payment">
+					<li>
+						<p class="final-payment-ti">총 적립 포인트</p>
+						<p class="final-payment-price">
+							<input type="hidden" class="cart_normal_price">
+							<span class="cart_normal_add_opt_price">[[${#numbers.formatInteger(countMap['적립총합'] , 0, 'COMMA')}]]</span><span class="pay_won">P</span>
+						</p>
+					</li>
+					<li class="final-payment-ic">
+						<i class="ic-18-line-minus"></i>
+					</li>
+					<li>
+						<p class="final-payment-ti">총 사용 포인트</p>
+						<p class="final-payment-price">
+							<input type="hidden" class="cart_normal_price">
+							<span class="cart_normal_add_opt_price">[[${#numbers.formatInteger(countMap['사용총합'] , 0, 'COMMA')}]]</span><span class="pay_won">P</span>
+						</p>
+					</li>
+					<li class="final-payment-ic">
+						<i class="ic-18-line-minus"></i>
+					</li>
+					<li>
+						<p class="final-payment-ti">총 차감 포인트</p>
+						<input type="hidden" class="cart_total_save">
+						<p class="final-payment-price"><span class="cart_total_add_opt_save">[[${#numbers.formatInteger(countMap['차감총합'] , 0, 'COMMA')}]]</span><span class="pay_won">P</span></p>
+					</li>
+					<li class="final-payment-ic">
+						<i class="ic-18-line-handle"></i>
+					</li>
+					<li>
+						<p class="final-payment-ti">사용 가능 포인트</p>
+						<p class="final-payment-price"><span class="total_pay">[[${#numbers.formatInteger(countMap['적립총합'] - countMap['사용총합'] - countMap['차감총합'] , 0, 'COMMA')}]]</span><span class="pay_won">P</span></p>
+					</li>
+				</ul>
+			<ul class="n-info-txt">
+                <li>1,000P이상 시 사용가능 하며, 포인트를 사용하여 상품 주문 하실 수 있습니다.</li>
+                <li>포인트는 상품 구매시 후기 등록(일반500P/사진포함1,000P), 회원분들이 작성한 레시피의 후기 등록(일반100P/사진포함250P)시 적립 됩니다.</li>
+            </ul>
+            <div class="pt-4"></div>
+            <table class="table_basic cart_table n-cart-table">
+					<colgroup>
+						<col width="10%">
+						<col width="15%">
+						<col width="60%">
+						<col width="15%">
+						
+					</colgroup>
+					<thead>
+						<tr class="cart-header">
+							<th scope="col">상태</th>
+							<th scope="col">포인트</th>
+							<th scope="col">내용(상세내용)</th>
+							<th scope="col">적용일자</th>
+							
+						</tr>
+					</thead>
+					<tbody th:if="${!pointList.isEmpty}">
+					 <th:block th:each="point , status:${pointList}">
+					<tr class="cart-group">
+							<td colspan="9" class="cart_cont">
+								<table class="table_basic cart_table">
+									<colgroup>
+											<col width="10%">
+											<col width="15%">
+											<col width="60%">
+											<col width="15%">
+									</colgroup>
+									<tbody>
+									<tr class="cart_list_no">
+										<td>
+											 <p th:text="${point.pointEnum.toString() == 'PLUS' ? '적립' : point.pointEnum.toString() == 'MINUS' ? '사용' : '차감'}"></p>
+										</td>
+										<td>
+											<p th:text="${point.pointEnum.toString() == 'PLUS' ? '+ ' : '- '} + ${#numbers.formatInteger(point.point, 0, 'COMMA')}"></p>
+										</td>
+										<td>
+											<div class="point-info-div">
+											<p>[[${point.pointInfo}]]</p>
+											<p th:if="${point.pointDetailInfo != null}"  th:utext="${#strings.replace(point.pointDetailInfo, ',', '<br>')}"></p>
+											</div>
+										</td>
+										<td>
+											<p class="inq-date-td">[[${T(java.time.format.DateTimeFormatter).ofPattern('yyyy.MM.dd').format(point.regTime)}]]</p>
+										</td>
+								
+									</tr>
+							</tbody>
+								</table>
+							</td>
+						</tr>
+						</th:block>
+				</tbody>
+				</table>
+			<div th:if="${!pointList.isEmpty}" class="style__PagingWrapper-b83qno-6 bYnXQa" 
+							th:with="start=${(pointList.number/maxPage)*maxPage + 1}
+			    ,end=(${(pointList.totalPages == 0) ? 1 : (start + (maxPage - 1) < pointList.totalPages ? start + (maxPage - 1) : pointList.totalPages)})">
+
+							<button class="style__PagePrevButton-b83qno-8 loxVUo"
+								th:classappend="${pointList.first}?'bt_hd'"
+								th:onclick="'javascript:pointPage(' + ${pointList.number - 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+									<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+								</svg>
+							</button>
+							<ul>
+								<a offset="0" class="style__PageNumber-b83qno-7"
+									th:each="page: ${#numbers.sequence(start, end)}"
+									th:classappend="${pointList.number eq page-1}?'hIVTuk':'iBHoeR'"
+									th:onclick="'javascript:pointPage(' + ${page - 1} +')'"> <span>[[${page}]]</span>
+								</a>
+							</ul>
+							<button class="style__PageNextButton-b83qno-9 gCfLmH"
+								th:classappend="${pointList.last}?'bt_hd'"
+								th:onclick="'javascript:pointPage(' + ${pointList.number + 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+							        <path stroke="#000"
+										d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+					            </svg>
+							</button>
+					</div>
+			<div class="null_box" th:if="${pointList.isEmpty}">
+							포인트 내역이 없습니다.			
+						</div>
+		</section>
+			
+		</div>
+	</section>
+	
+</div>
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/myPage/global/global.js}"></script>
+	<script th:src="@{/js/myPage/benefit/myPoint.js}"></script>
+</th:block>
+
+
+</html>

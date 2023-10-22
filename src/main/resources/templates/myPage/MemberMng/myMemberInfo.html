@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
+<head>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+
+<th:block layout:fragment="css">
+	<link rel="stylesheet" th:href="@{/css/myPage.css}" type="text/css" />
+</th:block>
+
+<div layout:fragment="content" class="layout">
+	<div th:insert="fragments/myPageMemberInfo::myPageMemberInfo"></div>
+	
+	<section class="container_custom spad d-flex">
+		<div class="side_bx">
+			<div th:insert="fragments/myPageSideBar::myPageSideBar"></div>
+		</div>
+		<div class="content_bx po_ab align_min">
+		<div class="right_contents">
+			<span class="cart_sp">나의 회원 정보</span>
+			<input type="hidden" id="introduce-ori" th:value="${member.introduce}"> 
+			<input type="hidden" id="phoneNumber-ori" th:value="${member.phoneNumber}"> 
+			<input type="hidden" id="nickname-ori" th:value="${member.nickname}"> 
+			<input type="hidden" id="name-ori" th:value="${member.name}"> 
+			<input type="hidden" id="postCode-ori" th:value="${member.postCode}"> 
+			<input type="hidden" id="address-ori" th:value="${member.address}"> 
+			<input type="hidden" id="detailAddress-ori" th:value="${member.detailAddress}"> 
+			<div class="page-sorting order font-mss">
+				<a href="/">home</a>
+				<span><i class="ic-14-line-arrow-right"></i></span>
+				<span class="current-page">마이페이지(나의 회원 정보)</span>
+			</div>
+		</div>
+		<section class="dLBPEv">
+					<div class="detivb">
+						<section class="m-info-default">
+								<header><p>기본 회원 정보 <span>(필수)</span></p></header>
+								<div class="m-info_div">
+								<p class="p-header">프로필 사진</p>
+								<div class="m-center">
+								<div class="mf-div">
+									<label id="imagePreviewLabel" for="fileInput"
+										class="upload-icon"
+										th:style="'background-image: url(' + ${member.imgUrl} +')'">
+										<div class="circle">
+											<svg class="fas fa-cloud-upload-alt"
+												xmlns="http://www.w3.org/2000/svg" height="1em"
+												viewBox="0 0 512 512">
+												<path d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z" />
+											</svg>
+										</div>
+									</label> 
+									<input onchange="updateImagePreview(event);" type="file" id="fileInput" name="imgFile" style="display: none;">
+								</div>
+								<div class="ms-div">
+									<button type="button" class="modi-button" onclick="imgModiOk()">이미지 저장</button>
+									<button type="button" class="modi-button ml-2" th:if="${member.imgUrl != '/img/비회원이미지.jpg'}" onclick="memberDeleteOk('img')">기본 이미지로 변경</button>
+										<ul class="m-info-txt mt-3">
+                						<li>회원님을 알릴 수 있는 사진을 등록 해주세요.</li>
+                						<li>등록된 사진은 회원님의 게시물이나 후기글에 사용됩니다.</li>
+            						</ul>
+								</div>
+								</div>
+								</div>
+								
+								<div class="m-info_div">
+										<p class="p-header">가입 이메일</p>
+									<div class="m-center">
+									<div class="mf-div">
+										<p class="m-info-p">[[${member.email}]]</p>
+									</div>
+									<div class="ms-div"></div>
+									</div>
+								</div>
+								<div class="m-info_div">
+										<p class="p-header">가입 경로</p>
+									<div class="m-center">
+									<div class="mf-div">
+										<p class="m-info-p" th:if="${member.provider} == 'default'">사이트 회원</p>
+										<p class="m-info-p" th:if="${member.provider} == 'google'">구글 소셜 회원</p>
+										<p class="m-info-p" th:if="${member.provider} == 'kakao'">카카오 소셜 회원</p>
+									</div>
+									<div class="ms-div"></div>
+									</div>
+								</div>
+								<div class="m-info_div">
+									<p class="p-header">닉네임</p>
+									<div class="m-center">
+										<div class="mf-div c-scrip">
+											<p class="m-info-p" id="nickname-ori">[[${member.nickname}]]</p>
+										</div>
+										<div class="ms-div c-scrip">
+											<button type="button" class="modi-button button-scrip-modi">닉네임 변경</button>
+										</div>
+										<div class="ps_plus_livrap m-scrip" style="display: none;">
+											<div class="ps_plus_liv">
+												<label for="nickname-new">신규 닉네임</label>
+												<input type="text" class="inptext" id="nickname-new" maxlength="10" >
+												<p id="nickname-new-p" class="ps-warning ps-script" style="display: none;">2자 이상 입력 해주세요.</p>
+											</div>
+											<ul class="m-info-txt">
+                								<li>닉네임은 2자 ~ 10자 이내로 입력 해주세요.</li>
+                								<li>중복 닉네임 불가 합니다.</li>
+                								<li>일부 특수문자 사용 불가 합니다. &amp; &lt; &gt; () &#39; &quot; </li>
+            								</ul>
+            								<div class="pas-cancel-wrap">
+            									<button type="button" class="modi-button button-scrip-cancel">변경 취소</button>
+            									<button type="button" class="modi-button ml-2 disabled" id="nickname-button"  disabled onclick="memberModiOk('nickname')">변경 완료</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="m-info_div">
+									<p class="p-header">비밀번호</p>
+									<div class="m-center">
+										<div class="mf-div c-scrip">
+											<p class="m-info-p">**********</p>
+										</div>
+										<div class="ms-div c-scrip">
+											<button type="button" class="modi-button button-scrip-modi" th:if="${member.provider == 'default'}">비밀번호 변경</button>
+										</div>
+										<div class="ps_plus_livrap m-scrip" style="display: none;">
+											<div class="ps_plus_liv">
+												<label for="password-ori">기존 비밀번호</label>
+												<input type="password" class="inptext" id="password-ori" maxlength="15" >
+												<p id="password-ori-p" class="ps-warning ps-script" style="display: none;">9자 이상 입력 해주세요.</p>
+											</div>
+											<div class="ps_plus_liv">
+												<label for="password-new">신규 비밀번호</label>
+												<input type="password" class="inptext" id="password-new" maxlength="15" >
+												<p id="password-new-p" class="ps-warning ps-script" style="display: none;">9자 이상 입력 해주세요.</p>
+											</div>
+											<div class="ps_plus_liv">
+												<label for="password-recom">신규 비밀번호 재입력</label>
+												<input type="password" class="inptext" id="password-recom" maxlength="15" >
+												<p id="password-recom-p" class="ps-warning ps-script" style="display: none;">9자 이상 입력 해주세요.</p>
+											</div>
+											<ul class="m-info-txt">
+                								<li>비밀번호는 9자 ~ 15자 이내로 입력 해주세요.</li>
+                								<li>사용중인 비밀번호와 입력하신 기존 비밀번호가 일치해야 하며,<br>신규 비밀번호와 재입력 비밀번호가 일치해야 합니다</li>
+            								</ul>
+            								<div class="pas-cancel-wrap">
+            									<button type="button" class="modi-button button-scrip-cancel">변경 취소</button>
+            									<button type="button" class="modi-button ml-2 disabled" id="pass-button" disabled onclick="memberModiOk('password')">변경 완료</button>
+											</div>
+										</div>
+									</div>
+								</div>
+									<div class="m-info_div">
+										<p class="p-header">휴대전화</p>
+									<div class="m-center">
+									<div class="mf-div c-scrip">
+										<p class="m-info-p" >[[${member.phoneNumber}]]</p>
+									</div>
+									<div class="ms-div c-scrip">
+										<button type="button" class="modi-button button-scrip-modi">휴대전화 변경</button>
+										
+									</div>
+										<div class="ps_plus_livrap m-scrip" style="display: none;">
+											<div class="ps_plus_liv">
+												<label for="phoneNumber-new">신규 휴대전화 번호</label>
+												<input type="text" class="inptext phoneNumber-input" id="phoneNumber-new" maxlength="11" >
+												<p id="phoneNumber-ori-p" class="ps-warning ps-script" style="display: none;">휴대전화(010) 정보만 입력 해주세요.</p>
+											</div>
+												<ul class="m-info-txt">
+                									<li>특수문자(-) 제외 하고 번호 11자리 입력 해주세요.</li>
+                									<li>휴대전화(010) 정보만 등록 가능 합니다.</li>
+            									</ul>
+            								<div class="pas-cancel-wrap">
+            									<button type="button" class="modi-button button-scrip-cancel">변경 취소</button>
+            									<button type="button" class="modi-button ml-2 disabled" id="phoneNumber-button"  disabled onclick="memberModiOk('phoneNumber')">변경 완료</button>
+											</div>
+										</div>
+									</div>
+								</div>
+						</section>
+						
+						<section class="m-info-default m-i-custom">
+								<header><p>추가 회원 정보 <span>(선택)</span></p></header>
+								
+								<div class="m-info_div">
+										<p class="p-header">성함</p>
+									<div class="m-center">
+									<div class="mf-div c-scrip">
+										<p class="m-info-p" th:text="${member.name != null} ? ${member.name} : '등록된 성함이 없습니다.'">[[${member.name}]]</p>
+									</div>
+									<div class="ms-div c-scrip">
+										<button type="button" class="modi-button button-scrip-modi" th:text="${member.name != null} ? '성함 변경' : '성함 등록'" th:if="${member.provider == 'default'}"></button>
+										<button type="button" class="modi-button ml-2" onclick="memberDeleteOk('name')" th:if="${member.name != null and member.provider == 'default'}">정보 삭제</button>
+									</div>
+									<div class="ps_plus_livrap m-scrip" style="display: none;">
+											<div class="ps_plus_liv">
+												<label for="name-new">신규 성함</label>
+												<input type="text" class="inptext" id="name-new" maxlength="15" >
+											</div>
+												<ul class="m-info-txt">
+                									<li>한글 2글자 이상 입력 해주세요.</li>
+                									<li>상품주문시 배송에 필요한 정보 입니다.<br>오정보 기입시 배송에 차질이 생길 수 있습니다.</li>
+            									</ul>
+            								<div class="pas-cancel-wrap">
+            									<button type="button" class="modi-button button-scrip-cancel" th:text="${member.name != null} ? '변경 취소' : '등록 취소'"></button>
+            									<button type="button" class="modi-button ml-2 disabled" id="name-button"  disabled onclick="memberModiOk('name')" th:text="${member.name != null} ? '변경 완료' : '등록 완료'"></button>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="m-info_div">
+								<p class="p-header">자기소개</p>
+								<div class="m-center">
+								<div class="mf-div c-scrip">
+									<p class="m-info-p" th:text="${member.introduce != null} ? ${member.introduce} : '등록된 자기소개가 없습니다.'"></p>
+								</div>
+								<div class="ms-div c-scrip">
+									<button type="button" class="modi-button button-scrip-modi" th:text="${member.introduce != null} ? '자기소개 변경' : '자기소개 등록'"></button>
+									<button type="button" class="modi-button ml-2" onclick="memberDeleteOk('introduce')" th:if="${member.introduce != null}">정보 삭제</button>
+								</div>
+								<div class="ps_plus_livrap m-scrip" style="display: none;">
+											<div class="ps_plus_liv">
+												<label for="introduce-new">신규 자기소개</label>
+												<input type="text" class="inptext introduce-input" id="introduce-new" maxlength="20" >
+											</div>
+												<ul class="m-info-txt">
+                									<li>회원님을 알릴 수 있는 자기소개를 작성 해주세요.</li>
+                									<li>자기소개를 2자 ~ 20자 이내로 입력 해주세요.</li>
+                									<li>일부 특수문자 사용 불가 합니다. &amp; &lt; &gt; () &#39; &quot; </li>
+            									</ul>
+            								<div class="pas-cancel-wrap">
+            									<button type="button" class="modi-button button-scrip-cancel" th:text="${member.introduce != null} ? '변경 취소' : '등록 취소'"></button>
+            									<button type="button" class="modi-button ml-2 disabled" id="introduce-button"  disabled onclick="memberModiOk('introduce')" th:text="${member.introduce != null} ? '변경 완료' : '등록 완료'"></button>
+											</div>
+										</div>
+								</div>
+								</div>
+								
+								<div class="m-info_div">
+										<p class="p-header">주소</p>
+									<div class="m-center">
+									<div class="mf-div c-scrip">
+										<p class="m-info-p" 
+										th:if="${member.postCode != null and member.address != null and member.detailAddress != null}">([[${member.postCode}]])<br>[[${member.address}]],&nbsp;[[${member.detailAddress}]]</p>
+										<p class="m-info-p" 
+										th:if="${member.postCode == null or member.address == null or member.detailAddress == null}">등록된 주소가 없습니다.</p>
+										
+									</div>
+									<div class="ms-div c-scrip">
+										<button type="button" class="modi-button button-scrip-modi" 
+										th:text="${member.postCode != null and member.address != null and member.detailAddress != null} ? '주소 변경' : '주소 등록'"></button>
+										<button type="button" class="modi-button ml-2" 
+										onclick="memberDeleteOk('address')" 
+										th:if="${member.postCode != null and member.address != null and member.detailAddress != null}">정보 삭제</button>
+									</div>
+									<div class="ps_plus_livrap m-scrip" style="display: none;">
+											<div class="add_plus_liv">
+												<label for="postCode-new">신규 주소</label>
+												<div class="eGzxxp">
+													<input id="postCode-new" class="postcode inptext post-input"  placeholder="우편번호" readonly >
+													<button type="button" id="postcodeBt" onclick="sample6_execDaumPostcode()">우편번호 찾기</button>
+												</div>
+												<input type="text" id="add_extra" placeholder="참고항목" style="display: none;">
+												<div></div>
+												<div>
+												<textarea id="address-new" placeholder="주소" disabled class="lnCWmr inptext"></textarea>
+												<textarea id="detailAddress-new" placeholder="상세주소를 입력해 주세요." class="lnCWmr inptext mt-2"></textarea>
+												</div>
+											</div>
+												<ul class="m-info-txt">
+                									<li>상품주문시 배송에 필요한 정보 입니다.<br>오정보 기입시 배송에 차질이 생길 수 있습니다.</li>
+            									</ul>
+            								<div class="pas-cancel-wrap">
+            									<button type="button" class="modi-button button-scrip-cancel" th:text="${member.postCode != null and member.address != null} ? '변경 취소' : '등록 취소'"></button>
+            									<button type="button" class="modi-button ml-2 disabled" id="address-button"  disabled 
+            									onclick="memberModiOk('address')" 
+            									th:text="${member.postCode != null and member.address != null and member.detailAddress != null} ? '변경 완료' : '등록 완료'"></button>
+											</div>
+										</div>
+									</div>
+								</div>
+							<div class="box_btn_right">
+						<p>회원 탈퇴를 원하시면 클릭 해주세요.</p>
+							<a onclick="memberDelete();" class="plain-btn btn pd10_btn">회원 탈퇴</a>
+						</div>
+						</section>
+						
+								
+
+					</div>
+
+			
+		</section>
+			
+		</div>
+	</section>
+	
+</div>
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/myPage/global/global.js}"></script>
+	<script th:src="@{/js/myPage/MemberMng/myMemberInfo.js}"></script>
+	<script th:src="@{//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js}"></script> 
+</th:block>
+
+
+</html>

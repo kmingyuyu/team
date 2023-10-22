@@ -28,7 +28,7 @@ import lombok.Setter;
 @ToString
 @Table(name="item_review")
 @Entity
-public class ItemReview extends BaseTimeEntity {
+public class ItemReview extends BaseEntity {
 	
 	@Id
 	@Column(name="item_review_id")

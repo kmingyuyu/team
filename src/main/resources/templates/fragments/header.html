@@ -55,7 +55,7 @@
 									  <path d="M10 19a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM19 19a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" stroke="#616161"></path>
 									  <path d="M2 4h3l3 12h12" stroke="#616161" stroke-width="2"></path>
 									  </svg>
-									  <span class="styles__CartAccent-s29m5c-10 faiWcr" id="cartCount" sec:authorize="isAuthenticated()" th:if="${cartCount} != 0 ">[[${cartCount}]]</span>
+									  <span class="styles__CartAccent-s29m5c-10 faiWcr" id="cartCount" sec:authorize="isAuthenticated()" th:if="${session.cartCount} != 0 ">[[${session.cartCount}]]</span>
 									  </div>
 									  </div>
 									  </a>
@@ -69,10 +69,10 @@
 										<div class="MypagePopup__PopupLayout-sc-5vnpla-0 gqjZqt">
 											<div class="MypagePopup__Frame-sc-5vnpla-2 fARqTM">
 												<div class="MypagePopup__Profile-sc-5vnpla-3 cWqkHj">
-													<img th:src="${member.imgUrl}" alt="회원이미지">
+													<img th:src="${session.imgUrl}" alt="회원이미지">
 													<div class="MypagePopup__ProfileMeta-sc-5vnpla-4 gPCGZR">
-														<p class="MypagePopup__ProfileName-sc-5vnpla-5 fZmXjy">[[${member.nickname}]]</p>
-														<p class="MypagePopup__TabText-sc-5vnpla-9 iZVYRA">포인트<span class="MypagePopup__TabTextStrong-sc-5vnpla-10 hcDOtb">[[${#numbers.formatInteger(member.point , 0, 'COMMA')}]]</span>
+														<p class="MypagePopup__ProfileName-sc-5vnpla-5 fZmXjy">[[${session.nickname}]]</p>
+														<p class="MypagePopup__TabText-sc-5vnpla-9 iZVYRA">포인트<span class="MypagePopup__TabTextStrong-sc-5vnpla-10 hcDOtb">[[${#numbers.formatInteger(session.point , 0, 'COMMA')}]]</span>
 														</div></div>
 														<nav class="MypagePopup__Nav-sc-5vnpla-13 kMCARI">
 															<div class="MypagePopup__TabList-sc-5vnpla-7 gRvlpR">

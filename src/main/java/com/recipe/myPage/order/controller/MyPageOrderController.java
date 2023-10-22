@@ -1,4 +1,4 @@
-package com.recipe.controller;
+package com.recipe.myPage.order.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.recipe.constant.OrderStatus;
-import com.recipe.dto.MyPageSerchDto;
-import com.recipe.dto.OrderHistoryDto;
 import com.recipe.entity.BuyInfo;
 import com.recipe.entity.CancelInfo;
 import com.recipe.entity.Delivery;
@@ -34,6 +32,8 @@ import com.recipe.entity.ItemImg;
 import com.recipe.entity.Order;
 import com.recipe.entity.OrderItem;
 import com.recipe.exception.CustomException;
+import com.recipe.myPage.dto.MyPageSerchDto;
+import com.recipe.myPage.dto.OrderHistoryDto;
 import com.recipe.service.CountService;
 import com.recipe.service.DeliveryService;
 import com.recipe.service.GlobalService;
@@ -75,14 +75,18 @@ public class MyPageOrderController {
 		model.addAttribute("countMap", countMap);
 		model.addAttribute("maxPage", 5); 
 		
-		model.addAttribute("loginOk", globalService.isAuthenticated()); 
-	
 		return "myPage/order/myOrder";
 	}
 	
 //	마이 페이지 보여주기 (주문내역 - > 배송 내역(팝업))
-	@GetMapping("/myPage/order/delivery_popup/{invoiceNumber}")
+	@GetMapping("/myPage/order/deliveryPopup/{invoiceNumber}")
 	public String deliveryPopup(@PathVariable("invoiceNumber") String invoiceNumber ,  Model model) {
+		
+		if(!globalService.isAuthenticated()){
+			model.addAttribute("loginNo");
+		}
+		
+		model.addAttribute("invoiceNumber" , invoiceNumber);
 		
 		Delivery delivery = deliveryService.findByInvoiceNumber(invoiceNumber);
 		
@@ -95,7 +99,6 @@ public class MyPageOrderController {
 			model.addAttribute("infos", infos); 
 		}
 		
-		model.addAttribute("loginOk", globalService.isAuthenticated()); 
 		
 		return "myPage/order/deliveryPopup";
 	}
@@ -123,7 +126,7 @@ public class MyPageOrderController {
 			
 			Long memberId = (Long) session.getAttribute("memberId");
 			
-			myPageOrderService.orderCancel(requestBody,memberId);
+			myPageOrderService.orderCancel(requestBody,session);
 			
 		} catch (Exception e) {
 			return new ResponseEntity<>("주문 취소에 실패하였습니다. 잠시후에 시도해주세요.\n" + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -134,8 +137,12 @@ public class MyPageOrderController {
 	}
 	
 //	마이 페이지 보여주기 (주문내역 - > 상품 리뷰(팝업))
-	@GetMapping("/myPage/order/itemReview_popup_reg/{orderItemId}")
+	@GetMapping("/myPage/order/itemReviewPopupReg/{orderItemId}")
 	public String itemReviewPopupReg(@PathVariable("orderItemId") Long orderItemId , Model model , HttpSession session) {
+			
+		if(!globalService.isAuthenticated()){
+			model.addAttribute("loginNo");
+		}
 		
 		try {
 			
@@ -161,7 +168,7 @@ public class MyPageOrderController {
 	}
 	
 //	마이페이지 주문상품 리뷰작성 (주문내역 - > 상품 리뷰(팝업))
-	@PostMapping("/myPage/order/itemReview_popup_reg/regOk")
+	@PostMapping("/myPage/order/itemReviewPopupReg/regOk")
 	public @ResponseBody ResponseEntity<String> orderItemReviewReg(
 			HttpSession session ,
 			@RequestParam("orderItemId") Long orderItemId,
@@ -173,10 +180,8 @@ public class MyPageOrderController {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		
-		Long memberId = (Long) session.getAttribute("memberId");
-		
 		try {
-			myPageOrderService.orderItemReviewReg(files, star, content, orderItemId, memberId);
+			myPageOrderService.orderItemReviewReg(files, star, content, orderItemId, session);
 			
 			return new ResponseEntity<>("후기 등록 되었습니다.", HttpStatus.OK);
 			

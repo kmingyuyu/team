@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -20,11 +21,13 @@ import lombok.Setter;
 @Entity
 @Table(name="item_review_answer")
 public class ItemReviewAnswer extends BaseEntity {
+	
 	@Id
 	@Column(name="item_review_answer_id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
+	@Lob
 	private String content;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

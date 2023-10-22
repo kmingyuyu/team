@@ -24,7 +24,6 @@ import com.recipe.dto.CartDto;
 import com.recipe.dto.ItemDetailDto;
 import com.recipe.dto.ItemOrderDto;
 import com.recipe.dto.OrderDto;
-import com.recipe.dto.OrderHistoryDto;
 import com.recipe.dto.OrderPayDto;
 import com.recipe.entity.BuyInfo;
 import com.recipe.entity.Cart;
@@ -36,6 +35,7 @@ import com.recipe.entity.OrderItem;
 import com.recipe.entity.Point;
 import com.recipe.exception.CustomException;
 import com.recipe.exception.FindNotException;
+import com.recipe.myPage.dto.OrderHistoryDto;
 import com.recipe.repository.CartRepository;
 import com.recipe.repository.ItemImgRepository;
 import com.recipe.repository.ItemRepository;
@@ -71,7 +71,7 @@ public class OrderService {
 	
 //	order객체/member 객체 저장
 	@Transactional
-	public void orderSave(OrderPayDto orderPayDto , Long memberId)  throws CustomException {
+	public void orderSave(OrderPayDto orderPayDto , Long memberId , HttpSession session)  throws CustomException {
 		
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new CustomException("사유: 회원조회 실패"));
@@ -81,8 +81,16 @@ public class OrderService {
 		BuyInfo buyInfo = iamPortService.buyInfoInput(orderPayDto);
 		
 		if(orderPayDto.getUsePoint() !=0) {
+			
 			member.minusPoint(orderPayDto.getUsePoint());
-			Point point = Point.createMinusPoint(member, orderPayDto.getUsePoint(),"포인트 결제", orderPayDto.getOrderNumber());
+			
+			session.setAttribute("point", member.getPoint());
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("주문번호: ");
+			sb.append(orderPayDto.getOrderNumber());
+			
+			Point point = Point.createPoint(member, orderPayDto.getUsePoint(), PointEnum.MINUS ,"포인트 결제", sb.toString());
 			pointRepository.save(point);
 		}
 		
@@ -147,27 +155,33 @@ public class OrderService {
 
 //	주문성공시 장바구니정보 삭제
 	@Transactional
-	public void orderCartDelete(ItemOrderDto cartList) throws CustomException {
+	public void orderCartDelete(ItemOrderDto cartList , HttpSession session) throws CustomException {
 
 		List<Long> cartIds = cartList.getCartIds();
 		
+		Long cartCount = (Long) session.getAttribute("cartCount");
+		
+		
 		if (cartIds == null || cartIds.isEmpty()) {
-			return;
-			}
-
-		for (Long cartId : cartIds) {
+				return;
 			
-			try {
-				Cart cart = cartRepository.findById(cartId)
-						.orElseThrow(() -> new CustomException("장바구니 처리 중 문제가 발생했습니다. 결제된 장바구니가 삭제 실패하였습니다."));
+			}
+			
+		try {
+				for (Long cartId : cartIds) {
+						Cart cart = cartRepository.findById(cartId)
+									.orElseThrow(() -> new CustomException("장바구니 처리 중 문제가 발생했습니다. 결제된 장바구니가 삭제 실패하였습니다."));
 				
-				cartRepository.delete(cart);
-				
-				} catch (CustomException e) {
-					log.error(e.getMessage());
-					throw e;
-				
+						cartRepository.delete(cart);
+						cartCount--;
 				}
+				
+				session.setAttribute("cartCount", cartCount);
+				
+		} catch (CustomException e) {
+				log.error("orderCartDelete-error",e);
+				throw e;
+				
 		}
 	}
 	

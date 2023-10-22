@@ -8,7 +8,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,13 +26,24 @@ public class ItemInqAnwser extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
+	@Lob
 	private String content;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "item_inq_id")
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "itemInqAnwser")
 	private ItemInq itemInq;
+	
+	
+	public static ItemInqAnwser createItemInqAnwser(Member member,ItemInq itemInq , String content) {
+		
+		ItemInqAnwser itemInqAnwser = new ItemInqAnwser();
+		itemInqAnwser.setMember(member);
+		itemInqAnwser.setItemInq(itemInq);
+		itemInqAnwser.setContent(content);
+		
+		return itemInqAnwser;
+	}
 }

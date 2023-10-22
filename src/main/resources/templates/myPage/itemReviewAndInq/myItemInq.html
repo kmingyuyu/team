@@ -1,10 +1,186 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout1}">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
-<body>
 
-</body>
+<th:block layout:fragment="css">
+	<link rel="stylesheet" th:href="@{/css/myPage.css}" type="text/css" />
+</th:block>
+
+<div layout:fragment="content" class="layout">
+	<div th:insert="fragments/myPageMemberInfo::myPageMemberInfo"></div>
+	
+	<section class="container_custom spad d-flex">
+		<div class="side_bx">
+			<div th:insert="fragments/myPageSideBar::myPageSideBar"></div>
+		</div>
+		<div class="content_bx po_ab align_min">
+		<div class="right_contents">
+			<span class="cart_sp">나의 상품 문의</span>
+			<div class="page-sorting order font-mss">
+				<a href="/">home</a>
+				<span><i class="ic-14-line-arrow-right"></i></span>
+				<span class="current-page">마이페이지(나의 상품 문의)</span>
+			</div>
+		</div>
+		<section class="dLBPEv">
+				<ul class="state">
+				<input type="hidden" id="data" th:value="${myPageSerchDto.data}">
+					<li th:classappend="${myPageSerchDto.data == ''} ? 'is-active'"><a onclick="goList('','itemInq')">전체 [[${countMap['전체']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == '답변완료'} ? 'is-active'"><a onclick="goList('답변완료','itemInq')">답변완료 [[${countMap['답변완료']}]]</a></li>
+					<li th:classappend="${myPageSerchDto.data == '답변대기'} ? 'is-active'"><a onclick="goList('답변대기','itemInq')">답변대기 [[${countMap['답변대기']}]]</a></li>
+				</ul>
+					<ul class="n-info-txt">
+                <li>상품에 대한 문의는 답변이 등록된 후 수정이 불가능합니다.</li>
+                <li>작성한 문의는 상품 상세페이지, 마이페이지(나의 상품 문의)에서 확인하실 수 있습니다.</li>
+            		</ul>
+            	<div class="date_check_box">
+                    <div class="date_check_list">
+                        <button type="button" value="0" >오늘</button>
+                        <button type="button" value="7" >7일</button>
+                        <button type="button" value="15" >15일</button>
+                        <button type="button" value="30" >1개월</button>
+                        <button type="button" value="90" >3개월</button>
+                        <button type="button" class="oneYear" value="365" >1년</button>
+                    </div>
+                    <div class="date_check_calendar">
+                        <input type="date" class="anniversary js_datepicker st_date" th:value="${myPageSerchDto.startTime}">
+                        <span class="ml-1 mr-1"> ~ </span>  
+                        <input type="date" class="anniversary js_datepicker end_date" th:value="${myPageSerchDto.endTime}">
+                    </div>
+                     <div>
+						<input type="text"  class="inp_nm" placeholder="상품명을 입력해주세요" th:value="${myPageSerchDto.searchQuery}">
+					</div>
+                    <button type="button" class="btn_date_check" onclick="dynamicSearch('itemInq')"><em>조회</em></button>
+            	</div>
+            	<table class="table_basic cart_table n-cart-table">
+					<colgroup>
+						<col width="30%">
+						<col width="38%">
+						<col width="12%">
+						<col width="10%">
+						<col width="10%">
+					</colgroup>
+					<thead>
+						<tr class="cart-header">
+							<th scope="col">상품정보</th>
+							<th scope="col">내용</th>
+							<th scope="col">문의유형</th>
+							<th scope="col">작성일</th>
+							<th scope="col">처리상태</th>
+						</tr>
+					</thead>
+					<tbody>
+					<th:block th:each=" inq , status:${itemInqList}">
+					<tr class="cart-group">
+							<td colspan="9" class="cart_cont">
+								<table class="table_basic cart_table">
+									<colgroup>
+										<col width="30%">
+										<col width="38%">
+										<col width="12%">
+										<col width="10%">
+										<col width="10%">
+									</colgroup>
+									<tbody>
+									<tr class="cart_list_no">
+										<td class="item_info">
+											<div class="connect_img">
+												<a class="img-block" th:href="'/item/' + ${inq.itemId}">
+                                                    <img th:src="${inq.imgUrl}" th:alt="${inq.itemNm}">
+												</a>																																					
+											</div>
+											<div class="article_info connect_info">
+												<p class="list_info">
+													<a th:href="'/item/' + ${inq.itemId}" class="itemNm">[[${inq.itemNm}]]</a>
+												</p>
+											</div>
+										</td>
+										<td>
+											<a class="inq-content-tap">[[${inq.title}]]</a>
+										</td>
+										<td>[[${inq.itemInqEnum}]]</td>
+										<td class="inq-date-td">[[${T(java.time.format.DateTimeFormatter).ofPattern('yyyy.MM.dd').format(inq.regTime)}]]</td>
+										<td class="inq-answer">[[${inq.answerOk}]]</td>
+									</tr>
+									<tr class="conect_detail_comment inq-content" style="display: none;">
+										<td colspan="6">
+											<div class="inq-content-div">
+												<div></div>
+												<div><p class="inq-content-p" th:utext="${#strings.replace(inq.content, '\n', '<br>')}"></p></div>
+												<div></div>
+												<div>
+													<button onclick="itemInqModi(this)" class="delivery-btn btn mt-no" th:attr="data-inq-id=${inq.itemInqId}"
+													th:classappend="${inq.answerOk.toString() == '답변완료'} ? 'click_disable' " >문의수정</button>
+													<button onclick="itemInqDelete(this)" class="delivery-btn btn mt-2" th:attr="data-inq-id=${inq.itemInqId}">문의삭제</button>
+												</div>
+											</div>
+											<div>
+											</div>
+											<div class="inq-answer-div" th:if="${inq.answerOk.toString() == '답변완료' and inq.itemInqAnwser != null}">
+												<div class="inq-adname"></div>
+												<div class="inq-answer">
+													<p class="inq-answer_content">
+														<span>안녕하세요. 이젠스토어 관리자 입니다.<br></span>
+														<span th:utext="${#strings.replace(inq.itemInqAnwser.content, '\n', '<br>')}"></span>
+													</p>
+											</div>
+											<div class="inq-answer-date">[[${T(java.time.format.DateTimeFormatter).ofPattern('yyyy.MM.dd hh:mm').format(inq.itemInqAnwser.regTime)}]]</div>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+								</table>
+							</td>
+						</tr>
+					</th:block>
+				</tbody>
+				</table>
+				<div th:if="${!itemInqList.isEmpty}" class="style__PagingWrapper-b83qno-6 bYnXQa" 
+							th:with="start=${(itemInqList.number/maxPage)*maxPage + 1}
+			    ,end=(${(itemInqList.totalPages == 0) ? 1 : (start + (maxPage - 1) < itemInqList.totalPages ? start + (maxPage - 1) : itemInqList.totalPages)})">
+
+							<button class="style__PagePrevButton-b83qno-8 loxVUo"
+								th:classappend="${itemInqList.first}?'bt_hd'"
+								th:onclick="'javascript:itemInqPage(' + ${itemInqList.number - 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+									<path stroke="#000" d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+								</svg>
+							</button>
+							<ul>
+								<a offset="0" class="style__PageNumber-b83qno-7"
+									th:each="page: ${#numbers.sequence(start, end)}"
+									th:classappend="${itemInqList.number eq page-1}?'hIVTuk':'iBHoeR'"
+									th:onclick="'javascript:itemInqPage(' + ${page - 1} +')'"> <span>[[${page}]]</span>
+								</a>
+							</ul>
+							<button class="style__PageNextButton-b83qno-9 gCfLmH"
+								th:classappend="${itemInqList.last}?'bt_hd'"
+								th:onclick="'javascript:itemInqPage(' + ${itemInqList.number + 1} +')'">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									fill="none" viewBox="0 0 19 18">
+							        <path stroke="#000"
+										d="m14.953 6.469-5.07 5.062L4.828 6.47"></path>
+					            </svg>
+							</button>
+						</div>
+				<div class="null_box" th:if="${itemInqList.isEmpty}">등록된 문의가 없습니다.</div>
+		</section>
+		</div>
+	</section>
+	
+</div>
+
+<th:block layout:fragment="script">
+	<script th:src="@{/js/myPage/global/global.js}"></script>
+	<script th:src="@{/js/myPage/global/dateAndSearch.js}"></script>
+	<script th:src="@{/js/myPage/itemReviewAndInq/myItemInq.js}"></script>
+</th:block>
+
+
 </html>
